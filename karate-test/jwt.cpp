@@ -15,7 +15,8 @@
 
 using json = nlohmann::json;
 
-// ファイルからコミュニティデータを読み込み
+// 　本日はここの認証を追加
+//  ファイルからコミュニティデータを読み込み
 std::unordered_map<int, std::unordered_set<int>> read_communities(const std::string &file_path)
 {
     std::unordered_map<int, std::unordered_set<int>> communities;

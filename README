@@ -7,4 +7,9 @@ mpirun -np 4 ./mpi_hello_world
 
 g++ -std=c++11 -I /opt/homebrew/opt/openmpi/include -L /opt/homebrew/opt/openmpi/lib mpi.cpp -o mpi -lmpi
 
- mpirun -np 4 ./mpi
+
+
+
+λっっっっっっっl更新されてくださいな
+
+mpirun -np 4 ./mpi
