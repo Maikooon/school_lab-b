@@ -8,6 +8,11 @@
 #include <ctime>
 #include <queue>
 
+/*
+    分散及び同期処理なく、コミュニティに分割して、
+    コミュニティを移動するときに検知することができるようにしたコード
+*/
+
 // ファイルからコミュニティデータを読み込み
 std::unordered_map<int, std::unordered_set<int>> read_communities(const std::string &file_path)
 {

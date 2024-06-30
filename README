@@ -13,3 +13,16 @@ g++ -std=c++11 -I /opt/homebrew/opt/openmpi/include -L /opt/homebrew/opt/openmpi
 λっっっっっっっl更新されてくださいな
 
 mpirun -np 4 ./mpi
+
+
+# jwt.cppの実行方法
+<!-- 例えば、4つのプロセスを単一のサーバー上で実行する場合、以下のコマンドを使用 -->
+mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o my_mpi_program jwt.cpp -lssl -lcrypto
+
+
+
+sigの実行方法
+
+
+
+### 分散環境での実行について

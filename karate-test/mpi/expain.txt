@@ -1,0 +1,11 @@
+MPIでの実行について
+
+概要
+
+実行方法
+g++ -std=c++11 -I /opt/homebrew/opt/openmpi/include -L /opt/homebrew/opt/openmpi/lib mpi.cpp -o mpi -lmpi
+mpirun -np XX(分割数) ./mpi
+
+０の時
+ー並列処理をしていない時つまり、RWー>main.cppと同じ挙動をする
+
