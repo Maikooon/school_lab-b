@@ -1,7 +1,15 @@
-// Mainを修正することで、複数マシンでの実行を可能に
-// mainに比べて、コミュニティ＝サーバ　という前提の実現が可能
-// これを　== dis.cpp　　と比較する
-// 具体的な認証は追加していないので、これをテンプレとして関数を作成していく
+/*
+Mainを修正することで、複数マシンでの実行を可能に
+mainに比べて、コミュニティ＝サーバ　という前提の実現が可能
+これを　== dis.cpp　　と比較する
+具体的な認証は関数の判定を行わない
+mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o my_mpi_program jwt.cpp -lssl -lcrypto
+によりコンパイル、
+mpirun -np 4 ./main -> main.txt
+により実行
+
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -51,16 +59,17 @@ vector<int> random_walk(int &total_move, int start_node, double alpha)
         // コミュニティが異なる場合は認証を行う/////////////////////////////////////////////////
         if (node_communities[current_node] != node_communities[next_node])
         {
-            if (!authenticate_move(current_node, next_node))
-            {
-                // 認証が通らない場合は移動を中止
-                cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                break;
-            }
-            else
-            {
-                cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
-            }
+            cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
+            // if (!authenticate_move(current_node, next_node))
+            // {
+            //     // 認証が通らない場合は移動を中止
+            //     cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
+            //     break;
+            // }
+            // else
+            // {
+            //     cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
+            // }
         }
         ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,0 +1,27 @@
+Process 0 Random walk path: 13768
+Process 0 Random walk path: 13410
+Authentication success: Node 13760 moved to Node 13280
+Node 13280 (Community 56) is in a different community from Node 13760 (Community 50)
+Process 0 Random walk path: 13760 13280
+Process 0 Random walk path: 9075
+Process 0 Random walk path: 11481
+Process 0 Random walk path: 13073
+Process 0 Random walk path: 13066
+Process 0 Random walk path: 13539
+Process 0 Random walk path: 13005
+Process 0 Random walk path: 10138
+Process 0 Random walk path: 11207
+Process 0 Random walk path: 12873
+Process 0 Random walk path: 12844
+Process 0 Random walk path: 12835
+Process 0 Random walk path: 12734
+Process 0 Random walk path: 12642
+Process 0 Random walk path: 13383
+Process 0 Random walk path: 13439
+Process 0 Random walk path: 12586 5831
+Process 0 Random walk path: 12556
+Process 0 Random walk path: 4024
+Process 0 Random walk path: 5038
+Authentication success: Node 13908 moved to Node 12484
+Node 12484 (Community 44) is in a different community from Node 13908 (Community 57)
+Process 0 sent token to process 2
