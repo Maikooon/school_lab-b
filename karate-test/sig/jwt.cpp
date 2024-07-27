@@ -1,7 +1,3 @@
-// Mainを修正することで、複数マシンでの実行を可能に
-// mainに比べて、コミュニティ＝サーバ　という前提の実現が可能
-// これを　== dis.cpp　　と比較する
-// 具体的な認証は追加していないので、これをテンプレとして関数を作成していく
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -57,36 +53,18 @@ bool validate_token(const std::string &token, int proc_rank)
 }
 
 // 認証の関数
-// 認証の関数
-bool authenticate_move(int current_node, int next_node, int proc_rank, int comm_size)
+bool authenticate_move(int current_node, int next_node, int proc_rank)
 {
-    if (node_communities[current_node] != node_communities[next_node])
+    jwt
+        jwt if (node_communities[current_node] != node_communities[next_node])
     {
-        // トークンの送信と受信
+        // 異なるコミュニティへの移動時にトークンを生成して検証
         std::string token = generate_token(proc_rank);
-        int dest_rank = node_communities[next_node] % comm_size;
 
-        if (dest_rank != proc_rank)
+        if (!validate_token(token, proc_rank))
         {
-            cout << "Process " << proc_rank << " sent token to process " << dest_rank << endl;
-            MPI_Send(token.c_str(), token.size() + 1, MPI_CHAR, dest_rank, 0, MPI_COMM_WORLD);
-
-            char recv_token[256];
-            MPI_Recv(recv_token, 256, MPI_CHAR, dest_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            if (validate_token(recv_token, dest_rank))
-            {
-                cout << "Process " << proc_rank << " received valid token from process " << dest_rank << endl;
-                return true;
-            }
-            else
-            {
-                cerr << "Process " << proc_rank << " received invalid token from process " << dest_rank << endl;
-                return false;
-            }
-        }
-        else
-        {
-            return true;
+            cerr << "Token validation failed for process " << proc_rank << endl;
+            return false;
         }
     }
     return true; // 同じコミュニティ内の移動は許可
@@ -94,8 +72,8 @@ bool authenticate_move(int current_node, int next_node, int proc_rank, int comm_
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-// ランダムウォークの関数--new
-vector<int> random_walk(int &total_move, int start_node, double alpha, int proc_rank, int comm_size)
+// ランダムウォークの関数
+vector<int> random_walk(int &total_move, int start_node, double alpha, int proc_rank)
 {
     int move_count = 0;
     vector<int> path;
@@ -114,10 +92,10 @@ vector<int> random_walk(int &total_move, int start_node, double alpha, int proc_
         // 次のノードをランダムに選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
-        // コミュニティが異なる場合は認証を行う/////////////////////////////////////////////////
+        // コミュニティが異なる場合は認証を行う
         if (node_communities[current_node] != node_communities[next_node])
         {
-            if (!authenticate_move(current_node, next_node, proc_rank, comm_size))
+            if (!authenticate_move(current_node, next_node, proc_rank))
             {
                 // 認証が通らない場合は移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
@@ -128,7 +106,6 @@ vector<int> random_walk(int &total_move, int start_node, double alpha, int proc_
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
         }
-        ////////////////////////////////////////////////////////////////////////////////
 
         path.push_back(next_node);
 
@@ -216,7 +193,6 @@ int main(int argc, char *argv[])
     }
 
     // 各プロセスは自分が担当するコミュニティのノードのみを読み込む
-    // ifstream edges_file("./../../Louvain/graph/karate.txt");
     ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
     if (!edges_file.is_open())
     {
@@ -247,7 +223,7 @@ int main(int argc, char *argv[])
     for (const auto &node_entry : graph)
     {
         int start_node = node_entry.first;
-        vector<int> path = random_walk(total_move, start_node, alpha, proc_rank, comm_size);
+        vector<int> path = random_walk(total_move, start_node, alpha, proc_rank);
         int length = path.size();
 
         // パスの出力
@@ -267,13 +243,14 @@ int main(int argc, char *argv[])
     int global_total_move;
     MPI_Reduce(&total_move, &global_total_move, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    // if (rank == 0)
-    // {
-    //     double ave = static_cast<double>(global_total) / node_communities.size();
-    //     cout << "Average length: " << ave << endl;
-    //     cout << "Total length: " << global_total << endl;
-    //     cout << "Total moves across communities: " << global_total_move << endl;
-    // }
+    // 結果の出力
+    if (proc_rank == 0)
+    {
+        double ave = static_cast<double>(global_total) / node_communities.size();
+        cout << "Average length: " << ave << endl;
+        cout << "Total length: " << global_total << endl;
+        cout << "Total moves across communities: " << global_total_move << endl;
+    }
 
     MPI_Finalize(); // MPIの終了
 
@@ -283,13 +260,6 @@ int main(int argc, char *argv[])
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
     cout << "Program execution time: " << duration << " milliseconds" << endl;
-    double ave = static_cast<double>(global_total) / node_communities.size();
-    cout << "Average length: " << ave << endl;
-    cout << "Total length: " << global_total << endl;
-    cout << "Total moves across communities: " << global_total_move << endl;
 
     return 0;
 }
-
-// なんかサイズとかのエラー出て止まってる、
-// 認証の部分に何かを入れれば、時間は計測できそう
