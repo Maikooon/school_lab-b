@@ -25,10 +25,15 @@ using namespace std;
 
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
-unordered_map<int, int> node_communities;
+unorde
 
-// ランダムウォークの関数--new
-vector<int> random_walk(int &total_move, int start_node, double alpha)
+    // ランダムウォークの関数--new
+    /*
+    !Rwerの動き
+    確立αで終了して、確立１ーαで遷移するRWの実装
+    */
+    vector<int>
+    random_walk(int &total_move, int start_node, double alpha)
 {
     int move_count = 0;
     vector<int> path;
@@ -178,6 +183,10 @@ int main(int argc, char *argv[])
     }
     edges_file.close();
 
+    /*
+    実際にRWを行う
+    ここでは、前ノードからスタートさせている*/
+
     for (const auto &node_entry : graph)
     {
         int start_node = node_entry.first;
@@ -217,6 +226,7 @@ int main(int argc, char *argv[])
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
     cout << "Program execution time: " << duration << " milliseconds" << endl;
+    // 合計の経路長をノード数で割り、平均経路長を求める
     double ave = static_cast<double>(global_total) / node_communities.size();
     cout << "Average length: " << ave << endl;
     cout << "Total length: " << global_total << endl;
