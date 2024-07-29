@@ -8,7 +8,6 @@
 #include <ctime>
 #include <chrono>
 #include <mpi.h>
-#include "jwt-cpp/jwt.h"
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include <iomanip>
@@ -148,7 +147,8 @@ int main(int argc, char *argv[])
     unordered_map<int, int> community_assignment;
     if (proc_rank == 0)
     {
-        ifstream communities_file("./../../Louvain/community/fb-pages-company.cm");
+        // ifstream communities_file("./../../Louvain/community/fb-pages-company.cm");
+        ifstream communities_file("./../../Louvain/community/karate.tcm");
         if (!communities_file.is_open())
         {
             cerr << "Failed to open communities file." << endl;
@@ -199,7 +199,8 @@ int main(int argc, char *argv[])
     }
 
     // 各プロセスは自分が担当するコミュニティのノードのみを読み込む
-    ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
+    // ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
+    ifstream edges_file("./../../Louvain/graph/karate.txt");
     if (!edges_file.is_open())
     {
         cerr << "Failed to open edges file." << endl;

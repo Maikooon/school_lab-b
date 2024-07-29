@@ -19,7 +19,13 @@ mpirun -np 4 ./mpi
 <!-- 例えば、4つのプロセスを単一のサーバー上で実行する場合、以下のコマンドを使用 -->
 sig配下において
 mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o my_mpi_program jwt.cpp -lssl -lcrypto
-
+maiko@maikomacbook-air school_lab-b % cd jwt-cpp
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+これでインストールが可能
 
 
 
@@ -29,3 +35,12 @@ sigの実行方法
 
 
 ### 分散環境での実行について
+
+これで転送ができた
+maiko@maikomacbook-air ~ % scp -i /Users/maiko/desktop/server-test.pem -r /Users/maiko/downloads/DistributedRandomWalkSystem-main ec2-user@ec2-3-112-51-163.ap-northeast-1.compute.amazonaws.com:./
+
+
+
+#knightkingに関して
+Knight KingはPC環境では動作しないため、研究室サーバに接続して行う必要あり
+同じくルーベンほうを用いて、実行時間を確認したい

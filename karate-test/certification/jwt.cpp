@@ -55,8 +55,7 @@ bool validate_token(const std::string &token, int proc_rank)
 // 認証の関数
 bool authenticate_move(int current_node, int next_node, int proc_rank)
 {
-    jwt
-        jwt if (node_communities[current_node] != node_communities[next_node])
+    if (node_communities[current_node] != node_communities[next_node])
     {
         // 異なるコミュニティへの移動時にトークンを生成して検証
         std::string token = generate_token(proc_rank);
@@ -142,7 +141,8 @@ int main(int argc, char *argv[])
     unordered_map<int, int> community_assignment;
     if (proc_rank == 0)
     {
-        ifstream communities_file("./../../Louvain/community/fb-pages-company.cm");
+        // ifstream communities_file("./../../Louvain/community/fb-pages-company.cm");
+        ifstream communities_file("./../../Louvain/community/karate.tcm");
         if (!communities_file.is_open())
         {
             cerr << "Failed to open communities file." << endl;
@@ -193,7 +193,8 @@ int main(int argc, char *argv[])
     }
 
     // 各プロセスは自分が担当するコミュニティのノードのみを読み込む
-    ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
+    // ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
+    ifstream edges_file("./../../Louvain/graph/karare.txt");
     if (!edges_file.is_open())
     {
         cerr << "Failed to open edges file." << endl;
