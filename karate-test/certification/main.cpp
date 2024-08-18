@@ -8,6 +8,9 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 mpirun -np 4 ./main -> main.txt
 により実行
 
+
+認証を行わない場合の実行
+
 */
 
 #include <iostream>
@@ -22,6 +25,12 @@ mpirun -np 4 ./main -> main.txt
 #include <mpi.h>
 
 using namespace std;
+
+// 定数設定ファイルの読み込み
+const string SECRET_KEY = "your_secret_key";
+const string VERIFY_SECRET_KEY = "your_secret_key";
+const string COMMUNITY_FILE_PATH = "./../../Louvain/community/karate.tcm";
+const string GRAPH_FILE_PATH = "./../../Louvain/graph/karate.txt";
 
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
@@ -48,20 +57,10 @@ vector<int> random_walk(int &total_move, int start_node, double alpha)
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
         // コミュニティが異なる場合は認証を行う/////////////////////////////////////////////////
-        if (node_communities[current_node] != node_communities[next_node])
-        {
-            cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-            // if (!authenticate_move(current_node, next_node))
-            // {
-            //     // 認証が通らない場合は移動を中止
-            //     cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-            //     break;
-            // }
-            // else
-            // {
-            //     cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
-            // }
-        }
+        // if (node_communities[current_node] != node_communities[next_node])
+        // {
+        //     cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
+        // }
         ////////////////////////////////////////////////////////////////////////////////
 
         path.push_back(next_node);
@@ -100,7 +99,7 @@ int main(int argc, char *argv[])
     if (rank == 0)
     {
         // ifstream communities_file("./../../Louvain/community/fb-pages-company.cm");
-        ifstream communities_file("./../../Louvain/community/karate.tcm");
+        ifstream communities_file(COMMUNITY_FILE_PATH);
         if (!communities_file.is_open())
         {
             cerr << "Failed to open communities file." << endl;
@@ -151,7 +150,7 @@ int main(int argc, char *argv[])
     }
 
     // 各プロセスは自分が担当するコミュニティのノードのみを読み込む
-    ifstream edges_file("./../../Louvain/graph/karate.txt");
+    ifstream edges_file(GRAPH_FILE_PATH);
     // ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
     if (!edges_file.is_open())
     {

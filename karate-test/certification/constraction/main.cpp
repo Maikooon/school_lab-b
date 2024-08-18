@@ -1,7 +1,11 @@
 /*
-単に移動の時に認証を行うプログラム
-構造体などは持たない
-実行される
+Rwerが構造体を持って認証を行うプログラム
+ここでは、Rwerの生成と同時に一意のIDとトークンを持つ構造体を生成することで、移動時に認証の検証を行うことを可能にする
+
+create token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk3MDIwNCwiaXNzIjoiYXV0aDAifQ.QdG8wFF1nOxgXbNybc9OO5-F0POknENHirtFs7Ql538
+recieced token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSwiaXNzIjoiYXV0aDAifQ.0ustSRCe1-aR-zFFWGp6wNUBl7cja8KEoQPqKiCOgHg
 */
 
 #include <iostream>
@@ -13,6 +17,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include "construction.cpp"
+#include "define_jwt.cpp"
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
 
@@ -27,85 +33,44 @@ unordered_map<int, int> node_communities;
 // 定数設定ファイルの読み込み
 const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
-const string COMMUNITY_FILE_PATH = "./../../Louvain/community/karate.tcm";
-const string GRAPH_FILE_PATH = "./../../Louvain/graph/karate.txt";
+const string COMMUNITY_FILE_PATH = "./../../../Louvain/community/karate.tcm";
+const string GRAPH_FILE_PATH = "./../../../Louvain/graph/karate.txt";
 const int expiration_seconds = 60; // トークンの有効期限（秒）
 
-// 認証の関数/////////////////////////////////////////////////////////////////////
-
-// トークンの生成
-std ::string generate_token(int proc_rank, int expiration_seconds)
+// 一意のID生成関数
+int generate_unique_id()
 {
-
-    auto now = chrono::system_clock::now();
-    auto exp_time = now + std ::chrono::seconds(expiration_seconds);
-
-    // 認証する要素をつけたしたい場合にはここに加える
-    auto token = jwt::create()
-                     .set_issuer("auth0")
-                     .set_type("JWT")
-                     .set_payload_claim("rank", jwt::claim(std::to_string(proc_rank)))
-                     .set_expires_at(exp_time) // 有効期限を設定
-
-                     .sign(jwt::algorithm::hs256{SECRET_KEY});
-
-    return token;
+    static int id_counter = 0;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = now.time_since_epoch();
+    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() + id_counter++;
+    return unique_id;
 }
 
-// トークンの検証
-bool validate_token(const std::string &token, int proc_rank)
+// rwの作成関数を定義
+RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
 {
-    try
-    {
-        auto decoded = jwt::decode(token);
-        auto verifier = jwt::verify()
-                            .allow_algorithm(jwt::algorithm::hs256{VERIFY_SECRET_KEY})
-                            .with_issuer("auth0");
+    // 一意のIDを生成
+    // int id = generate_unique_id();
 
-        verifier.verify(decoded);
-        // 有効期限のクレームを取得
-        auto exp_claim = decoded.get_expires_at(); // すでに time_point 型
-        // そのまま exp_time に代入
-        // auto exp_time = exp_claim;
+    // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
+    int id = 1;
+    // 全てのrw
 
-        auto now = chrono::system_clock::now();
-
-        if (now >= exp_claim)
-        {
-            cerr << "Token expired." << endl;
-            return false;
-        }
-        return decoded.get_payload_claim("rank").as_string() == std::to_string(proc_rank);
-    }
-    catch (const std::exception &e)
-    {
-        cerr << "Token validation failed: " << e.what() << endl;
-        return false;
-    }
-}
-
-// 認証の関数
-bool authenticate_move(int current_node, int next_node, int proc_rank)
-{
-    if (node_communities[current_node] != node_communities[next_node])
-    {
-        // 異なるコミュニティへの移動時にトークンを生成して検証
-        std::string token = generate_token(proc_rank, expiration_seconds);
-
-        if (!validate_token(token, proc_rank))
-        {
-            cerr << "Token validation failed for process " << proc_rank << endl;
-            return false;
-        }
-    }
-    return true; // 同じコミュニティ内の移動は許可
+    std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY); // トークンを生成
+    /// 生成したTokenをRwer構造体に格納
+    // printf("Token: %s\n", token.c_str());
+    return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-// ランダムウォークの関数
-vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_rank)
+// ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
+vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker &rwer)
 {
+    // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
+    // 確認済み、ここまではおk
+    std ::cout << "Tokenの受け渡しを" << rwer.token << std::endl;
     int move_count = 0;
     vector<int> path;
     int current_node = start_node;
@@ -126,12 +91,14 @@ vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_
         // コミュニティが異なる場合には
         if (node_communities[current_node] != node_communities[next_node])
         {
+            std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
+
             // 認証情報が一致するのかどうか確認する
-            if (!authenticate_move(current_node, next_node, proc_rank))
+            if (!authenticate_move(rwer, next_node, proc_rank, VERIFY_SECRET_KEY))
             {
-                // 認証が通らない場合は移動を中止
+                // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                break;
+                // break;
             }
             else
             {
@@ -227,7 +194,6 @@ int main(int argc, char *argv[])
     }
 
     // 各プロセスは自分が担当するコミュニティのノードのみを読み込む
-    // ifstream edges_file("./../../Louvain/graph/fb-pages-company.gr");
     ifstream edges_file(GRAPH_FILE_PATH);
     if (!edges_file.is_open())
     {
@@ -257,20 +223,42 @@ int main(int argc, char *argv[])
 
     // 全てのノードからRWを行う
     for (const auto &node_entry : graph)
-    {
-        int start_node = node_entry.first;
-        vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank);
-        int length = path.size();
-
-        // パスの出力
-        cout << "Process " << proc_rank << " Random walk path:";
-        for (int node : path)
+        // すべてのノードからランダムウォークを実行
+        for (const auto &node_entry : graph)
         {
-            cout << " " << node;
+            int start_node = node_entry.first;
+
+            // RandomWalkerの生成　　
+            // 一意のIDを持たせることで、行う これが生成された時点でTokeも生成される
+            RandomWalker rwer = create_random_walker(
+                /* ver_id */ 1,             // 適切な値に設定
+                /* flag */ 0,               // 適切な値に設定
+                /* RWer_size */ 100,        // 適切な値に設定
+                /* RWer_id */ 1,            // 適切な値に設定
+                /* RWer_life */ 10,         // 適切な値に設定
+                /* path_length */ 0,        // 適切な値に設定
+                /* reserved */ 0,           // 適切な値に設定
+                /* next_index */ 0,         // 適切な値に設定
+                /* expiration_seconds */ 60 // 適切な値に設定
+            );
+            // 上でrwerがTokenを持つようになる,この時点でTOkenが取得できるのか調べる
+            // 検証すみ、この時点では上で生成したTokenを正しく取得することができる
+            std::cout << "Recieved Token: " << rwer.token << std::endl;
+
+            // 上で定義したRwerのRWを実行,rwerと一緒にTOkenも渡される
+            vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer);
+            int length = path.size();
+
+            // パスの出力
+            cout << "Process " << proc_rank << " Random walk path:";
+            for (int node : path)
+            {
+                cout << " " << node;
+            }
+            cout << endl;
+
+            total += length;
         }
-        cout << endl;
-        total += length;
-    }
 
     // 全プロセスの結果を集約
     int global_total;

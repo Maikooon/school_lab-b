@@ -40,7 +40,6 @@ sigの実行方法
 maiko@maikomacbook-air ~ % scp -i /Users/maiko/desktop/server-test.pem -r /Users/maiko/downloads/DistributedRandomWalkSystem-main ec2-user@ec2-3-112-51-163.ap-northeast-1.compute.amazonaws.com:./
 
 
-
 #knightkingに関して
 Knight KingはPC環境では動作しないため、研究室サーバに接続して行う必要あり
 同じくルーベンほうを用いて、実行時間を確認したい

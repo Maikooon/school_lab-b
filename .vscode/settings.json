@@ -76,6 +76,7 @@
     "string": "cpp",
     "string_view": "cpp",
     "valarray": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "sstream": "cpp"
   }
 }
