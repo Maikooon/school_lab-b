@@ -3,6 +3,10 @@ Mainを修正することで、複数マシンでの実行を可能に
 mainに比べて、コミュニティ＝サーバ　という前提の実現が可能
 これを　== dis.cpp　　と比較する
 具体的な認証は関数の判定を行わない
+デフォルトの認証を行わない場合の実行
+
+
+
 mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o my_mpi_program jwt.cpp -lssl -lcrypto
 によりコンパイル、
 mpirun -np 4 ./main -> main.txt
@@ -37,7 +41,7 @@ unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
 
 // ランダムウォークの関数--new
-vector<int> random_walk(int &total_move, int start_node, double alpha)
+vector<int> random_walk(int& total_move, int start_node, double alpha)
 {
     int move_count = 0;
     vector<int> path;
@@ -56,13 +60,6 @@ vector<int> random_walk(int &total_move, int start_node, double alpha)
         // 次のノードをランダムに選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
-        // コミュニティが異なる場合は認証を行う/////////////////////////////////////////////////
-        // if (node_communities[current_node] != node_communities[next_node])
-        // {
-        //     cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-        // }
-        ////////////////////////////////////////////////////////////////////////////////
-
         path.push_back(next_node);
 
         // コミュニティが異なる場合はメッセージを出力
@@ -78,7 +75,7 @@ vector<int> random_walk(int &total_move, int start_node, double alpha)
     return path;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // 実行時間を計測する
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -182,7 +179,7 @@ int main(int argc, char *argv[])
     実際にRWを行う
     ここでは、前ノードからスタートさせている*/
 
-    for (const auto &node_entry : graph)
+    for (const auto& node_entry : graph)
     {
         int start_node = node_entry.first;
         vector<int> path = random_walk(total_move, start_node, alpha);

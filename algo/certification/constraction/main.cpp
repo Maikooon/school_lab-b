@@ -32,7 +32,9 @@ unordered_map<int, int> node_communities;
 const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
-const double expiration_seconds = 0; // トークンの有効期限（秒）
+// const double expiration_seconds = 0; // トークンの有効期限（秒）
+int expiration_microseconds = 475000; // 1000 = 1ミリ秒　　トークンの有効期限（マイクロ秒）
+std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
 
 
 
@@ -96,6 +98,8 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
         if (now >= exp_claim)
         {
             cerr << "Token expired." << endl;
+            ///グローバル変数で持って回数を数える
+            count_token_expired++;
             return false;
         }
 
@@ -117,7 +121,6 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
             return false;
         }
     }
-    //時間切れの時の処理を行う
     catch (const std::exception& e)
     {
         cerr << "Token validation failed: " << e.what() << endl;
@@ -223,7 +226,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_seconds);
+    std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_microseconds);
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -247,8 +250,12 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
+    outputFile << "Token expired: " << count_token_expired << std::endl;
+
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
+
+
 }
 
 int main(int argc, char* argv[])
