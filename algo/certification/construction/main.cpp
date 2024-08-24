@@ -6,6 +6,9 @@ create token
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk3MDIwNCwiaXNzIjoiYXV0aDAifQ.QdG8wFF1nOxgXbNybc9OO5-F0POknENHirtFs7Ql538
 recieced token
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSwiaXNzIjoiYXV0aDAifQ.0ustSRCe1-aR-zFFWGp6wNUBl7cja8KEoQPqKiCOgHg
+
+mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
+
 */
 
 #include <iostream>
@@ -24,7 +27,6 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSw
 
 using namespace std;
 
-// mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -33,9 +35,9 @@ const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
 // const double expiration_seconds = 0; // トークンの有効期限（秒）
-int expiration_microseconds = 475000; // 1000 = 1ミリ秒　　トークンの有効期限（マイクロ秒）
+int expiration_milliseconds = 695; // 1000 = 1ミリ秒　　トークンの有効期限（マイクロ秒）
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
-
+int total_token_generation_time = 0; // 合計時間
 
 
 // トークンの生成
@@ -44,7 +46,7 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 
     auto now = chrono::system_clock::now();
     // auto exp_time = now + std::chrono::seconds(expiration_seconds);
-    auto exp_time = now + std::chrono::microseconds(expiration_microseconds);
+    auto exp_time = now + std::chrono::milliseconds(expiration_milliseconds);
 
     // 認証する要素をつけたしたい場合にはここに加える
     auto token = jwt::create()
@@ -91,8 +93,8 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
         auto now = std::chrono::system_clock::now();
 
         // debug;;comment off
-        std::cout << "Current time: " << std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count() << " microseconds since epoch" << std::endl;
-        std::cout << "Token expiration time: " << std::chrono::duration_cast<std::chrono::microseconds>(exp_claim.time_since_epoch()).count() << " microseconds since epoch" << std::endl;
+        std::cout << "Current time: " << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
+        std::cout << "Token expiration time: " << std::chrono::duration_cast<std::chrono::milliseconds>(exp_claim.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
 
 
         if (now >= exp_claim)
@@ -147,7 +149,13 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
     // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
     int id = 1;
 
+    // トークン生成の時間計測
+    auto start = std::chrono::high_resolution_clock::now();
     std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY); // トークンを生成
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    total_token_generation_time += 1; // 合計時間に加算
+
     /// 生成したTokenをRwer構造体に格納
     // printf("Token: %s\n", token.c_str());
     return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
@@ -187,7 +195,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                // break;
+                break;
             }
             else
             {
@@ -225,7 +233,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./result/" + filename + "/" + path;
+    std::string filepath = "./measure-hart-fb-0.15/" + filename + "/" + path + "-" + std::to_string(expiration_milliseconds);
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -249,7 +257,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
-    outputFile << "Token expired: " << count_token_expired << std::endl;
+    outputFile << "Token generate time" << total_token_generation_time << std::endl;
 
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
@@ -307,7 +315,7 @@ int main(int argc, char* argv[])
     int total_move = 0;
     int invalid_move = 0;
     // αの確率
-    double ALPHA = 0.85;
+    double ALPHA = 0.15;
     int total = 0;
 
     srand(time(nullptr)); // ランダムシードを初期化

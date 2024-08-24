@@ -37,7 +37,7 @@ const string VERIFY_SECRET_KEY = "your_secret_key";
 // const double expiration_seconds = 0; // トークンの有効期限（秒）
 int expiration_microseconds = 1000000; // 1000 = 1ミリ秒　　トークンの有効期限（マイクロ秒）
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
-
+int total_token_generation_time = 0; // 合計時間
 
 
 // トークンの生成
@@ -162,6 +162,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
     int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
     int move_count = 0;
+
     vector<int> path;
     int current_node = start_node;
     path.push_back(current_node);
@@ -178,8 +179,13 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         // 次のノードをランダムに選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+        // トークン生成の時間計測
+        auto start = std::chrono::high_resolution_clock::now();
         //次のノードが決まり次第Tokenを生成する
         std::string token = generate_token(proc_rank, expiration_microseconds, rwer.RWer_id_, SECRET_KEY);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        total_token_generation_time += 1; // 合計時間に加算
 
         // コミュニティが異なる場合には
         if (node_communities[current_node] != node_communities[next_node])
@@ -191,7 +197,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                break;
+                // break;
             }
             else
             {
@@ -215,7 +221,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
 }
 
 // 結果の出力
-void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration, long long total_token_generation_time)
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -230,7 +236,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_microseconds);
-    std::string filepath = "./jwt-result/" + filename + "/" + path;
+    std::string filepath = "./jwt-result-0.15/" + filename + "/" + path;
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -254,7 +260,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
-    outputFile << "Token expired: " << count_token_expired << std::endl;
+    outputFile << "Token generate time: " << total_token_generation_time << std::endl;
 
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
@@ -265,6 +271,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 int main(int argc, char* argv[])
 {// 許可ノードのリストを初期化
     initialize_allowed_node_ids();
+
 
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
@@ -306,13 +313,15 @@ int main(int argc, char* argv[])
     string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
     string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
 
+
+
     // 実行時間を計測する
     auto start_time = std::chrono::high_resolution_clock::now();
 
     int total_move = 0;
     int invalid_move = 0;
     // αの確率
-    double ALPHA = 0.85;
+    double ALPHA = 0.15;
     int total = 0;
 
     srand(time(nullptr)); // ランダムシードを初期化
@@ -455,7 +464,7 @@ int main(int argc, char* argv[])
 
     if (proc_rank == 0)
     {
-        output_results(global_total, global_total_move, COMMUNITY_FILE_PATH, filename, duration);
+        output_results(global_total, global_total_move, COMMUNITY_FILE_PATH, filename, duration, total_token_generation_time);
     }
     return 0;
 }

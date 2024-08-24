@@ -5,13 +5,13 @@ import os
 file_name_1 = "nojwt-result"
 file_name_2 = "jwt-result"
 # 写真を保存するフォルダの定義
-output_folder = './every-time-construction/figure'
+output_folder = './construction/figure'
 
 
 # ここに比較したいファイル名を入力
 file_path_1 = './construction/' + file_name_1+ '/overall_average_results.txt'
 file_path_2 = './every-time-construction/' + file_name_2 + '/overall_average_results.txt'
-
+file_path_3 = './construction/' + file_name_2+ '/overall_average_results.txt'
 
 # ファイルからデータを読み取る関数
 def read_data(file_path):
@@ -35,6 +35,7 @@ def read_data(file_path):
 
 data1 = read_data(file_path_1)
 data2 = read_data(file_path_2)
+data3 = read_data(file_path_3)
 
 # プロット用データの抽出
 nodes1 = [entry['Nodes'] for entry in data1]
@@ -42,6 +43,9 @@ times1 = [entry['Execution time'] for entry in data1]
 
 nodes2 = [entry['Nodes'] for entry in data2]
 times2 = [entry['Execution time'] for entry in data2]
+
+node3 = [entry['Nodes'] for entry in data3]
+times3 = [entry['Execution time'] for entry in data3]
 
 # プロットの作成
 # plt.figure(figsize=(10, 6))\
@@ -53,8 +57,9 @@ ylim_max = int(input("Enter the maximum y limit (e.g., 200): "))
 
 plt.xlim(0, xlim_max)
 plt.ylim(0, ylim_max)
-plt.scatter(nodes1, times1, color='blue', label=file_name_1)
-plt.scatter(nodes2, times2, color='red', label=file_name_2)
+plt.scatter(nodes1, times1, color='blue', label="default(no jwt)")
+plt.scatter(nodes2, times2, color='red', label="jwt with every time")
+plt.scatter(node3, times3, color='green', label="jwt with Rwer")
 
 
 

@@ -28,8 +28,6 @@ unordered_map<int, int> node_communities;
 // 定数設定ファイルの読み込み
 const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
-// const string COMMUNITY_FILE_PATH = "./../../../Louvain/community/karate.tcm";
-// const string GRAPH_FILE_PATH = "./../../../Louvain/graph/karate.txt";
 
 const int expiration_seconds = 1; // トークンの有効期限（秒）
 
@@ -113,7 +111,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./nojwt-result/" + filename + "/" + path;
+    std::string filepath = "./nojwt-result-0.15/" + filename + "/" + path;
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -189,7 +187,7 @@ int main(int argc, char* argv[])
 
     int total_move = 0;
     // αの確率
-    double ALPHA = 0.85;
+    double ALPHA = 0.15;
     int total = 0;
 
     srand(time(nullptr)); // ランダムシードを初期化
