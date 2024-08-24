@@ -3,6 +3,12 @@
 結果はcalc.txtに格納される
 g++ -std=c++11 -o all-result all-result.cpp
 
+
+[計算方法]
+1. フォルダを指定する
+2. 指定フォルダに平均値を求めたファイル生成される
+3. そのファイルを表に変換する
+
 */
 
 #include <iostream>
@@ -65,6 +71,7 @@ int main()
         "ca-grqc-connected.gr", "cmu.gr", "com-amazon-connected.gr",
         "email-enron-connected.gr", "fb-caltech-connected.gr",
         "fb-pages-company.gr", "fb-pages-food.gr", "karate-graph.gr",
+        "karate.gr",
         "modularity.gr", "ns.gr", "prefectures.gr",
         "rt-retweet.gr", "simple_graph.gr", "soc-slashdot.gr",
         "tmp.gr", "web-polblogs.gr"};
@@ -82,9 +89,9 @@ int main()
         std::string graphName = extractBeforeExtension(filename, ".gr");
 
         // コンソールに出力
-        std::cout << "graph: " << graphName << std::endl;
-        std::cout << "Nodes: " << nodeCount << ", Edges: " << edgeCount << std::endl
-                  << std::endl;
+        // std::cout << "graph: " << graphName << std::endl;
+        // std::cout << "Nodes: " << nodeCount << ", Edges: " << edgeCount << std::endl
+        //           << std::endl;
 
         // ファイルに出力
         resultFile << "graph: " << graphName << std::endl;

@@ -1,18 +1,21 @@
 {
-  "configurations": [
-    {
-      "name": "macos-clang-arm64",
-      "includePath": [
-        "${workspaceFolder}/**"
-      ],
-      "compilerPath": "/usr/bin/clang",
-      "cStandard": "${default}",
-      "cppStandard": "${default}",
-      "intelliSenseMode": "macos-clang-arm64",
-      "compilerArgs": [
-        ""
-      ]
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "macos-clang-arm64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/matplotlib-cpp-master",
+                "/Users/maiko/.pyenv/versions/3.10.4/include/python3.10",
+                "/Users/maiko/.pyenv/versions/3.10.4/lib/python3.10/site-packages/numpy/core/include"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "${default}",
+            "cppStandard": "${default}",
+            "intelliSenseMode": "macos-clang-arm64",
+            "compilerArgs": [
+                ""
+            ]
+        }
+    ],
+    "version": 4
 }

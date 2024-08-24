@@ -18,14 +18,13 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSw
 #include <ctime>
 #include <chrono>
 #include "construction.cpp"
-#include "define_jwt.cpp"
+// #include "define_jwt.cpp"
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
 
 using namespace std;
 
-// mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o jwt jwt.cpp -lssl -lcrypto
-
+// mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -33,7 +32,98 @@ unordered_map<int, int> node_communities;
 const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
-const int expiration_seconds = 1; // トークンの有効期限（秒）
+const double expiration_seconds = 0; // トークンの有効期限（秒）
+
+
+
+// トークンの生成
+std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, string SECRET_KEY)
+{
+
+    auto now = chrono::system_clock::now();
+    // auto exp_time = now + std::chrono::seconds(expiration_seconds);
+    auto exp_time = now + std::chrono::microseconds(expiration_microseconds);
+
+    // 認証する要素をつけたしたい場合にはここに加える
+    auto token = jwt::create()
+        .set_issuer("auth0")
+        .set_type("JWT")
+        //  .set_payload_claim("rank", jwt::claim(std::to_string(proc_rank)))
+        .set_payload_claim("RWer_id", jwt::claim(std::to_string(RWer_id)))
+        .set_expires_at(exp_time) // 有効期限を設定
+        .sign(jwt::algorithm::hs256{ SECRET_KEY });
+
+    return token;
+}
+
+// グローバル変数または適切な場所にノードIDリストを定義
+std::set<int> allowed_node_ids;
+
+// debug;;簡単のため、全てのノードが許可されるように全てのノード数をカバーする配列を追加
+//  コンストラクタや初期化関数内で1から100までの数字を追加
+void initialize_allowed_node_ids()
+{
+    for (int i = 1; i <= 100000; ++i)
+    {
+        allowed_node_ids.insert(i);
+    }
+}
+
+// 認証情報を検証する関数
+bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, string VERIFY_SECRET_KEY)
+{
+    /// 受け取ったTOkenを出力
+    std::cout << "auth Token" << rwer.token << std::endl;
+    try
+    {
+        // トークンを検証
+        auto decoded = jwt::decode(rwer.token);
+        auto verifier = jwt::verify()
+            .allow_algorithm(jwt::algorithm::hs256{ VERIFY_SECRET_KEY })
+            .with_issuer("auth0");
+
+        verifier.verify(decoded);
+
+        // 有効期限の検証
+        auto exp_claim = decoded.get_expires_at(); // すでに time_point 型
+        auto now = std::chrono::system_clock::now();
+
+        // debug;;comment off
+        std::cout << "Current time: " << std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count() << " microseconds since epoch" << std::endl;
+        std::cout << "Token expiration time: " << std::chrono::duration_cast<std::chrono::microseconds>(exp_claim.time_since_epoch()).count() << " microseconds since epoch" << std::endl;
+
+
+        if (now >= exp_claim)
+        {
+            cerr << "Token expired." << endl;
+            return false;
+        }
+
+        // debug;;comment off
+        //  トークンから経路情報と出発ノードIDを取得
+        // int rwer_id = std::stoi(decoded.get_payload_claim("rwer_id").as_string());
+
+        std::cout << "next node: " << next_node << std::endl;
+
+        // 特定のノードIDリストに含まれている場合は認証を許可
+        // 次に進む予定のノードが許可するノードのリストに含まれているのかどうかを確認
+        if (allowed_node_ids.find(next_node) != allowed_node_ids.end())
+        {
+            return true;
+        }
+        else
+        {
+            cerr << "Authentication failed: Node ID not in allowed list." << endl;
+            return false;
+        }
+    }
+    //時間切れの時の処理を行う
+    catch (const std::exception& e)
+    {
+        cerr << "Token validation failed: " << e.what() << endl;
+        return false;
+    }
+}
 
 // 一意のID生成関数
 int generate_unique_id()
@@ -64,8 +154,9 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
-vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker &rwer)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer)
 {
+    int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
     int move_count = 0;
     vector<int> path;
@@ -94,7 +185,7 @@ vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                // break;
+                break;
             }
             else
             {
@@ -118,7 +209,7 @@ vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_
 }
 
 // 結果の出力
-void output_results(int global_total, int global_total_move, const string &community_path, const string &path, long long duration)
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -132,7 +223,7 @@ void output_results(int global_total, int global_total_move, const string &commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./result/" + filename + "/" + path;
+    std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_seconds);
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -160,8 +251,9 @@ void output_results(int global_total, int global_total_move, const string &commu
     cout << "Result has been written to " << filepath << endl;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[])
+{// 許可ノードのリストを初期化
+    initialize_allowed_node_ids();
 
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
@@ -175,7 +267,7 @@ int main(int argc, char *argv[])
         "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm"};
+        "soc-slashdot.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
@@ -191,9 +283,9 @@ int main(int argc, char *argv[])
         "simple_graph.gr",
         "soc-slashdot.gr",
     };
-    std ::int16_t graph_number;
+    std::int16_t graph_number;
     std::cout << "Community number: ";
-    std ::cin >> graph_number;
+    std::cin >> graph_number;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::string filename;
     std::cout << "Output file name: ";
@@ -206,6 +298,7 @@ int main(int argc, char *argv[])
     auto start_time = std::chrono::high_resolution_clock::now();
 
     int total_move = 0;
+    int invalid_move = 0;
     // αの確率
     double ALPHA = 0.85;
     int total = 0;
@@ -300,7 +393,7 @@ int main(int argc, char *argv[])
     edges_file.close();
 
     // すべてのノードからランダムウォークを実行
-    for (const auto &node_entry : graph)
+    for (const auto& node_entry : graph)
     {
         int start_node = node_entry.first;
 

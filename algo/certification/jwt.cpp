@@ -35,33 +35,32 @@ const int expiration_seconds = 60; // トークンの有効期限（秒）
 // 認証の関数/////////////////////////////////////////////////////////////////////
 
 // トークンの生成
-std ::string generate_token(int proc_rank, int expiration_seconds)
+std::string generate_token(int proc_rank, int expiration_seconds)
 {
 
     auto now = chrono::system_clock::now();
-    auto exp_time = now + std ::chrono::seconds(expiration_seconds);
+    auto exp_time = now + std::chrono::seconds(expiration_seconds);
 
     // 認証する要素をつけたしたい場合にはここに加える
     auto token = jwt::create()
-                     .set_issuer("auth0")
-                     .set_type("JWT")
-                     .set_payload_claim("rank", jwt::claim(std::to_string(proc_rank)))
-                     .set_expires_at(exp_time) // 有効期限を設定
-
-                     .sign(jwt::algorithm::hs256{SECRET_KEY});
+        .set_issuer("auth0")
+        .set_type("JWT")
+        .set_payload_claim("rank", jwt::claim(std::to_string(proc_rank)))
+        .set_expires_at(exp_time) // 有効期限を設定
+        .sign(jwt::algorithm::hs256{ SECRET_KEY });
 
     return token;
 }
 
 // トークンの検証
-bool validate_token(const std::string &token, int proc_rank)
+bool validate_token(const std::string& token, int proc_rank)
 {
     try
     {
         auto decoded = jwt::decode(token);
         auto verifier = jwt::verify()
-                            .allow_algorithm(jwt::algorithm::hs256{VERIFY_SECRET_KEY})
-                            .with_issuer("auth0");
+            .allow_algorithm(jwt::algorithm::hs256{ VERIFY_SECRET_KEY })
+            .with_issuer("auth0");
 
         verifier.verify(decoded);
         // 有効期限のクレームを取得
@@ -78,7 +77,7 @@ bool validate_token(const std::string &token, int proc_rank)
         }
         return decoded.get_payload_claim("rank").as_string() == std::to_string(proc_rank);
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
         cerr << "Token validation failed: " << e.what() << endl;
         return false;
@@ -105,7 +104,7 @@ bool authenticate_move(int current_node, int next_node, int proc_rank)
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数
-vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_rank)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank)
 {
     int move_count = 0;
     vector<int> path;
@@ -155,7 +154,7 @@ vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_
     return path;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // 実行時間を計測する
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -255,7 +254,7 @@ int main(int argc, char *argv[])
     edges_file.close();
 
     // 全てのノードからRWを行う
-    for (const auto &node_entry : graph)
+    for (const auto& node_entry : graph)
     {
         int start_node = node_entry.first;
         // ランダムウォークを実行
