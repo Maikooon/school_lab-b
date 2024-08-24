@@ -278,7 +278,8 @@ int main(int argc, char* argv[])
         "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm" };
+        "soc-slashdot.cm" ,
+        "tcm.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
@@ -287,12 +288,12 @@ int main(int argc, char* argv[])
         "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
-        "fb-pages-food.gr",
         "karate-graph.gr",
         "karate.txt",
         "rt-retweet.gr",
         "simple_graph.gr",
         "soc-slashdot.gr",
+        "tcm.gr"
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";
@@ -427,7 +428,7 @@ int main(int argc, char* argv[])
         //  検証すみ、この時点では上で生成したTokenを正しく取得することができる
         //  std::cout << "Recieved Token: " << rwer.token << std::endl;
 
-        // 上で定義したRwerのRWを実行,rwerと一緒にTOkenも渡される
+        // 上で定義したRwerのRWを実行,tokenは渡されない
         vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer);
         int length = path.size();
 

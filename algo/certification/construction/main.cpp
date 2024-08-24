@@ -146,7 +146,6 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 
     // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
     int id = 1;
-    // 全てのrw
 
     std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY); // トークンを生成
     /// 生成したTokenをRwer構造体に格納
@@ -188,7 +187,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
-                break;
+                // break;
             }
             else
             {
@@ -226,7 +225,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_microseconds);
+    std::string filepath = "./result/" + filename + "/" + path;
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -274,7 +273,8 @@ int main(int argc, char* argv[])
         "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm" };
+        "soc-slashdot.cm",
+        "tmp.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
@@ -283,12 +283,12 @@ int main(int argc, char* argv[])
         "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
-        "fb-pages-food.gr",
         "karate-graph.gr",
         "karate.txt",
         "rt-retweet.gr",
         "simple_graph.gr",
         "soc-slashdot.gr",
+        "tmp.gr"
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";

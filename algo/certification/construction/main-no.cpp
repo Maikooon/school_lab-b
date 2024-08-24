@@ -12,14 +12,14 @@
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
-#include "construction.cpp"
+
 #include "define_jwt.cpp"
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
 
 using namespace std;
 
-// mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o jwt jwt.cpp -lssl -lcrypto
+// mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main-no main-no.cpp -lssl -lcrypto
 
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
@@ -64,7 +64,7 @@ RandomWalker_nojwt create_random_walker(int ver_id, int flag, int RWer_size, int
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
-vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker_nojwt &rwer)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker_nojwt& rwer)
 {
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
     int move_count = 0;
@@ -99,7 +99,7 @@ vector<int> random_walk(int &total_move, int start_node, double ALPHA, int proc_
 }
 
 // 結果の出力
-void output_results(int global_total, int global_total_move, const string &community_path, const string &path, long long duration)
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -141,7 +141,7 @@ void output_results(int global_total, int global_total_move, const string &commu
     cout << "Result has been written to " << filepath << endl;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
@@ -155,7 +155,8 @@ int main(int argc, char *argv[])
         "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm"};
+        "soc-slashdot.cm",
+        "tmp.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
@@ -164,16 +165,16 @@ int main(int argc, char *argv[])
         "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
-        "fb-pages-food.gr",
         "karate-graph.gr",
         "karate.txt",
         "rt-retweet.gr",
         "simple_graph.gr",
         "soc-slashdot.gr",
+        "tmp.gr"
     };
-    std ::int16_t graph_number;
+    std::int16_t graph_number;
     std::cout << "Community number: ";
-    std ::cin >> graph_number;
+    std::cin >> graph_number;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::string filename;
     std::cout << "Output file name: ";
@@ -281,7 +282,7 @@ int main(int argc, char *argv[])
     edges_file.close();
 
     // すべてのノードからランダムウォークを実行
-    for (const auto &node_entry : graph)
+    for (const auto& node_entry : graph)
     {
         int start_node = node_entry.first;
 

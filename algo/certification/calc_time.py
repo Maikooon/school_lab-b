@@ -42,13 +42,11 @@ def display_results(increase_percentages):
     line += " ".join(f"{increase_percentages[node]:>10.2f}" for node in nodes)
     print(line)
 
-
 def main():
-    # ここに分析したいファイル名とパスを記入する
     file_name_1 = "nojwt-result"
-    file_name_2 = "result"
-    file_path_1 = './every-time-you-move/' + file_name_1 + '/overall_average_results.txt'
-    file_path_2 = './every-time-you-move/' + file_name_2 + '/overall_average_results.txt'
+    file_name_2 = "jwt-result"
+    file_path_1 = './construction/' + file_name_1 + '/overall_average_results.txt'
+    file_path_2 = './every-time-construction/' + file_name_2 + '/overall_average_results.txt'
 
     # データ読み込み
     data1 = read_data(file_path_1)
