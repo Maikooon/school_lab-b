@@ -35,9 +35,21 @@ const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
 // const double expiration_seconds = 0; // トークンの有効期限（秒）
-int expiration_milliseconds = 695; // 1000 = 1ミリ秒　　トークンの有効期限（マイクロ秒）
+int expiration_milliseconds = 1000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
-int total_token_generation_time = 0; // 合計時間
+
+// 所要時間の内訳を調べる
+//認証生成時間
+double total_token_generation_time = 0;
+//探索時間
+double total_search_time = 0;
+// トークンの検証時間
+double total_token_verification_time = 0.0;
+
+double total_token_construction_time = 0;   //構築時間
+//デフォルトとの差分時間
+double total_difference_time = 0;
+double default_time = 28205; //soc
 
 
 // トークンの生成
@@ -45,7 +57,6 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 {
 
     auto now = chrono::system_clock::now();
-    // auto exp_time = now + std::chrono::seconds(expiration_seconds);
     auto exp_time = now + std::chrono::milliseconds(expiration_milliseconds);
 
     // 認証する要素をつけたしたい場合にはここに加える
@@ -65,6 +76,8 @@ std::set<int> allowed_node_ids;
 
 // debug;;簡単のため、全てのノードが許可されるように全てのノード数をカバーする配列を追加
 //  コンストラクタや初期化関数内で1から100までの数字を追加
+
+//TODO:ここでjsonを生成するようにする、具体的には、キーに1-1000まで入れて、vakueに1-100を入れればおk
 void initialize_allowed_node_ids()
 {
     for (int i = 1; i <= 100000; ++i)
@@ -72,6 +85,11 @@ void initialize_allowed_node_ids()
         allowed_node_ids.insert(i);
     }
 }
+
+
+
+
+
 
 // 認証情報を検証する関数
 bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, string VERIFY_SECRET_KEY)
@@ -96,7 +114,6 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
         std::cout << "Current time: " << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
         std::cout << "Token expiration time: " << std::chrono::duration_cast<std::chrono::milliseconds>(exp_claim.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
 
-
         if (now >= exp_claim)
         {
             cerr << "Token expired." << endl;
@@ -113,6 +130,7 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
 
         // 特定のノードIDリストに含まれている場合は認証を許可
         // 次に進む予定のノードが許可するノードのリストに含まれているのかどうかを確認
+        //TODO:現実に近い実装にする、つまりJimin形式でサーバが保持して書いたような探索をおこなう
         if (allowed_node_ids.find(next_node) != allowed_node_ids.end())
         {
             return true;
@@ -122,12 +140,14 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
             cerr << "Authentication failed: Node ID not in allowed list." << endl;
             return false;
         }
+        return true;
     }
     catch (const std::exception& e)
     {
         cerr << "Token validation failed: " << e.what() << endl;
         return false;
     }
+
 }
 
 // 一意のID生成関数
@@ -145,19 +165,22 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 {
     // 一意のIDを生成
     // int id = generate_unique_id();
-
     // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
     int id = 1;
 
-    // トークン生成の時間計測
-    auto start = std::chrono::high_resolution_clock::now();
-    std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY); // トークンを生成
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    total_token_generation_time += 1; // 合計時間に加算
+    // 実行時間を計測する
+    auto start_time_generate = std::chrono::high_resolution_clock::now();
+    //token生成
+    std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY);
+    // プログラムの終了時間を記録
+    auto end_time_generate = std::chrono::high_resolution_clock::now();
+    // 経過時間を計算
+    auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_generate - start_time_generate).count();
+    total_token_generation_time += duration_generate;
 
+    // std::string token = "a";
     /// 生成したTokenをRwer構造体に格納
-    // printf("Token: %s\n", token.c_str());
+       // printf("Token: %s\n", token.c_str());
     return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
@@ -185,23 +208,34 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         // 次のノードをランダムに選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+        // // 実行時間を計測する
+        auto start_time_verify = std::chrono::high_resolution_clock::now();
+
         // コミュニティが異なる場合には
         if (node_communities[current_node] != node_communities[next_node])
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
 
-            // 認証情報が一致するのかどうか確認する
+
+            // //ここをコメントオフすると時間が大きく変わるのに、計測できない
+                        // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(rwer, next_node, proc_rank, VERIFY_SECRET_KEY))
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
                 break;
             }
-            else
             {
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
         }
+        // プログラムの終了時間を記録
+        auto end_time_verify = std::chrono::high_resolution_clock::now();
+        // 経過時間を計算
+        auto duration_verify = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_verify - start_time_verify).count();
+        total_token_verification_time += duration_verify;
+
+
 
         path.push_back(next_node);
 
@@ -215,6 +249,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         current_node = next_node;
     }
     total_move += move_count;
+    std::cout << "total move: " << total_token_verification_time << std::endl;
     return path;
 }
 
@@ -233,7 +268,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     }
 
     // 出力先のパスを生成
-    std::string filepath = "./measure-hart-fb-0.15/" + filename + "/" + path + "-" + std::to_string(expiration_milliseconds);
+    std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -257,8 +292,22 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
-    outputFile << "Token generate time" << total_token_generation_time << std::endl;
+    //時間の内訳を調査する
+    cout << "total token generate time; " << total_token_generation_time << std::endl;
+    outputFile << "total token generate time: " << total_token_generation_time << std::endl;
 
+    cout << "total token verification time: " << total_token_verification_time << std::endl;
+    outputFile << "total token verification time: " << total_token_verification_time << std::endl;
+
+    total_difference_time = duration - default_time - total_token_generation_time - total_token_verification_time;
+    cout << "total difference time: " << total_difference_time << std::endl;
+    outputFile << "total difference time: " << total_difference_time << std::endl;
+
+    cout << "total construction time: " << total_token_construction_time << std::endl;
+    outputFile << "total construction time: " << total_token_construction_time << std::endl;
+    //ここまで
+
+        //ファイルを閉じる
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
 
@@ -412,7 +461,6 @@ int main(int argc, char* argv[])
     {
         int start_node = node_entry.first;
 
-        // RandomWalkerの生成　　
         // 一意のIDを持たせることで、行う これが生成された時点でTokeも生成される
         RandomWalker rwer = create_random_walker(
             /* ver_id */ 1,             // 適切な値に設定
@@ -462,3 +510,13 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
+
+
+
+// // 実行時間を計測する
+// auto start_time_generate = std::chrono::high_resolution_clock::now();
+
+// // プログラムの終了時間を記録
+// auto end_time_generate = std::chrono::high_resolution_clock::now();
+// // 経過時間を計算
+// auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - generate - start_time_generate).count();
