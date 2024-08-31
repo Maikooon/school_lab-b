@@ -5,8 +5,6 @@ mainに比べて、コミュニティ＝サーバ　という前提の実現が�
 具体的な認証は関数の判定を行わない
 デフォルトの認証を行わない場合の実行
 
-
-
 mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o my_mpi_program jwt.cpp -lssl -lcrypto
 によりコンパイル、
 mpirun -np 4 ./main -> main.txt

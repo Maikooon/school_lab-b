@@ -72,27 +72,48 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 }
 
 // グローバル変数または適切な場所にノードIDリストを定義
-std::set<int> allowed_node_ids;
+// std::set<int> allowed_node_ids;
 
 // debug;;簡単のため、全てのノードが許可されるように全てのノード数をカバーする配列を追加
 //  コンストラクタや初期化関数内で1から100までの数字を追加
 
-//TODO:ここでjsonを生成するようにする、具体的には、キーに1-1000まで入れて、vakueに1-100を入れればおk
-void initialize_allowed_node_ids()
-{
-    for (int i = 1; i <= 100000; ++i)
-    {
-        allowed_node_ids.insert(i);
-    }
+// //TODO:ここでjsonを生成するようにする、具体的には、キーに1-1000まで入れて、vakueに1-100を入れればおk
+// void initialize_allowed_node_ids()
+// {
+//     for (int i = 1; i <= 100000; ++i)
+//     {
+//         allowed_node_ids.insert(i);
+//     }
+// }
+
+
+//hop先のノードにおいて、出発前のノードが許可されているのかを確認するファイル
+bool isNodeAllowed(const std::string& next_node, const std::string& filename) {
+    // JSONファイルを読み込む
+    //file nameは拡張子が付いているので、それより前の部分を名前として扱う
+    std::string name = filename.substr(0, filename.find_last_of("."));
+    // ファイルを参照する
+    std::ifstream ifs("./../create_table/table/" + name + "/community_" + next_node + "_".json");
+        // std::ifstream ifs(filename);
+        // json j;
+        // ifs >> j;
+
+        // // JSONデータからallowed_node_idsを取得 (例: allowed_node_idsがJSONの配列として格納されている場合)
+        // std::vector<std::string> allowed_node_ids = j["allowed_node_ids"];
+
+        // // 探索
+        // if (std::find(allowed_node_ids.begin(), allowed_node_ids.end(), next_node) != allowed_node_ids.end()) {
+        //     return true;
+        // }
+        // else {
+        //     std::cerr << "Authentication failed: Node ID not in allowed list." << std::endl;
+        //     return false;
+        // }
+        return true;
 }
 
-
-
-
-
-
 // 認証情報を検証する関数
-bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, string VERIFY_SECRET_KEY)
+bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name)
 {
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
@@ -130,17 +151,27 @@ bool authenticate_move(const RandomWalker& rwer, int next_node, int proc_rank, s
 
         // 特定のノードIDリストに含まれている場合は認証を許可
         // 次に進む予定のノードが許可するノードのリストに含まれているのかどうかを確認
-        //TODO:現実に近い実装にする、つまりJimin形式でサーバが保持して書いたような探索をおこなう
-        if (allowed_node_ids.find(next_node) != allowed_node_ids.end())
-        {
-            return true;
-        }
-        else
-        {
-            cerr << "Authentication failed: Node ID not in allowed list." << endl;
-            return false;
-        }
-        return true;
+        //TODO:現実に近い
+
+        //次のノードが所属するコミュニティのファイルを読み込んで、そのファイルの中にHOP前のノードが含まれていたら許可
+        //読み込むファイルは以下のフォルダに格納されている
+
+        /*
+        ここも関数にして埋め込んでしまう
+        出発前のノードが自分
+        */
+        return isNodeAllowed;
+
+        // if (allowed_node_ids.find(next_node) != allowed_node_ids.end())
+        // {
+        //     return true;
+        // }
+        // else
+        // {
+        //     cerr << "Authentication failed: Node ID not in allowed list." << endl;
+        //     return false;
+        // }
+        // return true;
     }
     catch (const std::exception& e)
     {
@@ -187,7 +218,7 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
-vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer, string graph_name)
 {
     int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
@@ -219,7 +250,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
 
             // //ここをコメントオフすると時間が大きく変わるのに、計測できない
                         // 認証情報が一致するのかどうか確認する
-            if (!authenticate_move(rwer, next_node, proc_rank, VERIFY_SECRET_KEY))
+            if (!authenticate_move(rwer, next_node, proc_rank, VERIFY_SECRET_KEY, graph_name))
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
@@ -316,7 +347,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
 int main(int argc, char* argv[])
 {// 許可ノードのリストを初期化
-    initialize_allowed_node_ids();
+    // initialize_allowed_node_ids();
 
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
@@ -355,6 +386,7 @@ int main(int argc, char* argv[])
     std::cout << "Output file name: ";
     std::getline(std::cin, filename);
     // ファイルパスを指定
+    std::string graph_name = graph_file_list[graph_number];
     string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
     string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
 
@@ -480,7 +512,7 @@ int main(int argc, char* argv[])
         //  std::cout << "Recieved Token: " << rwer.token << std::endl;
 
         // 上で定義したRwerのRWを実行,rwerと一緒にTOkenも渡される
-        vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer);
+        vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer, graph_name);
         int length = path.size();
 
         // パスの出力

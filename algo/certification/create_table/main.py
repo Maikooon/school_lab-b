@@ -76,13 +76,14 @@ community_file_list = [
     "rt-retweet.cm",
     "simple_graph.cm",
     "soc-slashdot.cm",
-    "tmp.cm"
+    "tmp.cm",
 ]
+
 
 def load_nodes_communities(file_path):
     nodes_communities = []
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             for line in file:
                 node, community = map(int, line.split())
                 nodes_communities.append((node, community))
@@ -90,15 +91,17 @@ def load_nodes_communities(file_path):
         print(f"ファイルを開けません: {file_path}")
     return nodes_communities
 
+
 def write_nodes_to_files(community_nodes, base_file_name):
     for community, nodes in community_nodes.items():
-        file_name = './table/' + base_file_name + f"/community_{community}.txt"
+        file_name = "./table/" + base_file_name + f"/community_{community}.txt"
         try:
-            with open(file_name, 'w') as file:
+            with open(file_name, "w") as file:
                 for node in nodes:
                     file.write(f"{node}\n")
         except IOError:
             print(f"ファイルを開けません: {file_name}")
+
 
 def main():
     # ユーザーに選択肢を表示
@@ -134,6 +137,6 @@ def main():
     # コミュニティごとにノードをファイルに書き込む
     write_nodes_to_files(community_nodes_map, base_file_name)
 
+
 if __name__ == "__main__":
     main()
-

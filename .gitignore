@@ -3,3 +3,9 @@
 /karate-test/certification/constraction/result
 algo/certification/constraction/nojwt-result/*
 algo/certification/constraction/result/*
+algo/certification/create_table/table/ca-grqc-connected/community_0_result.json
+/algo/certification/create_table/table/email-enron-connected
+/algo/certification/create_table/table/fb-pages-company
+/algo/certification/create_table/table/soc-slashdot
+/algo/certification/create_table/table
+/algo/certification/bar-figure
