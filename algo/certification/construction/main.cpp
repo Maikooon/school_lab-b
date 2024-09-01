@@ -25,6 +25,8 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
 #include <map>
+#include <filesystem>  
+#include "read_data.cpp"
 
 using namespace std;
 
@@ -77,157 +79,9 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 // debug;;簡単のため、全てのノードが許可されるように全てのノード数をカバーする配列を追加
 //  コンストラクタや初期化関数内で1から100までの数字を追加
 
-// //TODO:ここでjsonを生成するようにする、具体的には、キーに1-1000まで入れて、vakueに1-100を入れればおk
-// void initialize_allowed_node_ids()
-// {
-//     for (int i = 1; i <= 100000; ++i)
-//     {
-//         allowed_node_ids.insert(i);
-//     }
-// }
-// コミュニティマップの内容を表示する関数
-
-// bool checkNumberInList(int targetNumber, const std::vector<int>& numbersList) {
-//     std::cout << targetNumber << std::endl;
-//     for (int number : numbersList) {
-//         if (number == targetNumber) {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-// //hop先のノードにおいて、出発前のノードが許可されているのかを確認するファイル
-// bool isNodeAllowed(int current_node, int next_node, int next_community, const std::string& filename) {
-//     // テキストファイルを読み込む、次ノードのユーザによって読み込むファイルが異なるので注意
-//     //file nameは拡張子が付いているので、それより前の部分を名前として扱う
-//     // std::string name = filename.substr(0, filename.find_last_of("."));
-//     // // ファイルを参照する
-//     // std::cout << "コミュニティ: " << next_community << std::endl;
-//     // std::ifstream file("./../create_table/table/" + name + "/community_" + std::to_string(next_community) + "_result.txt");
-//     // // ファイルが開けなかった場合
-//     // if (!file.is_open()) {
-//     //     std::cerr << "ファイルを開けませんでした。\n";
-//     //     return 1;
-//     // }
-
-//     // std::vector<std::pair<int, std::vector<int>>> data;
-//     // std::string line;
-
-//     // while (std::getline(file, line)) {
-//     //     // 余分な文字を削除
-//     //     line.erase(std::remove(line.begin(), line.end(), '['), line.end());
-//     //     line.erase(std::remove(line.begin(), line.end(), ']'), line.end());
-//     //     line.erase(std::remove(line.begin(), line.end(), ','), line.end());
-
-//     //     std::istringstream iss(line);
-//     //     int firstNumber;
-//     //     iss >> firstNumber;
-
-//     //     std::vector<int> numbersList;
-//     //     int number;
-
-//     //     while (iss >> number) {
-//     //         numbersList.push_back(number);
-//     //     }
-
-//     //     data.push_back({ firstNumber, numbersList });
-//     // }
-
-//     // file.close();
-//     // for (const auto& pair : data) {
-//     //     if (pair.first == next_node) {
-//     //         if (checkNumberInList(current_node, pair.second)) {
-//     //             std::cout << "数字 " << current_node << " はリストに存在します。\n";
-//     //         }
-//     //         else {
-//     //             std::cout << "数字 " << current_node << " はリストに存在しません。\n";
-//     //         }
-//     //         break;  // 見つかったのでループを終了
-//     //     }
-//     // }
-
-//     return 0;
-
-// }
-
-// ノードリストをチェックする関数
-bool checkNumberInList(int number, const std::vector<int>& list) {
-    return std::find(list.begin(), list.end(), number) != list.end();
-}
-
-// ノードが許可されているかを確認する関数
-bool isNodeAllowed(int current_node, int next_node, int next_community, const std::string& filename) {
-    // ファイル名から拡張子を取り除く
-    std::string name = filename.substr(0, filename.find_last_of("."));
-
-    // ファイルパスを生成
-    std::ifstream file("./../create_table/table/" + name + "/community_" + std::to_string(next_community) + "_result.txt");
-
-    // ファイルが開けなかった場合
-    if (!file.is_open()) {
-        std::cerr << "ファイルを開けませんでした: " << filename << std::endl;
-        return false;
-    }
-
-    std::unordered_map<int, std::vector<int>> community_map;
-    std::string line;
-
-    // ファイルからデータを読み込む
-    while (std::getline(file, line)) {
-        // 行の形式が [key, value1, value2, ...] であると仮定
-        size_t pos = line.find('[');
-        if (pos != std::string::npos) {
-            line.erase(0, pos + 1); // '[' の後ろを取り出す
-        }
-        pos = line.find(']');
-        if (pos != std::string::npos) {
-            line.erase(pos); // ']' 以降を削除
-        }
-        std::istringstream iss(line);
-        int key;
-        if (iss >> key) {
-            std::vector<int> values;
-            int value;
-            while (iss >> value) {
-                values.push_back(value);
-            }
-            community_map[key] = values;
-        }
-    }
-
-    file.close();
-
-    // 読み込んだコミュニティの内容を確認
-    std::cout << "読み込んだコミュニティの内容:" << std::endl;
-    for (const auto& [community, nodes] : community_map) {
-        std::cout << "コミュニティ " << community << ": [";
-        for (size_t i = 0; i < nodes.size(); ++i) {
-            std::cout << nodes[i];
-            if (i < nodes.size() - 1) {
-                std::cout << ", ";
-            }
-        }
-        std::cout << "]" << std::endl;
-    }
-
-    // 指定されたコミュニティに対するノードリストを取得
-    auto it = community_map.find(next_node);
-    if (it == community_map.end()) {
-        std::cerr << "コミュニティが見つかりません: " << next_node << std::endl;
-        return false;
-    }
-
-    // ノードリストを取得
-    const std::vector<int>& nodes = it->second;
-
-    // current_node がノードリストに含まれているかをチェック
-    return checkNumberInList(current_node, nodes);
-}
-
 
 // 認証情報を検証する関数
-bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name)
+bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
@@ -274,7 +128,8 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
         ここも関数にして埋め込んでしまう
         出発前のノードが自分
         */
-        return isNodeAllowed(current_node, next_node, next_community, graph_name);
+        // return true;
+        return isNodeAllowed(current_node, next_node, next_community, all_node_maps);
 
     }
     catch (const std::exception& e)
@@ -322,7 +177,7 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
-vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer, string graph_name)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
     int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
@@ -350,11 +205,11 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         if (node_communities[current_node] != node_communities[next_node])
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
-        std:int16_t next_community = node_communities[next_node];
+            std::int16_t next_community = node_communities[next_node];
 
-            // //ここをコメントオフすると時間が大きく変わるのに、計測できない
-                        // 認証情報が一致するのかどうか確認する
-            if (!authenticate_move(rwer, current_node, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name))
+            //ここをコメントオフすると時間が大きく変わるのに、計測できない
+            // 認証情報が一致するのかどうか確認する
+            if (!authenticate_move(rwer, current_node, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
@@ -491,8 +346,14 @@ int main(int argc, char* argv[])
     std::getline(std::cin, filename);
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
+
     string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
     string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+
+    //テーブルのファイルをすべて読み込む
+    std::string name = graph_name.substr(0, graph_name.find_last_of("."));
+    std::string base_dir = "./../create_table/table/" + name + "/";
+    auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -616,7 +477,7 @@ int main(int argc, char* argv[])
         //  std::cout << "Recieved Token: " << rwer.token << std::endl;
 
         // 上で定義したRwerのRWを実行,rwerと一緒にTOkenも渡される
-        vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer, graph_name);
+        vector<int> path = random_walk(total_move, start_node, ALPHA, proc_rank, rwer, graph_name, all_node_maps);
         int length = path.size();
 
         // パスの出力

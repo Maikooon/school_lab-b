@@ -1,5 +1,7 @@
 """
 既存のファイルを指定すると、グラフごと、手法を比較する棒グラフを得ることができます
+
+比較したい手法の結果のファイルを選択することで、すべてのグラフ取得可能
 """
 
 import matplotlib.pyplot as plt
@@ -49,14 +51,16 @@ def plot_execution_times(data1, data2, data3):
 
         # グラフを表示
         # plt.show()
-        plt.savefig(f"./bar-figure/{keys[i]}.png")
+        plt.savefig(f"./bar-figure/table/{keys[i]}.png")
 
 
 # 　ここで読み込むファイルを設定する
 def main():
-    file1_path = "./construction/nojwt-result-0.15/overall_average_results.txt"
-    file2_path = "./construction/jwt-result-0.15/overall_average_results.txt"
-    file3_path = "./every-time-construction/jwt-result-0.15/overall_average_results.txt"
+    file1_path = "./construction/nojwt-result-0.15/overall_average_results copy.txt"
+    file2_path = "./construction/jwt-result-0.15-table/overall_average_results.txt"
+    file3_path = (
+        "./every-time-construction/jwt-result-0.15-table/overall_average_results.txt"
+    )
 
     data1 = extract_data_from_file(file1_path)
     data2 = extract_data_from_file(file2_path)

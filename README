@@ -1,16 +1,16 @@
+##　グラフの実行手順
+- それぞれのプログラムで実行時間を計測
+- /certification/calc-ave.cppにおいて、実行時間の平均を計測し、その後、すべてのグラフの実行時間を”overall_average_results.txt”の一枚のにまとめる
+
 ## C++の実行コマンド
 g++ -std=c++11 ex10.cpp -o ex10
+
 
 # mpi を用いたときのコンパイルファイルの実行方法
 mpirun -np 4 ./mpi_hello_world 
 
 
 g++ -std=c++11 -I /opt/homebrew/opt/openmpi/include -L /opt/homebrew/opt/openmpi/lib mpi.cpp -o mpi -lmpi
-
-
-
-
-λっっっっっっっl更新されてくださいな
 
 mpirun -np 4 ./mpi
 

@@ -188,13 +188,19 @@ def process_communities(graph_file_name):
             ]
             result_list.append([key_node, value_nodes])
 
+        # 指定の形式に変換する
+        formatted_list = []
+        for key_node, value_nodes in result_list:
+            formatted_string = f"{key_node}: " + ", ".join(map(str, value_nodes))
+            formatted_list.append(formatted_string)
+
         # 結果をファイルに書き出し
         graph_name = os.path.splitext(graph_file_name)[0]
         output_dir = os.path.join("./table", graph_name)
         os.makedirs(output_dir, exist_ok=True)  # 出力ディレクトリが存在しない場合は作成
         output_file_path = os.path.join(output_dir, f"community_{community}_result.txt")
         with open(output_file_path, "w") as out_file:
-            for result in result_list:
+            for result in formatted_list:
                 out_file.write(f"{result},\n")
         print(
             f"コミュニティ {community} の結果を {output_file_path} に書き出しました。"

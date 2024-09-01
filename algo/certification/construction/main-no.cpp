@@ -16,6 +16,8 @@
 #include "define_jwt.cpp"
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
+#include <map>
+#include "read_data.cpp"
 
 using namespace std;
 
