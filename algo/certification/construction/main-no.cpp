@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
         "karate-graph.gr",
-        "karate.txt",
+        "karate.gr",
         "rt-retweet.gr",
         "simple_graph.gr",
         "soc-slashdot.gr",

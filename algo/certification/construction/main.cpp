@@ -476,7 +476,7 @@ int main(int argc, char* argv[])
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
         "karate-graph.gr",
-        "karate.txt",
+        "karate.gr",
         "rt-retweet.gr",
         "simple_graph.gr",
         "soc-slashdot.gr",
@@ -646,13 +646,3 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-
-
-
-// // 実行時間を計測する
-// auto start_time_generate = std::chrono::high_resolution_clock::now();
-
-// // プログラムの終了時間を記録
-// auto end_time_generate = std::chrono::high_resolution_clock::now();
-// // 経過時間を計算
-// auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - generate - start_time_generate).count();
