@@ -49,10 +49,10 @@ RandomWalker_nojwt create_random_walker(int ver_id, int flag, int RWer_size, int
 
     // 認証は行わない
     //  一意のIDを生成
-    //  int id = generate_unique_id();
+    int id = generate_unique_id();
 
     // // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
-    int id = 1;
+    // int id = 1;
     // // 全てのrw
 
     // std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY); // トークンを生成
@@ -147,29 +147,29 @@ int main(int argc, char* argv[])
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",
-        "com-amazon-connected.cm",
-        "email-enron-connected.cm",
+        // "com-amazon-connected.cm",
+        // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
-        "fb-pages-company.cm",
+        // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.tcm",
+        "karate.cm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm",
+        // "soc-slashdot.cm",
         "tmp.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
-        "com-amazon-connected.gr",
-        "email-enron-connected.gr",
+        // "com-amazon-connected.gr",
+        // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
-        "fb-pages-company.gr",
+        // "fb-pages-company.gr",
         "karate-graph.gr",
         "karate.gr",
         "rt-retweet.gr",
         "simple_graph.gr",
-        "soc-slashdot.gr",
+        // "soc-slashdot.gr",
         "tmp.gr"
     };
     std::int16_t graph_number;

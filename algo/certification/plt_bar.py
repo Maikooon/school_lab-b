@@ -24,7 +24,7 @@ def extract_data_from_file(file_path):
     return folder_data
 
 
-def plot_execution_times(data1, data2, data3):
+def plot_execution_times(data1, data2):
     # 要素の数分だけ図表を作成する
     count = len(data1)
     # 　これですべてのグラフ名の取得ができる
@@ -33,16 +33,17 @@ def plot_execution_times(data1, data2, data3):
     for i in range(count):
         times1 = data1[keys[i]]
         times2 = data2[keys[i]]
-        times3 = data3[keys[i]]
+        # times3 = data3[keys[i]]
         graph_name = [keys[i]]
         fig, ax = plt.subplots()
 
         # 棒グラフの描画
         fig, ax = plt.subplots()
         ax.bar(
-            ["default", "token with Rwer", "token generate every time"],
-            [times1, times2, times3],
-            color=["blue", "orange", "green"],
+            # ["default", "token with Rwer", "token generate every time"],
+            ["default", "token with Rwer"],
+            [times1, times2],
+            color=["blue", "orange"],
         )
 
         # グラフのタイトルと軸ラベルを設定
@@ -51,22 +52,22 @@ def plot_execution_times(data1, data2, data3):
 
         # グラフを表示
         # plt.show()
-        plt.savefig(f"./bar-figure/table/{keys[i]}.png")
+        plt.savefig(f"./bar-figure/new-community/{keys[i]}.png")
 
 
 # 　ここで読み込むファイルを設定する
 def main():
-    file1_path = "./construction/nojwt-result-0.15/overall_average_results copy.txt"
-    file2_path = "./construction/jwt-result-0.15-table/overall_average_results.txt"
-    file3_path = (
-        "./every-time-construction/jwt-result-0.15-table/overall_average_results.txt"
-    )
+    file1_path = "./construction/nojwt-result-new-community/overall_average_results.txt"
+    file2_path = "./construction/jwt-result-new-community/overall_average_results.txt"
+    # file3_path = (
+    #     "./every-time-construction/jwt-result-0.15-table/overall_average_results.txt"
+    # )
 
     data1 = extract_data_from_file(file1_path)
     data2 = extract_data_from_file(file2_path)
-    data3 = extract_data_from_file(file3_path)
+    # data3 = extract_data_from_file(file3_path)
 
-    plot_execution_times(data1, data2, data3)
+    plot_execution_times(data1, data2)
 
 
 if __name__ == "__main__":

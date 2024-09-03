@@ -1,6 +1,8 @@
 /*
 全てのグラフの実行時間を出したのちにこれを実行する
  g++ -std=c++17 -o calc-ave calc-ave.cpp
+
+計算ファイルの一箇所のみの変更が必要
 */
 
 #include <iostream>
@@ -143,7 +145,7 @@ bool loadGraphInfo(const std::string& filename, std::unordered_map<std::string, 
 int main()
 {
     //ここを平均を取りたいフォルダ名に変更する
-    const fs::path BASEFOLDER = "./construction/nojwt-result-0.15/";
+    const fs::path BASEFOLDER = "./construction/jwt-result-new-community/";
     // 固定値
     const std::string graphInfoFile = "./count_node.txt";
     // 解析したいフォルダに格納される

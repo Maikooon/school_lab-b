@@ -27,6 +27,7 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 #include <map>
 #include <filesystem>  
 #include "read_data.cpp"
+#include <iostream>
 
 using namespace std;
 
@@ -113,7 +114,10 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
 
         // debug;;comment off
         //  トークンから経路情報と出発ノードIDを取得
+         // ペイロードからクレームを取得
+        auto rwer_id = decoded.get_payload_claim("RWer_id").as_string();
         // int rwer_id = std::stoi(decoded.get_payload_claim("rwer_id").as_string());
+        std::cout << "rwer_id: " << rwer_id << std::endl;
 
         std::cout << "next node: " << next_node << std::endl;
 
@@ -154,9 +158,9 @@ int generate_unique_id()
 RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
 {
     // 一意のIDを生成
-    // int id = generate_unique_id();
+    int id = generate_unique_id();
     // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
-    int id = 1;
+    // int id = 1;
 
     // 実行時間を計測する
     auto start_time_generate = std::chrono::high_resolution_clock::now();
@@ -259,7 +263,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./jwt-result-0.15-table/" + filename + "/" + path;
+    std::string filepath = "./jwt-result-new-community/" + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -312,29 +316,29 @@ int main(int argc, char* argv[])
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",
-        "com-amazon-connected.cm",
-        "email-enron-connected.cm",
+        // "com-amazon-connected.cm",
+        // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
-        "fb-pages-company.cm",
+        // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.tcm",
+        "karate.cm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        "soc-slashdot.cm",
+        // "soc-slashdot.cm",
         "tmp.cm" };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
-        "com-amazon-connected.gr",
-        "email-enron-connected.gr",
+        // "com-amazon-connected.gr",
+        // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
-        "fb-pages-company.gr",
+        // "fb-pages-company.gr",
         "karate-graph.gr",
         "karate.gr",
         "rt-retweet.gr",
         "simple_graph.gr",
-        "soc-slashdot.gr",
+        // "soc-slashdot.gr",
         "tmp.gr"
     };
     std::int16_t graph_number;
@@ -347,12 +351,15 @@ int main(int argc, char* argv[])
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
 
-    string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
     string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
-    std::string base_dir = "./../create_table/table/" + name + "/";
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  変更すること！！！！！
+    std::string base_dir = "./../create_table/new-community-table/" + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する
