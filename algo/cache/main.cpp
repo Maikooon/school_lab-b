@@ -263,7 +263,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./jwt-result-new-community/" + filename + "/" + path;
+    std::string filepath = "./result/" + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -351,15 +351,15 @@ int main(int argc, char* argv[])
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
 
-    string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
-    // string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
-    string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = "./../../Louvain/community/" + community_file_list[graph_number];
+    string GRAPH_FILE_PATH = "./../../Louvain/graph/" + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  変更すること！！！！！ ノードの許可不許可を読み込むフォルダ
-    std::string base_dir = "./../create_table/new-community-table/" + name + "/";
+    //  変更すること！！！！！
+    std::string base_dir = "./../certification/create_table/table/" + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する
