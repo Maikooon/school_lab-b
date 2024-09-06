@@ -311,7 +311,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",
-        // "com-amazon-connected.cm",
+        "com-amazon-connected.cm",
         // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
@@ -325,7 +325,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
-        // "com-amazon-connected.gr",
+        "com-amazon-connected.gr",
         // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         // "fb-pages-company.gr",
