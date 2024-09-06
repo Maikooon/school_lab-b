@@ -17,12 +17,15 @@
 
 using namespace std;
 
-// トークンの生成
+// const double expiration_seconds = 0; // トークンの有効期限（秒）
+int expiration_milliseconds = 1000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
+
+
 std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, string SECRET_KEY)
 {
 
     auto now = chrono::system_clock::now();
-    auto exp_time = now + std::chrono::milliseconds(expiration_seconds);
+    auto exp_time = now + std::chrono::milliseconds(expiration_milliseconds);
 
     // 認証する要素をつけたしたい場合にはここに加える
     auto token = jwt::create()
@@ -36,12 +39,39 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
     return token;
 }
 
+// 特定のファイルのデータを参照して、ノードが許可されているかを確認
+bool isNodeAllowed(int start_node, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
 
-// グローバル変数または適切な場所にノードIDリストを定義
-// std::set<int> allowed_node_ids;
+    //TODO ここでファイルを参照する前にキャッシュを参照できるようにしたい
 
-// debug;;簡単のため、全てのノードが許可されるように全てのノード数をカバーする配列を追加
-//  コンストラクタや初期化関数内で1から100までの数字を追加
+
+    std::string filename = "community_" + std::to_string(next_community) + "_result.txt";
+    //ファイルのコミュニテイxを指定する
+    auto file_it = all_node_maps.find(filename);
+    if (file_it != all_node_maps.end()) {
+        const std::map<int, std::vector<int>>& node_map = file_it->second;
+        auto it = node_map.find(next_node);
+        if (it != node_map.end()) {
+            const std::vector<int>& allowed_nodes = it->second;
+            if (std::find(allowed_nodes.begin(), allowed_nodes.end(), start_node) != allowed_nodes.end()) {
+                std::cout << "数字 " << start_node << " はリストに存在します。\n";
+                return true;
+            }
+            else {
+                std::cout << "数字 " << start_node << " はリストに存在しません。\n";
+                return false;
+            }
+        }
+        else {
+            std::cerr << "ノードが見つかりませんでした: " << next_node << std::endl;
+            return false;
+        }
+    }
+    else {
+        std::cerr << "ファイルが見つかりませんでした: " << filename << std::endl;
+        return false;
+    }
+}
 
 
 // 認証情報を検証する関数
@@ -71,7 +101,6 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
         {
             cerr << "Token expired." << endl;
             ///グローバル変数で持って回数を数える
-            // count_token_expired++;
             return false;
         }
 
@@ -84,18 +113,6 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
 
         std::cout << "next node: " << next_node << std::endl;
 
-        // 特定のノードIDリストに含まれている場合は認証を許可
-        // 次に進む予定のノードが許可するノードのリストに含まれているのかどうかを確認
-        //TODO:現実に近い
-
-        //次のノードが所属するコミュニティのファイルを読み込んで、そのファイルの中にHOP前のノードが含まれていたら許可
-        //読み込むファイルは以下のフォルダに格納されている
-
-        /*
-        ここも関数にして埋め込んでしまう
-        出発前のノードが自分
-        */
-        // return true;
         return isNodeAllowed(start_node, next_node, next_community, all_node_maps);
 
     }
@@ -106,7 +123,5 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
     }
 
 }
-
-
 
 
