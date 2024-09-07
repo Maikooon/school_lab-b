@@ -14,6 +14,7 @@
 #include <map>
 #include <filesystem>  
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -39,12 +40,12 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
     return token;
 }
 
+// RandomWalker構造体のキャッシュを調べて、次のノードに移動するかどうかを決定する
+
+
 // 特定のファイルのデータを参照して、ノードが許可されているかを確認
-bool isNodeAllowed(int start_node, int start_community, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
-
-    //TODO ここでファイルを参照する前にキャッシュを参照できるようにしたい
-
-
+bool isNodeAllowed(int start_node, int start_community, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+{
     std::string filename = "community_" + std::to_string(next_community) + "_result.txt";
     //ファイルのコミュニテイxを指定する
     auto file_it = all_node_maps.find(filename);
@@ -82,6 +83,15 @@ bool isNodeAllowed(int start_node, int start_community, int next_node, int next_
 // 認証情報を検証する関数
 bool authenticate_move(const RandomWalker& rwer, int start_node, int start_community, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
+
+
+    //認証せずとも、キャッシュに一度次ホップの０ーどへの移動履歴があれば許可->デコードの必要なし
+    //　ここでReturn をしておくことで、デコード処理が行われない
+    if (std::find(rwer.path_.begin(), rwer.path_.end(), next_node) != rwer.path_.end()) {
+        cout << "キャッシュに一度次ホップの０ーどへの移動履歴があるので許可" << endl;
+        return true;
+    }
+
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
     try

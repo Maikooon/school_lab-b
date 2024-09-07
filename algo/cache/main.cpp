@@ -21,7 +21,6 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 #include <ctime>
 #include <chrono>
 #include "construction.cpp"
-// #include "define_jwt.cpp"
 #include <mpi.h>
 #include "jwt-cpp/jwt.h"
 #include <map>
@@ -127,7 +126,6 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
             std::int16_t next_community = node_communities[next_node];
 
-            //ここをコメントオフすると時間が大きく変わるのに、計測できない
             // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(rwer, start_node, start_community, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
             {
