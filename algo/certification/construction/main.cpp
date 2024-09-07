@@ -82,7 +82,7 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 
 
 // 認証情報を検証する関数
-bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+bool authenticate_move(RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
@@ -219,7 +219,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
                 // break;
             }
-            {
+            else {
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
         }

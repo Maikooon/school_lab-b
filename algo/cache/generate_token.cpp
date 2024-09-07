@@ -40,7 +40,7 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 }
 
 // 特定のファイルのデータを参照して、ノードが許可されているかを確認
-bool isNodeAllowed(int start_node, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
+bool isNodeAllowed(int start_node, int start_community, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
 
     //TODO ここでファイルを参照する前にキャッシュを参照できるようにしたい
 
@@ -55,6 +55,11 @@ bool isNodeAllowed(int start_node, int next_node, int next_community, const std:
             const std::vector<int>& allowed_nodes = it->second;
             if (std::find(allowed_nodes.begin(), allowed_nodes.end(), start_node) != allowed_nodes.end()) {
                 std::cout << "数字 " << start_node << " はリストに存在します。\n";
+                return true;
+            }
+            //次のノードのコミュニティが始点と同じコミュニティだったとき
+            else if (next_community == start_community) {
+                std::cout << "数字 " << start_node << " が移動先と同じコミュニティです。\n";
                 return true;
             }
             else {
@@ -75,7 +80,7 @@ bool isNodeAllowed(int start_node, int next_node, int next_community, const std:
 
 
 // 認証情報を検証する関数
-bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+bool authenticate_move(const RandomWalker& rwer, int start_node, int start_community, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
@@ -113,7 +118,9 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
 
         std::cout << "next node: " << next_node << std::endl;
 
-        return isNodeAllowed(start_node, next_node, next_community, all_node_maps);
+        std::cout << "next_community " << next_community << std::endl;
+
+        return isNodeAllowed(start_node, start_community, next_node, next_community, all_node_maps);
 
     }
     catch (const std::exception& e)

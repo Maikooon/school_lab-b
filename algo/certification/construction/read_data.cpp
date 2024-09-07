@@ -62,7 +62,7 @@ bool isNodeAllowed(int current_node, int next_node, int next_community, const st
         const std::map<int, std::vector<int>>& node_map = file_it->second;
         auto it = node_map.find(next_node);
         if (it != node_map.end()) {
-            const std::vector<int>& allowed_nodes = it->second;
+            std::vector<int>& allowed_nodes = it->second;
             if (std::find(allowed_nodes.begin(), allowed_nodes.end(), current_node) != allowed_nodes.end()) {
                 std::cout << "数字 " << current_node << " はリストに存在します。\n";
 
