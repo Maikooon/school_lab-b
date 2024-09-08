@@ -1,4 +1,15 @@
+"""
+コミュニティのファイルから、それぞれのコミュニティごとの許可リストを作成するスクリプト
+ここでは、自分のコミュニティ以外のノードからのアクセスをすべて許可すると仮定して行う
+
+"""
+
 import os
+
+# INPUT_DIR = "./../calc-modularity/community"
+INPUT_DIR = "./../Louvain/community"
+OUTPUT_DIR = "./table"
+
 
 # コミュニティファイルのリスト
 community_file_list = [
@@ -35,9 +46,11 @@ def select_graph():
 
 
 def process_communities(graph_file_name):
-    input_file_path = os.path.join(
-        "../../../calc-modularity/new_community", graph_file_name
-    )
+    # input_file_path = os.path.join(
+    #     "./../calc-modularity/new_community", graph_file_name
+    # )
+
+    input_file_path = os.path.join(INPUT_DIR, graph_file_name)
 
     # コミュニティごとにノードを格納するためのリストを初期化
     community_list = []
@@ -85,7 +98,8 @@ def process_communities(graph_file_name):
 
         # 結果をファイルに書き出し
         graph_name = os.path.splitext(graph_file_name)[0]
-        output_dir = os.path.join("./new-community-table/", graph_name)
+        # output_dir = os.path.join("./new-community-table/", graph_name)
+        output_dir = os.path.join(OUTPUT_DIR, graph_name)
         os.makedirs(output_dir, exist_ok=True)  # 出力ディレクトリが存在しない場合は作成
         output_file_path = os.path.join(output_dir, f"community_{community}_result.txt")
         with open(output_file_path, "w") as out_file:

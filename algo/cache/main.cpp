@@ -46,6 +46,10 @@ double default_time = 28205; //soc
 int authentication_count = 0;  //認証が通った総数を数える   
 int cache_use_count = 0;
 
+string COMMUNITY_PATH = "./../../Louvain/community/";
+string GRAPH_PATH = "./../../Louvain/graph/";
+string TABLE_PATH = "./../create_table/table/";
+
 // 一意のID生成関数
 int generate_unique_id()
 {
@@ -173,7 +177,7 @@ int main(int argc, char* argv[])
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.cm",
+        "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
         // "soc-slashdot.cm",
@@ -204,14 +208,16 @@ int main(int argc, char* argv[])
     std::string graph_name = graph_file_list[graph_number];
 
     // string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
-    string COMMUNITY_FILE_PATH = "./../../Louvain/community/" + community_file_list[graph_number];
-    string GRAPH_FILE_PATH = "./../../Louvain/graph/" + graph_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../Louvain/community/" + community_file_list[graph_number];
+    // string GRAPH_FILE_PATH = "./../../Louvain/graph/" + graph_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = COMMUNITY_PATH + community_file_list[graph_number];
+    string GRAPH_FILE_PATH = GRAPH_PATH + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  変更すること！！！！！
-    std::string base_dir = "./../certification/create_table/table/" + name + "/";
+    //  変更すること！！！！！  //ユーザごとに保持しているテーブルを格納したディレクトリのパスを指定
+    std::string base_dir = TABLE_PATH + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する
