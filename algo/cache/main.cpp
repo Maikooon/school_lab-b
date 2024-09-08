@@ -28,32 +28,23 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 #include "read_data.cpp"
 #include <iostream>
 #include "generate_token.cpp"
-
+#include "output.cpp"
 using namespace std;
 
 // グラフの定義
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
-
 const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
-
-// const double expiration_seconds = 0; // トークンの有効期限（秒）
-// int expiration_milliseconds = 1000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
-
-// 所要時間の内訳を調べる
-//認証生成時間
-double total_token_generation_time = 0;
-//探索時間
-double total_search_time = 0;
-// トークンの検証時間
-double total_token_verification_time = 0.0;
-
+double total_token_generation_time = 0;  //認証生成時間
+double total_search_time = 0;  //探索時間
+double total_token_verification_time = 0.0;  // トークンの検証時間
 double total_token_construction_time = 0;   //構築時間
-//デフォルトとの差分時間
-double total_difference_time = 0;
+double total_difference_time = 0;  //デフォルトとの差分時間
 double default_time = 28205; //soc
+int authentication_count = 0;  //認証が通った総数を数える   
+int cache_use_count = 0;
 
 // 一意のID生成関数
 int generate_unique_id()
@@ -83,9 +74,6 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
     auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_generate - start_time_generate).count();
     total_token_generation_time += duration_generate;
 
-    // std::string token = "a";
-    /// 生成したTokenをRwer構造体に格納
-       // printf("Token: %s\n", token.c_str());
     return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
@@ -125,6 +113,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
             std::int16_t next_community = node_communities[next_node];
+            authentication_count++;
 
             // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(rwer, start_node, start_community, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
@@ -170,72 +159,12 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
     return path;
 }
 
-// 結果の出力
-void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
-{
-
-    // 適切なファイル名を取得する（サブディレクトリ名に利用）
-    size_t last_slash_idx = community_path.find_last_of("/\\");
-    string filename = community_path.substr(last_slash_idx + 1);
-
-    size_t period_idx = filename.rfind('.');
-    if (period_idx != string::npos)
-    {
-        filename = filename.substr(0, period_idx);
-    }
-
-    // 出力先のパスを生成
-    // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./result/" + filename + "/" + path;
-    // 出力ファイルのストリームを開く
-    std::ofstream outputFile(filepath);
-    if (!outputFile.is_open())
-    {
-        std::cerr << "Failed to open file: " << filepath << std::endl;
-        return;
-    }
-
-    // 結果の出力
-    double ave = static_cast<double>(global_total) / node_communities.size();
-    cout << "Average length: " << ave << endl;
-    outputFile << "Average length: " << ave << std::endl;
-
-    cout << "Total length: " << global_total << endl;
-    outputFile << "Total length: " << global_total << std::endl;
-
-    cout << "Total moves across communities: " << global_total_move << endl;
-    outputFile << "Total moves across communities: " << global_total_move << std::endl;
-
-    cout << "Program execution time: " << duration << " milliseconds" << endl;
-    outputFile << "Execution time: " << duration << std::endl;
-
-    //時間の内訳を調査する
-    cout << "total token generate time; " << total_token_generation_time << std::endl;
-    outputFile << "total token generate time: " << total_token_generation_time << std::endl;
-
-    cout << "total token verification time: " << total_token_verification_time << std::endl;
-    outputFile << "total token verification time: " << total_token_verification_time << std::endl;
-
-    total_difference_time = duration - default_time - total_token_generation_time - total_token_verification_time;
-    cout << "total difference time: " << total_difference_time << std::endl;
-    outputFile << "total difference time: " << total_difference_time << std::endl;
-
-    cout << "total construction time: " << total_token_construction_time << std::endl;
-    outputFile << "total construction time: " << total_token_construction_time << std::endl;
-    //ここまで
-
-        //ファイルを閉じる
-    outputFile.close();
-    cout << "Result has been written to " << filepath << endl;
-
-
-}
-
 int main(int argc, char* argv[])
 {// 許可ノードのリストを初期化
     // initialize_allowed_node_ids();
 
     // 定数設定ファイルの読み込み
+    // テーブルの分割状の問題から一部コメントアウトしてる
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",

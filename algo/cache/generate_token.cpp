@@ -15,6 +15,7 @@
 #include <filesystem>  
 #include <iostream>
 #include <algorithm>
+#include "globals.h"
 
 using namespace std;
 
@@ -83,12 +84,11 @@ bool isNodeAllowed(int start_node, int start_community, int next_node, int next_
 // 認証情報を検証する関数
 bool authenticate_move(const RandomWalker& rwer, int start_node, int start_community, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
-
-
     //認証せずとも、キャッシュに一度次ホップの０ーどへの移動履歴があれば許可->デコードの必要なし
     //　ここでReturn をしておくことで、デコード処理が行われない
     if (std::find(rwer.path_.begin(), rwer.path_.end(), next_node) != rwer.path_.end()) {
         cout << "キャッシュに一度次ホップの０ーどへの移動履歴があるので許可" << endl;
+        cache_use_count++;
         return true;
     }
 
