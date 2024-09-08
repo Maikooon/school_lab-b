@@ -82,16 +82,8 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
 
 
 // 認証情報を検証する関数
-bool authenticate_move(RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
-    //認証せずとも、キャッシュに一度次ホップの０ーどへの移動履歴があれば許可->デコードの必要なし
-    if (std::find(rwer.path_.begin(), rwer.path_.end(), next_node) != rwer.path_.end()) {
-        // next_node はすでに path_ 内に存在するので、キャッシュ済みとして扱えます。
-        return true;
-    }
-
-
-
 
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
@@ -219,6 +211,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
             std::int16_t next_community = node_communities[next_node];
+            move_count++;
 
             // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(rwer, current_node, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
@@ -241,12 +234,12 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
 
         path.push_back(next_node);
 
-        // コミュニティが異なる場合はメッセージを出力
-        if (node_communities[current_node] != node_communities[next_node])
-        {
-            cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
-            move_count++;
-        }
+        // // コミュニティが異なる場合はメッセージを出力
+        // if (node_communities[current_node] != node_communities[next_node])
+        // {
+        //     cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
+        //     move_count++;
+        // }
 
         current_node = next_node;
     }
@@ -271,7 +264,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./jwt-result-new-community/" + filename + "/" + path;
+    std::string filepath = "./all-jwt-result/jwt-result-0.15-table/" + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -324,7 +317,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",
-        // "com-amazon-connected.cm",
+        "com-amazon-connected.cm",
         // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
@@ -338,7 +331,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
-        // "com-amazon-connected.gr",
+        "com-amazon-connected.gr",
         // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         // "fb-pages-company.gr",
@@ -359,15 +352,15 @@ int main(int argc, char* argv[])
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
 
-    string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
-    // string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
     string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  変更すること！！！！！ ノードの許可不許可を読み込むフォルダ
-    std::string base_dir = "./../create_table/new-community-table/" + name + "/";
+    std::string base_dir = "./../../create_table/table/" + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する

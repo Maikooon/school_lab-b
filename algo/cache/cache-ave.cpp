@@ -1,10 +1,3 @@
-/*
-全てのグラフの実行時間を出したのちにこれを実行する
- g++ -std=c++17 -o calc-ave calc-ave.cpp
-
-計算ファイルの一箇所のみの変更が必要
-*/
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -12,12 +5,13 @@
 #include <vector>
 #include <iomanip>
 #include <filesystem>
+#include <unordered_map>
 
 namespace fs = std::filesystem;
 const fs::path BASEFOLDER = "./../cache/result/";
 
 // 各フォルダのファイル情報から平均を計算する関数
-bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)
+bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime, double& cacheUse)
 {
     std::ifstream file(filePath);
     if (!file.is_open())
@@ -47,33 +41,38 @@ bool parseResultFile(const std::string& filePath, double& averageLength, double&
         {
             iss >> label >> label >> executionTime;
         }
+        else if (line.find("percentage of used cache: ") != std::string::npos)
+        {
+            iss >> label >> label >> label >> label >> cacheUse;
+        }
     }
     file.close();
     return true;
 }
 
 // フォルダごとの平均を計測して処理する関数
-bool processFolder(const fs::path& folderPath, double& avgAvgLength, double& avgTotalLength, int& avgTotalMoves, int& avgExecutionTime)
+bool processFolder(const fs::path& folderPath, double& avgAvgLength, double& avgTotalLength, int& avgTotalMoves, int& avgExecutionTime, double& avgCacheUse)
 {
     std::vector<double> avgLengths;
     std::vector<double> totalLengths;
     std::vector<int> totalMoves;
     std::vector<int> executionTimes;
+    std::vector<double> cacheUses;
 
-    // fu
     for (const auto& entry : fs::directory_iterator(folderPath))
     {
         if (entry.is_regular_file() && entry.path().extension() == "")
         {
-            double avgLength, totalLength;
+            double avgLength, totalLength, cacheUse;
             int totalMove, executionTime;
 
-            if (parseResultFile(entry.path().string(), avgLength, totalLength, totalMove, executionTime))
+            if (parseResultFile(entry.path().string(), avgLength, totalLength, totalMove, executionTime, cacheUse))
             {
                 avgLengths.push_back(avgLength);
                 totalLengths.push_back(totalLength);
                 totalMoves.push_back(totalMove);
                 executionTimes.push_back(executionTime);
+                cacheUses.push_back(cacheUse);
             }
         }
     }
@@ -84,11 +83,12 @@ bool processFolder(const fs::path& folderPath, double& avgAvgLength, double& avg
         return false;
     }
 
-    // Calculate averages
+    // 平均の計算
     avgAvgLength = 0.0;
     avgTotalLength = 0.0;
     avgTotalMoves = 0;
     avgExecutionTime = 0;
+    avgCacheUse = 0.0;
 
     for (size_t i = 0; i < avgLengths.size(); ++i)
     {
@@ -96,12 +96,14 @@ bool processFolder(const fs::path& folderPath, double& avgAvgLength, double& avg
         avgTotalLength += totalLengths[i];
         avgTotalMoves += totalMoves[i];
         avgExecutionTime += executionTimes[i];
+        avgCacheUse += cacheUses[i];
     }
 
     avgAvgLength /= avgLengths.size();
     avgTotalLength /= avgLengths.size();
     avgTotalMoves /= avgLengths.size();
     avgExecutionTime /= avgLengths.size();
+    avgCacheUse /= cacheUses.size();
 
     return true;
 }
@@ -147,14 +149,13 @@ int main()
     //ここを平均を取りたいフォルダ名に変更する
     // const fs::path BASEFOLDER = "./construction/jwt-result-new-community/";
     // 固定値
-    const std::string graphInfoFile = "./count_node.txt";
+    const std::string graphInfoFile = "./../count_node.txt";
     // 解析したいフォルダに格納される
     // const fs::path outputFilePath = "./result/overall_average_results.txt";
     const fs::path outputFilePath = BASEFOLDER / "overall_average_results.txt";
 
     // グラフ情報を読み込む
-    std::unordered_map<std::string, std::pair<int, int>>
-        graphInfo;
+    std::unordered_map<std::string, std::pair<int, int>> graphInfo;
     if (!loadGraphInfo(graphInfoFile, graphInfo))
     {
         std::cerr << "Failed to load graph information." << std::endl;
@@ -178,10 +179,10 @@ int main()
         {
             std::cout << "Processing folder: " << entry.path() << std::endl;
 
-            double avgAvgLength, avgTotalLength;
+            double avgAvgLength, avgTotalLength, avgCacheUse;
             int avgTotalMoves, avgExecutionTime;
 
-            if (processFolder(entry.path(), avgAvgLength, avgTotalLength, avgTotalMoves, avgExecutionTime))
+            if (processFolder(entry.path(), avgAvgLength, avgTotalLength, avgTotalMoves, avgExecutionTime, avgCacheUse))
             {
                 std::string folderName = entry.path().filename().string();
 
@@ -191,6 +192,7 @@ int main()
                 outFile << "Total length: " << avgTotalLength << std::endl;
                 outFile << "Total moves across communities: " << avgTotalMoves << std::endl;
                 outFile << "Execution time: " << avgExecutionTime << std::endl;
+                outFile << "Average cache usage percentage: " << avgCacheUse << std::endl;
 
                 // ノード数とエッジ数を出力する
                 auto it = graphInfo.find(folderName);
