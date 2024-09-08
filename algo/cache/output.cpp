@@ -31,7 +31,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./result/" + filename + "/" + path;
+    std::string filepath = "./result/list/" + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
