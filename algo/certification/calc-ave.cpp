@@ -14,7 +14,7 @@
 #include <filesystem>
 
 namespace fs = std::filesystem;
-const fs::path BASEFOLDER = "./../cache/result/";
+const fs::path BASEFOLDER = "./every-time-construction/jwt-result-new/";
 
 // 各フォルダのファイル情報から平均を計算する関数
 bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)
@@ -147,7 +147,7 @@ int main()
     //ここを平均を取りたいフォルダ名に変更する
     // const fs::path BASEFOLDER = "./construction/jwt-result-new-community/";
     // 固定値
-    const std::string graphInfoFile = "./count_node.txt";
+    const std::string graphInfoFile = "./../count_node.txt";
     // 解析したいフォルダに格納される
     // const fs::path outputFilePath = "./result/overall_average_results.txt";
     const fs::path outputFilePath = BASEFOLDER / "overall_average_results.txt";

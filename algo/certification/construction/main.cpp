@@ -55,6 +55,14 @@ double total_token_construction_time = 0;   //構築時間
 double total_difference_time = 0;
 double default_time = 28205; //soc
 
+
+
+string OUTPUT_PATH = "./all-jwt-result/jwt-result-new-community/";
+string TABLE_PATH = "./../../create_table/new-table/";
+string COMMUNITY_FOLDER = "./../../../calc-modularity/new-community/";
+string GRAPH_FOLDER = "./../../../Louvain/graph/";
+
+
 // トークンの生成
 std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, string SECRET_KEY)
 {
@@ -264,7 +272,8 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    std::string filepath = "./all-jwt-result/jwt-result-0.15-table/" + filename + "/" + path;
+    // std::string filepath = "./all-jwt-result/jwt-result-0.15-table/" + filename + "/" + path;
+    std::string filepath = OUTPUT_PATH + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -328,6 +337,7 @@ int main(int argc, char* argv[])
         // "soc-slashdot.cm",
         "tmp.cm" };
 
+
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
@@ -353,14 +363,17 @@ int main(int argc, char* argv[])
     std::string graph_name = graph_file_list[graph_number];
 
     // string COMMUNITY_FILE_PATH = "./../../../calc-modularity/new_community/" + community_file_list[graph_number];
-    string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
-    string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
+    // string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = COMMUNITY_FOLDER + community_file_list[graph_number];
+    string GRAPH_FILE_PATH = GRAPH_FOLDER + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  変更すること！！！！！ ノードの許可不許可を読み込むフォルダ
-    std::string base_dir = "./../../create_table/table/" + name + "/";
+    // std::string base_dir = "./../../create_table/table/" + name + "/";
+    std::string base_dir = TABLE_PATH + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
     // 実行時間を計測する

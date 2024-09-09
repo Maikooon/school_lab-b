@@ -7,7 +7,7 @@
 #define MAX_COMMUNITIES 1000
 #define MAX_NODES 10000
 
-const char* input_dir = "./../../Louvain/community";
+const char* input_dir = "./../../calc-modularity/new_community";
 const char* output_dir = "./table";
 
 const char* community_file_list[] = {

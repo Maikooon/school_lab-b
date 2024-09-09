@@ -40,7 +40,7 @@ void output_results(int global_total, int global_total_move, const string& commu
         return;
     }
 
-    // 結果の出力
+    // 結果の出力 
     double ave = static_cast<double>(global_total) / node_communities.size();
     cout << "Average length: " << ave << endl;
     outputFile << "Average length: " << ave << std::endl;

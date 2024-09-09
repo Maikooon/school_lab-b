@@ -6,9 +6,10 @@
 
 import os
 
-# INPUT_DIR = "./../calc-modularity/community"
-INPUT_DIR = "./../Louvain/community"
-OUTPUT_DIR = "./table"
+INPUT_DIR = "./../../calc-modularity/new-community"
+OUTPUT_DIR = "./new-table"
+# INPUT_DIR = "./../../Louvain/community"
+# OUTPUT_DIR = "./table"
 
 
 # コミュニティファイルのリスト
@@ -46,10 +47,6 @@ def select_graph():
 
 
 def process_communities(graph_file_name):
-    # input_file_path = os.path.join(
-    #     "./../calc-modularity/new_community", graph_file_name
-    # )
-
     input_file_path = os.path.join(INPUT_DIR, graph_file_name)
 
     # コミュニティごとにノードを格納するためのリストを初期化

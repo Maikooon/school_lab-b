@@ -24,7 +24,7 @@ def extract_data_from_file(file_path):
     return folder_data
 
 
-def plot_execution_times(data1, data2, data3, data4):
+def plot_execution_times(data1, data2, data3):
     # 要素の数分だけ図表を作成する
     count = len(data1)
     # 　これですべてのグラフ名の取得ができる
@@ -34,7 +34,7 @@ def plot_execution_times(data1, data2, data3, data4):
         times1 = data1.get(keys[i], 0)
         times2 = data2.get(keys[i], 0)
         times3 = data3.get(keys[i], 0)
-        times4 = data4.get(keys[i], 0)
+        # times4 = data4.get(keys[i], 0)
         # times2 = data2[keys[i]]
         # times3 = data3[keys[i]]
         # times4 = data4[keys[i]]
@@ -44,15 +44,18 @@ def plot_execution_times(data1, data2, data3, data4):
         # 棒グラフの描画
         fig, ax = plt.subplots()
         ax.bar(
-            # ["default", "token with Rwer", "token generate every time"],
+            ["default(no jwt)", "token with Rwer", "token generate every time"],
+            # [
+            #     "default-high-modularity",
+            #     "jwt-high-modularity",
+            #     "default-low-modularity",
+            # ],
             [
-                "default-high-modularity",
-                "jwt-high-modularity",
-                "default-low-modularity",
-                "jwt-low-modularity",
+                times1,
+                times2,
+                times3,
             ],
-            [times1, times2, times3, times4],
-            color=["blue", "orange", "grey", "red"],
+            color=["blue", "orange", "grey"],
         )
 
         # グラフのタイトルと軸ラベルを設定
@@ -61,24 +64,24 @@ def plot_execution_times(data1, data2, data3, data4):
 
         # グラフを表示
         # plt.show()
-        plt.savefig(f"./bar-figure/new-community/test/{keys[i]}.png")
+        plt.savefig(f"./bar-figure/new-community/{keys[i]}.png")
 
 
 # 　ここで読み込むファイルを設定する
 def main():
-    file2_path = "./construction/all-jwt-result/jwt-result-0.15-table/overall_average_results.txt"
     file1_path = (
         "./construction/nojwt-result/nojwt-result-0.15/overall_average_results.txt"
     )
-    file3_path = "./construction/nojwt-result/nojwt-result-new-community/overall_average_results.txt"
-    file4_path = "./construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
+    file2_path = "./construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
+    file3_path = "./every-time-construction/jwt-result-new/overall_average_results.txt"
+    # file4_path = "./construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
 
     data1 = extract_data_from_file(file1_path)
     data2 = extract_data_from_file(file2_path)
     data3 = extract_data_from_file(file3_path)
-    data4 = extract_data_from_file(file4_path)
+    # data4 = extract_data_from_file(file4_path)
 
-    plot_execution_times(data1, data2, data3, data4)
+    plot_execution_times(data1, data2, data3)
 
 
 if __name__ == "__main__":
