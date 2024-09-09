@@ -46,11 +46,12 @@ double default_time = 28205; //soc
 int authentication_count = 0;  //認証が通った総数を数える   
 int cache_use_count = 0;
 
-string COMMUNITY_PATH = "./../../Louvain/community/";
+// string COMMUNITY_PATH = "./../../Louvain/community/";
+string COMMUNITY_PATH = "./../../calc-modularity/newcommunity/";
 string GRAPH_PATH = "./../../Louvain/graph/";
-string TABLE_PATH = "./../create_table/table/";
+string TABLE_PATH = "./../create_table/new-table/";
 
-// 一意のID生成関数
+// 一意のID生成関数f
 int generate_unique_id()
 {
     static int id_counter = 0;

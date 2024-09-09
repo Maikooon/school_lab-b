@@ -21,6 +21,7 @@ def extract_data_from_file(file_path):
     except FileNotFoundError:
         print(f"ファイルを開けません: {file_path}")
     # print(folder_data)
+    print(folder_data)
     return folder_data
 
 
@@ -29,7 +30,6 @@ def plot_execution_times(data1, data2, data3):
     count = len(data1)
     # 　これですべてのグラフ名の取得ができる
     keys = list(data1.keys())
-
     for i in range(count):
         times1 = data1.get(keys[i], 0)
         times2 = data2.get(keys[i], 0)
@@ -44,12 +44,7 @@ def plot_execution_times(data1, data2, data3):
         # 棒グラフの描画
         fig, ax = plt.subplots()
         ax.bar(
-            ["default(no jwt)", "token with Rwer", "token generate every time"],
-            # [
-            #     "default-high-modularity",
-            #     "jwt-high-modularity",
-            #     "default-low-modularity",
-            # ],
+            ["default(no jwt)", "token with Rwer", "token with Rwer used cache"],
             [
                 times1,
                 times2,
@@ -64,16 +59,14 @@ def plot_execution_times(data1, data2, data3):
 
         # グラフを表示
         # plt.show()
-        plt.savefig(f"./bar-figure/new-community/{keys[i]}.png")
+        plt.savefig(f"./cache/bar-plt/new-com/{keys[i]}.png")
 
 
 # 　ここで読み込むファイルを設定する
 def main():
-    file1_path = (
-        "./construction/nojwt-result/nojwt-result-0.15/overall_average_results.txt"
-    )
-    file2_path = "./construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
-    file3_path = "./every-time-construction/jwt-result-new/overall_average_results.txt"
+    file1_path = "./certification/construction/nojwt-result/nojwt-result-0.15/overall_average_results copy.txt"
+    file2_path = "./certification/construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
+    file3_path = "./cache/result/new-community/overall_average_results.txt"
     # file4_path = "./construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
 
     data1 = extract_data_from_file(file1_path)
