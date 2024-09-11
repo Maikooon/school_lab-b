@@ -7,7 +7,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk3MDIwNCw
 recieced token
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSwiaXNzIjoiYXV0aDAifQ.0ustSRCe1-aR-zFFWGp6wNUBl7cja8KEoQPqKiCOgHg
 
-mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
+mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o hash main-hash.cpp -lssl -lcrypto
 
 */
 
@@ -62,7 +62,7 @@ int generate_unique_id()
 }
 
 // rwの作成関数を定義
-RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
+RandomWalker_hash create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
 {
     // 一意のIDを生成
     int id = generate_unique_id();
@@ -79,13 +79,13 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
     auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_generate - start_time_generate).count();
     total_token_generation_time += duration_generate;
 
-    return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
+    return RandomWalker_hash(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
-vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, RandomWalker& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, RandomWalker_hash& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
     //debug
     cout << "rwerが生成されました " << endl;
@@ -121,7 +121,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
             authentication_count++;
 
             // 認証情報が一致するのかどうか確認する
-            if (!authenticate_move(rwer, start_node, start_community, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
+            if (!authenticate_move_hash(rwer, start_node, start_community, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
@@ -131,7 +131,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
                 ///ここの認証が通った数だけ、パスが保存されるよにしたい
                 //TODO:認証が必要なノード移動の時のみ、移動先をキャッシュに追加する 
-                rwer.path_.push_back(next_node);
+                rwer.path_.insert(next_node);
             }
         }
         // プログラムの終了時間を記録
@@ -172,31 +172,32 @@ int main(int argc, char* argv[])
     // テーブルの分割状の問題から一部コメントアウトしてる
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
-        "cmu.cm",
+        // "cmu.cm",
         // "com-amazon-connected.cm",
         // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
-        "fb-pages-company.cm",
+        // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.tcm",
+        // "karate.tcm",
         "rt-retweet.cm",
-        "simple_graph.cm",
+        // "simple_graph.cm",
         // "soc-slashdot.cm",
-        "tmp.cm" };
+        // "tmp.cm" 
+    };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
-        "cmu.gr",
+        // "cmu.gr",
         // "com-amazon-connected.gr",
         // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
-        "fb-pages-company.gr",
+        // "fb-pages-company.gr",
         "karate-graph.gr",
-        "karate.gr",
+        // "karate.gr",
         "rt-retweet.gr",
-        "simple_graph.gr",
+        // "simple_graph.gr",
         // "soc-slashdot.gr",
-        "tmp.gr"
+        // "tmp.gr"
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";
@@ -325,7 +326,7 @@ int main(int argc, char* argv[])
         int start_node = node_entry.first;
 
         // 一意のIDを持たせることで、行う これが生成された時点でTokeも生成される
-        RandomWalker rwer = create_random_walker(
+        RandomWalker_hash rwer = create_random_walker(
             /* ver_id */ 1,             // 適切な値に設定
             /* flag */ 0,               // 適切な値に設定
             /* RWer_size */ 100,        // 適切な値に設定
