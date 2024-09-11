@@ -14,7 +14,7 @@ g++ -std=c++17 -o calc-ave calc-ave.cpp
 #include <filesystem>
 
 namespace fs = std::filesystem;
-const fs::path BASEFOLDER = "./construction/all-jwt-result/jwt-result-new-community";
+const fs::path BASEFOLDER = "./../cache/result/hash/";
 
 // 各フォルダのファイル情報から平均を計算する関数
 bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)
