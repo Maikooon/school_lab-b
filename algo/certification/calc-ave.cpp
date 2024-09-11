@@ -1,6 +1,6 @@
 /*
 全てのグラフの実行時間を出したのちにこれを実行する
- g++ -std=c++17 -o calc-ave calc-ave.cpp
+g++ -std=c++17 -o calc-ave calc-ave.cpp
 
 計算ファイルの一箇所のみの変更が必要
 */
@@ -14,7 +14,7 @@
 #include <filesystem>
 
 namespace fs = std::filesystem;
-const fs::path BASEFOLDER = "./../cache/result/new-community/";
+const fs::path BASEFOLDER = "./construction/all-jwt-result/jwt-result-new-community";
 
 // 各フォルダのファイル情報から平均を計算する関数
 bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)

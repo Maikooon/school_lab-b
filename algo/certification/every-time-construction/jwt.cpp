@@ -274,31 +274,32 @@ int main(int argc, char* argv[])
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
-        "cmu.cm",
-        "com-amazon-connected.cm",
-        "email-enron-connected.cm",
+        // "cmu.cm",
+        // "com-amazon-connected.cm",
+        // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
-        "fb-pages-company.cm",
+        // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.tcm",
+        // "karate.tcm",
         "rt-retweet.cm",
-        "simple_graph.cm",
-        "soc-slashdot.cm" ,
-        "tmp.cm" };
+        // "simple_graph.cm",
+        // "soc-slashdot.cm" ,
+        // "tmp.cm"
+    };
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
-        "cmu.gr",
-        "com-amazon-connected.gr",
-        "email-enron-connected.gr",
+        // "cmu.gr",
+        // "com-amazon-connected.gr",
+        // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
-        "fb-pages-company.gr",
+        // "fb-pages-company.gr",
         "karate-graph.gr",
-        "karate.gr",
+        // "karate.gr",
         "rt-retweet.gr",
-        "simple_graph.gr",
-        "soc-slashdot.gr",
-        "tmp.gr"
+        // "simple_graph.gr",
+        // "soc-slashdot.gr",
+        // "tmp.gr"
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";

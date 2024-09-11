@@ -270,9 +270,6 @@ void output_results(int global_total, int global_total_move, const string& commu
         filename = filename.substr(0, period_idx);
     }
 
-    // 出力先のパスを生成
-    // std::string filepath = "./jwt-result-0.15/" + filename + "/" + path + "-time";
-    // std::string filepath = "./all-jwt-result/jwt-result-0.15-table/" + filename + "/" + path;
     std::string filepath = OUTPUT_PATH + filename + "/" + path;
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -325,32 +322,33 @@ int main(int argc, char* argv[])
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
-        "cmu.cm",
-        "com-amazon-connected.cm",
+        // "cmu.cm",
+        // "com-amazon-connected.cm",
         // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.cm",
+        // "karate.cm",
         "rt-retweet.cm",
-        "simple_graph.cm",
+        // "simple_graph.cm",
         // "soc-slashdot.cm",
-        "tmp.cm" };
+        // "tmp.cm" 
+    };
 
 
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
-        "cmu.gr",
-        "com-amazon-connected.gr",
+        // "cmu.gr",
+        // "com-amazon-connected.gr",
         // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         // "fb-pages-company.gr",
         "karate-graph.gr",
-        "karate.gr",
+        // "karate.gr",
         "rt-retweet.gr",
-        "simple_graph.gr",
+        // "simple_graph.gr",
         // "soc-slashdot.gr",
-        "tmp.gr"
+        // "tmp.gr"
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";
