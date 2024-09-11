@@ -15,7 +15,7 @@
 
 using namespace std;
 
-string OUTPUT_PATH = "./result/Louvain/";
+string OUTPUT_PATH = "./result/hash/";
 
 // 結果の出力
 void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)

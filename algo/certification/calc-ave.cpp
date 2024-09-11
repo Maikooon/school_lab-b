@@ -14,7 +14,7 @@
 #include <filesystem>
 
 namespace fs = std::filesystem;
-const fs::path BASEFOLDER = "./../cache/result/new-community/";
+const fs::path BASEFOLDER = "./../cache/result/list/";
 
 // 各フォルダのファイル情報から平均を計算する関数
 bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)

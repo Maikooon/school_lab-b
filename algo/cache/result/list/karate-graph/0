@@ -1,11 +1,11 @@
-Average length: 4.79412
-Total length: 163
-Total moves across communities: 33
-Execution time: 82
-Authentication count: 33
-Cache use count: 0
-percentage of used cache: 0
-total token generate time: 1
+Average length: 5.91176
+Total length: 201
+Total moves across communities: 105
+Execution time: 116
+Authentication count: 105
+Cache use count: 19
+percentage of used cache: 0.180952
+total token generate time: 3
 total token verification time: 0
-total difference time: -28124
+total difference time: -28092
 total construction time: 0
