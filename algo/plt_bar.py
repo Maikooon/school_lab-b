@@ -65,15 +65,15 @@ def plot_execution_times(data1, data2, data3, data4):
 
         # グラフを表示
         # plt.show()
-        plt.savefig(f"./cache/bar-plt/list vs hash/{keys[i]}.png")
+        plt.savefig(f"./compare/no-default/{keys[i]}.png")
 
 
 # 　ここで読み込むファイルを設定する
 def main():
-    file1_path = "./certification/construction/nojwt-result/nojwt-result-0.15/overall_average_results copy.txt"
-    file2_path = "./certification/construction/all-jwt-result/jwt-result-new-community/overall_average_results.txt"
-    file3_path = "./cache/bar-plt/list.txt"
-    file4_path = "./cache/bar-plt/hash.txt"
+    file1_path = "./nojwt/result/overall_average_results.txt"
+    file2_path = "./default-jwt/result/overall_average_results.txt"
+    file3_path = "./every-time-construction/result/overall_average_results.txt"
+    file4_path = "./nojwt/result/overall_average_results.txt"
 
     data1 = extract_data_from_file(file1_path)
     data2 = extract_data_from_file(file2_path)
