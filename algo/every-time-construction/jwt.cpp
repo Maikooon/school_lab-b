@@ -45,6 +45,8 @@ string COMMUNITY_FOLDER = "./../../Louvain/community/";
 string GRAPH_FOLDER = "./../../Louvain/graph/";
 string TABLE_PATH = "./../../create_table/table/";
 string OUTPUT_PATH = "./result/";
+int global_total = 0;
+int global_total_move = 0;
 
 // トークンの生成
 std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KEY)
@@ -196,7 +198,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
 
         current_node = next_node;
     }
-    total_move += move_count;
+    global_total_move += move_count;
     return path;
 }
 
@@ -307,7 +309,6 @@ int main(int argc, char* argv[])
     double ALPHA = 0.15;
     int total = 0;
     int global_total = 0;
-    int global_total_move = 0;
 
     srand(time(nullptr)); // ランダムシードを初期化
 
@@ -381,7 +382,7 @@ int main(int argc, char* argv[])
         vector<int> path = random_walk(total_move, start_node, ALPHA, rwer, graph_name, all_node_maps);
         int length = path.size();
 
-        total += path.size();
+        global_total += path.size();
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();

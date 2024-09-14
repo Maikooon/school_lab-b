@@ -402,7 +402,7 @@ int main(int argc, char* argv[])
         vector<int> path = random_walk(total_move, start_node, ALPHA, rwer, graph_name, all_node_maps);
         int length = path.size();
 
-        total += path.size();
+        global_total += path.size();
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();
