@@ -1,10 +1,16 @@
+"""
+    すでに統計情報が算出されたファイルを読み取ってグラフに描画する方法
+    統計情報を出すためのスクリプトは、algo/analyze.pyにある
+    
+"""
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
 import os
 
 # データファイルのパス
-data_file = "./result/overall_statistics.txt"
+data_file = "./nojwt/result/statistics.txt"
 # 保存先のディレクトリを作成
 output_dir = "./figure"
 

@@ -13,7 +13,7 @@ execution_times = []
 # データが保存されているフォルダのパス
 # フォルダーパスを設定
 # every-time-construction  default-jwt
-FOLDER = "every-time-construction"
+FOLDER = "nojwt"
 path = "./" + FOLDER + "/result/"
 
 file_list = [
