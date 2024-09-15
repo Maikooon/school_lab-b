@@ -258,7 +258,6 @@ int main()
     auto end_time = std::chrono::high_resolution_clock::now();
     // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
-    double duration_in_milliseconds = static_cast<double>(duration) / 1e6; // ナノ秒をミリ秒に変換
 
     // long long duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 

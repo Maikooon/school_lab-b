@@ -48,6 +48,10 @@ string OUTPUT_PATH = "./result/";
 int global_total = 0;
 int global_total_move = 0;
 
+int duration = 0;
+double total_duration_in_milliseconds_token_generate = 0;
+double total_duration_in_milliseconds_authenticate = 0;
+
 // トークンの生成
 std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KEY)
 {
@@ -126,8 +130,8 @@ int generate_unique_id()
 {
     static int id_counter = 0;
     auto now = std::chrono::high_resolution_clock::now();
-    auto duration = now.time_since_epoch();
-    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() + id_counter++;
+    auto duration_1 = now.time_since_epoch();
+    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration_1).count() + id_counter++;
     return unique_id;
 }
 
@@ -171,8 +175,20 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
         if (node_communities[current_node] != node_communities[next_node])
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
+            // 実行時間計測開始
+            auto start_time_token_generate = std::chrono::high_resolution_clock::now();
             //TODO;次ノードが異なるとわかって初めてトークン生成する
             std::string token = generate_token(expiration_microseconds, rwer.RWer_id_, SECRET_KEY);
+            //実行時間計測終了
+            auto end_time_token_generate = std::chrono::high_resolution_clock::now();
+            // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
+            auto duration_token_generate = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_token_generate - start_time_token_generate).count();
+            double duration_in_milliseconds_token_generate = static_cast<double>(duration_token_generate); // ナノ秒をミリ秒に変換
+            // 処理時間を合計
+            total_duration_in_milliseconds_token_generate += duration_in_milliseconds_token_generate;
+
+            // 実行時間計測開始
+            auto start_time_authenticate = std::chrono::high_resolution_clock::now();
 
             // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(token, current_node, next_node, next_community, VERIFY_SECRET_KEY, graph_name, all_node_maps))
@@ -185,6 +201,11 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
             {
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
+            //実行時間計測終了
+            auto end_time_authenticate = std::chrono::high_resolution_clock::now();
+            // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
+            auto duration_authenticate = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_authenticate - start_time_authenticate).count();
+            total_duration_in_milliseconds_authenticate += duration_authenticate;
         }
 
         path.push_back(next_node);
@@ -203,7 +224,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
 }
 
 // 結果の出力
-void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration, long long total_token_generation_time)
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration, long long total_token_generation_time, long long total_duration_in_milliseconds_token_generate, long long total_duration_in_milliseconds_authenticate)
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -241,12 +262,19 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
-    outputFile << "Token generate time: " << total_token_generation_time << std::endl;
+    cout << "Token generate count: " << total_token_generation_time << " milliseconds" << endl;
+    outputFile << "Token generate count: " << total_token_generation_time << std::endl;
+
+    //TOken作成時間
+    cout << "Token generate time: " << total_duration_in_milliseconds_token_generate << " milliseconds" << endl;
+    outputFile << "Token generate time: " << total_duration_in_milliseconds_token_generate << std::endl;
+    //token検証時間
+    cout << "Token authenticate time: " << total_duration_in_milliseconds_authenticate << " milliseconds" << endl;
+    outputFile << "Token authenticate time: " << total_duration_in_milliseconds_authenticate << std::endl;
+
 
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
-
-
 }
 
 int main(int argc, char* argv[])
@@ -388,9 +416,11 @@ int main(int argc, char* argv[])
     auto end_time = std::chrono::high_resolution_clock::now();
     // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
-    double duration_in_milliseconds = static_cast<double>(duration) / 1e6; // ナノ秒をミリ秒に変換
+    // double duration_in_milliseconds = static_cast<double>(duration) // ナノ秒をミリ秒に変換
 
 
-    output_results(global_total, global_total_move, COMMUNITY_FILE_PATH, filename, duration, total_token_generation_time);
+    output_results(global_total, global_total_move, COMMUNITY_FILE_PATH, filename, duration, total_token_generation_time, total_duration_in_milliseconds_token_generate, total_duration_in_milliseconds_authenticate);
+    // printf("Total token generate time: %f milliseconds\n", total_duration_in_milliseconds_token_generate);
+    // printf("Total authenticate time: %f milliseconds\n", total_duration_in_milliseconds_authenticate);
     return 0;
 }
