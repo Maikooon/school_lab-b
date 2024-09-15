@@ -9,6 +9,8 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSw
 
 mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o jwt jwt.cpp -lssl -lcrypto
 
+
+8
 */
 
 
@@ -286,8 +288,8 @@ int main(int argc, char* argv[])
     std::vector<std::string> community_file_list = {
         "ca-grqc-connected.cm",
         "cmu.cm",
-        "com-amazon-connected.cm",
-        "email-enron-connected.cm",
+        // "com-amazon-connected.cm",
+        // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
         "fb-pages-company.cm",
         "karate-graph.cm",
@@ -300,8 +302,8 @@ int main(int argc, char* argv[])
     std::vector<std::string> graph_file_list = {
         "ca-grqc-connected.gr",
         "cmu.gr",
-        "com-amazon-connected.gr",
-        "email-enron-connected.gr",
+        // "com-amazon-connected.gr",
+        // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         "fb-pages-company.gr",
         "karate-graph.gr",

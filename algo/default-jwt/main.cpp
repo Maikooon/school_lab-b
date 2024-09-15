@@ -11,6 +11,8 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 
 g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
 
+
+8
 */
 
 #include <iostream>
@@ -62,6 +64,10 @@ string OUTPUT_PATH = "./result/";
 string TABLE_PATH = "./../../create_table/table/";
 string COMMUNITY_FOLDER = "./../../Louvain/community/";
 string GRAPH_FOLDER = "./../../Louvain/graph/";
+
+
+double total_duration_token_generate = 0;
+double total_duration_token_authenticate = 0;
 
 
 // トークンの生成
@@ -141,8 +147,8 @@ int generate_unique_id()
 {
     static int id_counter = 0;
     auto now = std::chrono::high_resolution_clock::now();
-    auto duration = now.time_since_epoch();
-    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() + id_counter++;
+    auto duration_1 = now.time_since_epoch();
+    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration_1).count() + id_counter++;
     return unique_id;
 }
 
@@ -151,8 +157,21 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 {
     // 一意のIDを生成
     int id = generate_unique_id();
+
+    // 実行時間計測開始
+    auto start_time_token_generate = std::chrono::high_resolution_clock::now();
+
     //token生成
     std::string token = generate_token(expiration_seconds, id, SECRET_KEY);
+
+    //実行時間計測終了
+    auto end_time_token_generate = std::chrono::high_resolution_clock::now();
+    // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
+    auto duration_token_generate = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_token_generate - start_time_token_generate).count();
+
+    // 処理時間を合計
+    total_duration_token_generate += duration_token_generate;
+
     return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
@@ -189,6 +208,9 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
 
             // 認証情報が一致するのかどうか確認する
             //構造体のTokenを撮ってくるイメージ
+             // 実行時間計測開始
+            auto start_time_authenticate = std::chrono::high_resolution_clock::now();
+
             if (!authenticate_move(rwer, current_node, next_node, next_community, VERIFY_SECRET_KEY, graph_name, all_node_maps))
             {
                 // 認証が通らない場合はRwerの移動を中止
@@ -198,8 +220,15 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
             else {
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
-        }
 
+            //実行時間計測終了
+            auto end_time_authenticate = std::chrono::high_resolution_clock::now();
+            // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
+            auto duration_authenticate = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time_authenticate - start_time_authenticate).count();
+
+            // 処理時間を合計
+            total_duration_token_authenticate += duration_authenticate;
+        }
 
         path.push_back(next_node);
 
@@ -211,7 +240,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
 }
 
 // 結果の出力
-void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration, long long total_duration_token_generate, long long total_duration_token_authenticate)
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -247,26 +276,17 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
-    // //時間の内訳を調査する
-    // cout << "total token generate time; " << total_token_generation_time << std::endl;
-    // outputFile << "total token generate time: " << total_token_generation_time << std::endl;
+    //tokenの作成時間を測定する
+    cout << "Token generate time: " << total_duration_token_generate << " milliseconds" << endl;
+    outputFile << "Token generate time: " << total_duration_token_generate << std::endl;
 
-    // cout << "total token verification time: " << total_token_verification_time << std::endl;
-    // outputFile << "total token verification time: " << total_token_verification_time << std::endl;
+    //Tokenの認証時間を測定する
+    cout << "Token authenticate time: " << total_duration_token_authenticate << " milliseconds" << endl;
+    outputFile << "Token authenticate time: " << total_duration_token_authenticate << std::endl;
 
-    // total_difference_time = duration - default_time - total_token_generation_time - total_token_verification_time;
-    // cout << "total difference time: " << total_difference_time << std::endl;
-    // outputFile << "total difference time: " << total_difference_time << std::endl;
-
-    // cout << "total construction time: " << total_token_construction_time << std::endl;
-    // outputFile << "total construction time: " << total_token_construction_time << std::endl;
-    // //ここまで
-
-        //ファイルを閉じる
+    //ファイルを閉じる
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
-
-
 }
 
 int main(int argc, char* argv[])
@@ -282,10 +302,10 @@ int main(int argc, char* argv[])
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
         "karate-graph.cm",
-        "karate.cm",
+        "karate.tcm",
         "rt-retweet.cm",
         "simple_graph.cm",
-        // "soc-slashdot.cm",
+        "soc-slashdot.cm",
         "tmp.cm" };
 
 
@@ -300,7 +320,7 @@ int main(int argc, char* argv[])
         "karate.gr",
         "rt-retweet.gr",
         "simple_graph.gr",
-        // "soc-slashdot.gr",
+        "soc-slashdot.gr",
         "tmp.gr"
     };
     std::int16_t graph_number;
@@ -410,8 +430,7 @@ int main(int argc, char* argv[])
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
     double duration_in_milliseconds = static_cast<double>(duration) / 1e6; // ナノ秒をミリ秒に変換
 
-
-    output_results(total, total_move, COMMUNITY_FILE_PATH, filename, duration);
+    output_results(global_total, total_move, COMMUNITY_FILE_PATH, filename, duration, total_duration_token_generate, total_duration_token_authenticate);
 
     return 0;
 }

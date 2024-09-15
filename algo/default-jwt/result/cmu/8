@@ -1,4 +1,6 @@
-Average length: 6.8
-Total length: 68
-Total moves across communities: 12
-Execution time: 5031084
+Average length: 9.2
+Total length: 92
+Total moves across communities: 22
+Execution time: 3630416
+Token generate time: 1551126
+Token authenticate time: 1810747
