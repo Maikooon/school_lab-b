@@ -1,3 +1,8 @@
+
+"""
+実行時間のみのばらつきを求めるプログラム
+
+"""
 import re
 import matplotlib.pyplot as plt
 import os

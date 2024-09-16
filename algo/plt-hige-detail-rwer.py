@@ -1,3 +1,7 @@
+"""
+    1rwerあたりの実行時間のひげずを求めるためのプログラム
+"""
+
 import re
 import matplotlib.pyplot as plt
 import os
@@ -16,7 +20,7 @@ GRAPH_LIST = [
     "fb-caltech-connected",
     "simple_graph",
 ]
-target_graph = GRAPH_LIST[7]
+target_graph = GRAPH_LIST[6]
 
 
 def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name):
@@ -30,10 +34,11 @@ def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name)
     )
 
     # Execution Time Stats のパターン（正規表現）
-    execution_pattern = r"Execution Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
-    token_generate_pattern = r"Token Generate Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
-    token_authenticate_pattern = r"Token Authenticate Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
 
+    # execution_pattern = r"Execution Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
+    # token_generate_pattern = r"Token Generate Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
+    # token_authenticate_pattern = r"Token Authenticate Time Stats: \{'min': (\d+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': (\d+)\}"
+    exec_time_per_rwer_pattern = r"Average Time Per Node Stats: \{'min': ([\d\.]+), 'q1': ([\d\.]+), 'median': ([\d\.]+), 'q3': ([\d\.]+), 'max': ([\d\.]+)\}"
     # フォルダの部分を見つける
     folder_match = re.search(folder_pattern, file_content)
 
@@ -43,43 +48,17 @@ def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name)
         search_area = file_content[folder_start_pos:]  # その後の部分を探索
 
         # Execution Time Stats のマッチを探す
-        execution_match = re.search(execution_pattern, search_area)
-        token_generate_match = re.search(token_generate_pattern, search_area)
-        token_authenticate_match = re.search(token_authenticate_pattern, search_area)
+        exec_time_per_rwer = re.search(exec_time_per_rwer_pattern, search_area)
 
-        if execution_match and token_generate_match and token_authenticate_match:
+        if exec_time_per_rwer:
             # マッチした値を辞書にして返す
             return {
-                "execution_time": {
-                    "min": int(execution_match.group(1))
-                    - int(token_generate_match.group(1))
-                    - int(token_authenticate_match.group(1)),
-                    "q1": float(execution_match.group(2))
-                    - float(token_generate_match.group(2))
-                    - float(token_authenticate_match.group(2)),
-                    "median": float(execution_match.group(3))
-                    - float(token_generate_match.group(3))
-                    - float(token_authenticate_match.group(3)),
-                    "q3": float(execution_match.group(4))
-                    - float(token_generate_match.group(4))
-                    - float(token_authenticate_match.group(4)),
-                    "max": int(execution_match.group(5))
-                    - int(token_generate_match.group(5))
-                    - int(token_authenticate_match.group(5)),
-                },
-                "token_generate_time": {
-                    "min": int(token_generate_match.group(1)),
-                    "q1": float(token_generate_match.group(2)),
-                    "median": float(token_generate_match.group(3)),
-                    "q3": float(token_generate_match.group(4)),
-                    "max": int(token_generate_match.group(5)),
-                },
-                "token_authenticate_time": {
-                    "min": int(token_authenticate_match.group(1)),
-                    "q1": float(token_authenticate_match.group(2)),
-                    "median": float(token_authenticate_match.group(3)),
-                    "q3": float(token_authenticate_match.group(4)),
-                    "max": int(token_authenticate_match.group(5)),
+                "exec_time_per_rwer": {
+                    "min": float(exec_time_per_rwer.group(1)),
+                    "q1": float(exec_time_per_rwer.group(2)),
+                    "median": float(exec_time_per_rwer.group(3)),
+                    "q3": float(exec_time_per_rwer.group(4)),
+                    "max": float(exec_time_per_rwer.group(5)),
                 },
             }
 
@@ -109,7 +88,7 @@ def compare_execution_time_across_files(file_paths, target_graph):
 
 # ファイルリスト
 file_paths = [
-    # "./nojwt/result/folder_stats.txt",
+    "./nojwt/result/folder_stats.txt",
     "./default-jwt/result/folder_stats.txt",
     "./every-time-construction/result/folder_stats.txt",
 ]
@@ -138,15 +117,22 @@ def prepare_data(data, label):
 
 
 # データフレーム作成
+
 df1 = pd.DataFrame(
-    prepare_data([execution_time_data[0]], "default jwt"),
+    prepare_data([execution_time_data[0]], "no jwt"),
     columns=["metric", "min", "q1", "median", "q3", "max"],
 )
+
 df2 = pd.DataFrame(
-    prepare_data([execution_time_data[1]], "every-time jwt"),
+    prepare_data([execution_time_data[1]], "default jwt"),
     columns=["metric", "min", "q1", "median", "q3", "max"],
 )
-df = pd.concat([df1, df2])
+df3 = pd.DataFrame(
+    prepare_data([execution_time_data[2]], "every-time jwt"),
+    columns=["metric", "min", "q1", "median", "q3", "max"],
+)
+
+df = pd.concat([df1, df2, df3])
 
 gap = 1  # スペースの大きさ
 positions = []
@@ -167,11 +153,12 @@ for i, (index, row) in enumerate(df.iterrows()):
         [x], [row["median"]], color="white", edgecolor="black", zorder=3
     )  # 中央値
 
+plt.ylim(0, 1000000)
 # ラベルの設定
 plt.xticks(positions, df["metric"], rotation=45, ha="right")
-plt.title("Execution, Token Generate, and Token Authenticate Times")
+plt.title(target_graph + ": Execution, Token Generate, and Token Authenticate Times")
 plt.ylabel("Time (ns)")
 plt.grid(True)
 
 plt.tight_layout()
-plt.savefig("./research/hige-detail/" + target_graph + ".png")
+plt.savefig("./research/per-Rwer/" + target_graph + ".png")

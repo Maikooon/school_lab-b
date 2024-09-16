@@ -13,7 +13,7 @@ execution_times = []
 # データが保存されているフォルダのパス
 # フォルダーパスを設定
 # every-time-construction  default-jwt
-FOLDER = "nojwt"
+FOLDER = "every-time-construction"
 path = "./" + FOLDER + "/result/"
 
 file_list = [
@@ -109,7 +109,8 @@ plt.xlabel("Total moves across communities")
 plt.ylabel("Execution time(nano sec)")
 plt.title("Scatter plot and linear regression line")
 plt.legend()
-output_path = "./" + FOLDER + "/figure/" + selected_file + ".png"
+# output_path = "./" + FOLDER + "/figure/" + selected_file + ".png"
+output_path = "./test.png"
 plt.savefig(output_path)  # 保存先のパスを適宜変更
 
 # 回帰係数と決定係数を表示
