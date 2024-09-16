@@ -5,6 +5,7 @@ import re
 
 
 # 比較するグラフの種類（例: karate）
+GRAPH_LIST = []
 target_graph = "simple_graph"
 
 

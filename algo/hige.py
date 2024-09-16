@@ -1,3 +1,9 @@
+"""
+ひげ図に必要な情報をすべて計算するスクリプト
+ディレクトリのパスに入力することで、そのディレクトリ内のファイルを読み込み、計算する
+Calc.cppの後に実行する
+"""
+
 import glob
 import numpy as np
 import os
@@ -24,6 +30,9 @@ with open(base_path + "folder_stats.txt", "w") as outfile:
 
         token_generate_times = []
         token_authenticate_times = []
+
+        # ノード数で割った時の時間を求める
+        average_times_per_node = []
 
         # フォルダ内のファイルを取得
         file_paths = glob.glob(folder + "*")
