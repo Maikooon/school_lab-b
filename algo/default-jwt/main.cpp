@@ -68,14 +68,14 @@ string GRAPH_FOLDER = "./../../Louvain/graph/";
 
 double total_duration_token_generate = 0;
 double total_duration_token_authenticate = 0;
+int aaa = 0;
 
 
 // トークンの生成
 std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KEY)
 {
-
     auto now = chrono::system_clock::now();
-    auto exp_time = now + std::chrono::milliseconds(expiration_milliseconds);
+    auto exp_time = now + std::chrono::microseconds(expiration_milliseconds);
 
     // 認証する要素をつけたしたい場合にはここに加える
     auto token = jwt::create()
@@ -171,6 +171,7 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
 
     // 処理時間を合計
     total_duration_token_generate += duration_token_generate;
+    aaa++;
 
     return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
@@ -423,7 +424,30 @@ int main(int argc, char* argv[])
         int length = path.size();
 
         global_total += path.size();
+        aaa++;
     }
+    // for (const auto& node_entry : graph)
+    // {
+    // auto node_entry = graph.begin();
+    // int start_node = node_entry->first;
+
+    // RandomWalker rwer = create_random_walker(
+    //     /* ver_id */ 1,             // 適切な値に設定
+    //     /* flag */ 0,               // 適切な値に設定
+    //     /* RWer_size */ 100,        // 適切な値に設定
+    //     /* RWer_id */ 1,            // 適切な値に設定
+    //     /* RWer_life */ 10,         // 適切な値に設定
+    //     /* path_length */ 0,        // 適切な値に設定
+    //     /* reserved */ 0,           // 適切な値に設定
+    //     /* next_index */ 0,         // 適切な値に設定
+    //     /* expiration_seconds */ 60 // 適切な値に設定
+    // );
+
+    // vector<int> path = random_walk(total_move, start_node, ALPHA, rwer, graph_name, all_node_maps);
+    // int length = path.size();
+
+    // global_total += path.size();
+    // }
 
     auto end_time = std::chrono::high_resolution_clock::now();
     // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
@@ -432,5 +456,6 @@ int main(int argc, char* argv[])
 
     output_results(global_total, total_move, COMMUNITY_FILE_PATH, filename, duration, total_duration_token_generate, total_duration_token_authenticate);
 
+    cout << "aaa " << aaa << endl;
     return 0;
 }

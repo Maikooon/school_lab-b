@@ -23,8 +23,8 @@ graph_info = {
 }
 
 # 基本ディレクトリのパス
-base_path = "./every-time-construction/result/"
-# base_path = "./default-jwt/result/"
+# base_path = "./every-time-construction/result/"
+base_path = "./default-jwt/result/"
 # base_path = ".//result/"
 
 # 各フォルダを探索

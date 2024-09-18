@@ -20,7 +20,7 @@ GRAPH_LIST = [
     "fb-caltech-connected",
     "simple_graph",
 ]
-target_graph = GRAPH_LIST[6]
+target_graph = GRAPH_LIST[1]
 
 
 def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name):

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import re
 import pandas as pd
+import numpy as np
 
 
 # 比較するグラフの種類（例: karate）
@@ -16,7 +17,8 @@ GRAPH_LIST = [
     "fb-caltech-connected",
     "simple_graph",
 ]
-target_graph = GRAPH_LIST[7]
+target_graph = GRAPH_LIST[1]
+node_count = 34
 
 
 def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name):
@@ -51,35 +53,50 @@ def extract_execution_time_stats_for_graph(file_content, target_graph, dir_name)
             # マッチした値を辞書にして返す
             return {
                 "execution_time": {
-                    "min": int(execution_match.group(1))
-                    - int(token_generate_match.group(1))
-                    - int(token_authenticate_match.group(1)),
-                    "q1": float(execution_match.group(2))
-                    - float(token_generate_match.group(2))
-                    - float(token_authenticate_match.group(2)),
-                    "median": float(execution_match.group(3))
-                    - float(token_generate_match.group(3))
-                    - float(token_authenticate_match.group(3)),
-                    "q3": float(execution_match.group(4))
-                    - float(token_generate_match.group(4))
-                    - float(token_authenticate_match.group(4)),
-                    "max": int(execution_match.group(5))
-                    - int(token_generate_match.group(5))
-                    - int(token_authenticate_match.group(5)),
+                    "min": (
+                        int(execution_match.group(1))
+                        - int(token_generate_match.group(1))
+                        - int(token_authenticate_match.group(1))
+                    )
+                    / node_count,
+                    "q1": (
+                        float(execution_match.group(2))
+                        - float(token_generate_match.group(2))
+                        - float(token_authenticate_match.group(2))
+                    )
+                    / node_count,
+                    "median": (
+                        float(execution_match.group(3))
+                        - float(token_generate_match.group(3))
+                        - float(token_authenticate_match.group(3))
+                    )
+                    / node_count,
+                    "q3": (
+                        float(execution_match.group(4))
+                        - float(token_generate_match.group(4))
+                        - float(token_authenticate_match.group(4))
+                    )
+                    / node_count,
+                    "max": (
+                        int(execution_match.group(5))
+                        - int(token_generate_match.group(5))
+                        - int(token_authenticate_match.group(5))
+                    )
+                    / node_count,
                 },
                 "token_generate_time": {
-                    "min": int(token_generate_match.group(1)),
-                    "q1": float(token_generate_match.group(2)),
-                    "median": float(token_generate_match.group(3)),
-                    "q3": float(token_generate_match.group(4)),
-                    "max": int(token_generate_match.group(5)),
+                    "min": int(token_generate_match.group(1)) / node_count,
+                    "q1": float(token_generate_match.group(2)) / node_count,
+                    "median": float(token_generate_match.group(3)) / node_count,
+                    "q3": float(token_generate_match.group(4)) / node_count,
+                    "max": int(token_generate_match.group(5)) / node_count,
                 },
                 "token_authenticate_time": {
-                    "min": int(token_authenticate_match.group(1)),
-                    "q1": float(token_authenticate_match.group(2)),
-                    "median": float(token_authenticate_match.group(3)),
-                    "q3": float(token_authenticate_match.group(4)),
-                    "max": int(token_authenticate_match.group(5)),
+                    "min": int(token_authenticate_match.group(1)) / node_count,
+                    "q1": float(token_authenticate_match.group(2)) / node_count,
+                    "median": float(token_authenticate_match.group(3)) / node_count,
+                    "q3": float(token_authenticate_match.group(4)) / node_count,
+                    "max": int(token_authenticate_match.group(5)) / node_count,
                 },
             }
 
@@ -109,7 +126,7 @@ def compare_execution_time_across_files(file_paths, target_graph):
 
 # ファイルリスト
 file_paths = [
-    # "./nojwt/result/folder_stats.txt",
+    "./nojwt/result/folder_stats.txt",
     "./default-jwt/result/folder_stats.txt",
     "./every-time-construction/result/folder_stats.txt",
 ]
@@ -146,6 +163,8 @@ df2 = pd.DataFrame(
     prepare_data([execution_time_data[1]], "every-time jwt"),
     columns=["metric", "min", "q1", "median", "q3", "max"],
 )
+
+print(df2)
 df = pd.concat([df1, df2])
 
 gap = 1  # スペースの大きさ
@@ -167,11 +186,16 @@ for i, (index, row) in enumerate(df.iterrows()):
         [x], [row["median"]], color="white", edgecolor="black", zorder=3
     )  # 中央値
 
+
+ytick_values = np.arange(0, 350000, 50000)
 # ラベルの設定
 plt.xticks(positions, df["metric"], rotation=45, ha="right")
+plt.yticks(ytick_values)
 plt.title("Execution, Token Generate, and Token Authenticate Times")
 plt.ylabel("Time (ns)")
 plt.grid(True)
 
 plt.tight_layout()
-plt.savefig("./research/hige-detail/" + target_graph + ".png")
+plt.show()
+# plt.savefig("./research/hige-detail/" + target_graph + ".png")
+# plt.show()
