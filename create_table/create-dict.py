@@ -6,26 +6,40 @@
 
 import os
 
-INPUT_DIR = "./../../calc-modularity/new-community"
-OUTPUT_DIR = "./new-table"
+INPUT_DIR = "./../calc-modularity/new-new-community/"
+OUTPUT_DIR = "./fb-new-table"
 # INPUT_DIR = "./../../Louvain/community"
 # OUTPUT_DIR = "./table"
 
 
 # コミュニティファイルのリスト
+# community_file_list = [
+#     "ca-grqc-connected.cm",
+#     "cmu.cm",
+#     # "com-amazon-connected.cm",
+#     # "email-enron-connected.cm",
+#     "fb-caltech-connected.cm",
+#     # "fb-pages-company.cm",
+#     "karate-graph.cm",
+#     "karate.cm",
+#     "rt-retweet.cm",
+#     "simple_graph.cm",
+#     # "soc-slashdot.cm",
+#     "tmp.cm",
+# ]
 community_file_list = [
-    "ca-grqc-connected.cm",
-    "cmu.cm",
-    # "com-amazon-connected.cm",
-    # "email-enron-connected.cm",
-    "fb-caltech-connected.cm",
-    # "fb-pages-company.cm",
-    "karate-graph.cm",
-    "karate.cm",
-    "rt-retweet.cm",
-    "simple_graph.cm",
-    # "soc-slashdot.cm",
-    "tmp.cm",
+    "2_communities.txt",  # 0
+    "3_communities.txt",  # 0
+    "4_communities.txt",  # 1
+    "5_communities.txt",  # 2
+    "6_communities.txt",  # 3
+    "7_communities.txt",  # 4
+    "8_communities.txt",  # 5
+    "9_communities.txt",  # 6
+    "10_communities.txt",  # 7
+    "11_communities.txt",  # 8
+    "12_communities.txt",  # 9
+    "13_communities.txt",  # 10
 ]
 
 
@@ -48,6 +62,7 @@ def select_graph():
 
 def process_communities(graph_file_name):
     input_file_path = os.path.join(INPUT_DIR, graph_file_name)
+    print(f"処理対象のファイル: {input_file_path}")
 
     # コミュニティごとにノードを格納するためのリストを初期化
     community_list = []
@@ -61,6 +76,7 @@ def process_communities(graph_file_name):
                 community_list.append([])
             community_list[community].append(node)
 
+    print("aaa")
     # 各コミュニティに対して処理を行う
     for community, key_nodes in enumerate(community_list):
         if not key_nodes:
@@ -97,6 +113,7 @@ def process_communities(graph_file_name):
         graph_name = os.path.splitext(graph_file_name)[0]
         # output_dir = os.path.join("./new-community-table/", graph_name)
         output_dir = os.path.join(OUTPUT_DIR, graph_name)
+        print(output_dir)
         os.makedirs(output_dir, exist_ok=True)  # 出力ディレクトリが存在しない場合は作成
         output_file_path = os.path.join(output_dir, f"community_{community}_result.txt")
         with open(output_file_path, "w") as out_file:
@@ -111,11 +128,14 @@ def main():
     # グラフを選択
     selected_graph = select_graph()
 
-    if selected_graph:
-        print(f"選択されたグラフ: {selected_graph}")
-        process_communities(selected_graph)
-    else:
-        print("グラフが選択されませんでした。")
+    for i in range(len(community_file_list)):
+        process_communities(community_file_list[i])
+
+    # if selected_graph:
+    #     print(f"選択されたグラフ: {selected_graph}")
+    #     process_communities(selected_graph)
+    # else:
+    #     print("グラフが選択されませんでした。")
 
 
 if __name__ == "__main__":

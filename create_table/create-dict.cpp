@@ -1,119 +1,123 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+"""
+多分使っていないファイル
+"""
 
-#define MAX_COMMUNITIES 1000
-#define MAX_NODES 10000
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <sys/stat.h>
+// #include <sys/types.h>
 
-const char* input_dir = "./../../calc-modularity/new_community";
-const char* output_dir = "./table";
+// #define MAX_COMMUNITIES 1000
+// #define MAX_NODES 10000
 
-const char* community_file_list[] = {
-    "ca-grqc-connected.cm",
-    "cmu.cm",
-    "com-amazon-connected.cm",
-    "fb-caltech-connected.cm",
-    "karate-graph.cm",
-    "karate.cm",
-    "rt-retweet.cm",
-    "simple_graph.cm",
-    "tmp.cm",
-};
+// const char* input_dir = "./../../calc-modularity/new_community";
+// const char* output_dir = "./table";
 
-int community_list[MAX_COMMUNITIES][MAX_NODES];
-int community_size[MAX_COMMUNITIES];
-int total_communities = 0;
+// const char* community_file_list[] = {
+//     "ca-grqc-connected.cm",
+//     "cmu.cm",
+//     "com-amazon-connected.cm",
+//     "fb-caltech-connected.cm",
+//     "karate-graph.cm",
+//     "karate.cm",
+//     "rt-retweet.cm",
+//     "simple_graph.cm",
+//     "tmp.cm",
+// };
 
-void select_graph(char* selected_graph) {
-    // グラフファイルを選択する
-    int choice;
-    printf("グラフファイルを選択してください:\n");
-    for (int i = 0; i < sizeof(community_file_list) / sizeof(char*); i++) {
-        printf("%d: %s\n", i, community_file_list[i]);
-    }
+// int community_list[MAX_COMMUNITIES][MAX_NODES];
+// int community_size[MAX_COMMUNITIES];
+// int total_communities = 0;
 
-    printf("番号を入力してください: ");
-    scanf("%d", &choice);
+// void select_graph(char* selected_graph) {
+//     // グラフファイルを選択する
+//     int choice;
+//     printf("グラフファイルを選択してください:\n");
+//     for (int i = 0; i < sizeof(community_file_list) / sizeof(char*); i++) {
+//         printf("%d: %s\n", i, community_file_list[i]);
+//     }
 
-    if (choice < 0 || choice >= sizeof(community_file_list) / sizeof(char*)) {
-        printf("無効な番号が入力されました。\n");
-        exit(1);
-    }
+//     printf("番号を入力してください: ");
+//     scanf("%d", &choice);
 
-    strcpy(selected_graph, community_file_list[choice]);
-}
+//     if (choice < 0 || choice >= sizeof(community_file_list) / sizeof(char*)) {
+//         printf("無効な番号が入力されました。\n");
+//         exit(1);
+//     }
 
-void process_communities(const char* graph_file_name) {
-    char input_file_path[256];
-    snprintf(input_file_path, sizeof(input_file_path), "%s/%s", input_dir, graph_file_name);
+//     strcpy(selected_graph, community_file_list[choice]);
+// }
 
-    FILE* fp = fopen(input_file_path, "r");
-    if (fp == NULL) {
-        perror("ファイルを開けませんでした");
-        exit(1);
-    }
+// void process_communities(const char* graph_file_name) {
+//     char input_file_path[256];
+//     snprintf(input_file_path, sizeof(input_file_path), "%s/%s", input_dir, graph_file_name);
 
-    // コミュニティごとにノードを格納する
-    int node, community;
-    while (fscanf(fp, "%d %d", &node, &community) != EOF) {
-        if (community >= MAX_COMMUNITIES) {
-            printf("コミュニティ数が最大値を超えました。\n");
-            exit(1);
-        }
-        community_list[community][community_size[community]++] = node;
-    }
+//     FILE* fp = fopen(input_file_path, "r");
+//     if (fp == NULL) {
+//         perror("ファイルを開けませんでした");
+//         exit(1);
+//     }
 
-    fclose(fp);
+//     // コミュニティごとにノードを格納する
+//     int node, community;
+//     while (fscanf(fp, "%d %d", &node, &community) != EOF) {
+//         if (community >= MAX_COMMUNITIES) {
+//             printf("コミュニティ数が最大値を超えました。\n");
+//             exit(1);
+//         }
+//         community_list[community][community_size[community]++] = node;
+//     }
 
-    // 各コミュニティに対して処理を行う
-    for (community = 0; community < MAX_COMMUNITIES; community++) {
-        if (community_size[community] == 0 || community < 21) {
-            continue;
-        }
+//     fclose(fp);
 
-        // 出力ディレクトリの作成
-        char output_dir_path[256];
-        snprintf(output_dir_path, sizeof(output_dir_path), "%s/%s", output_dir, graph_file_name);
-        mkdir(output_dir_path, 0755);
+//     // 各コミュニティに対して処理を行う
+//     for (community = 0; community < MAX_COMMUNITIES; community++) {
+//         if (community_size[community] == 0 || community < 21) {
+//             continue;
+//         }
 
-        // 結果をファイルに書き出し
-        char output_file_path[256];
-        snprintf(output_file_path, sizeof(output_file_path), "%s/community_%d_result.txt", output_dir_path, community);
-        FILE* out_fp = fopen(output_file_path, "w");
-        if (out_fp == NULL) {
-            perror("出力ファイルを開けませんでした");
-            exit(1);
-        }
+//         // 出力ディレクトリの作成
+//         char output_dir_path[256];
+//         snprintf(output_dir_path, sizeof(output_dir_path), "%s/%s", output_dir, graph_file_name);
+//         mkdir(output_dir_path, 0755);
 
-        // ノードリストの書き出し
-        for (int i = 0; i < community_size[community]; i++) {
-            int key_node = community_list[community][i];
-            fprintf(out_fp, "%d: ", key_node);
-            for (int c = 0; c < MAX_COMMUNITIES; c++) {
-                if (c == community) {
-                    continue;
-                }
-                for (int j = 0; j < community_size[c]; j++) {
-                    fprintf(out_fp, "%d", community_list[c][j]);
-                    if (j < community_size[c] - 1) {
-                        fprintf(out_fp, ", ");
-                    }
-                }
-            }
-            fprintf(out_fp, "\n");
-        }
+//         // 結果をファイルに書き出し
+//         char output_file_path[256];
+//         snprintf(output_file_path, sizeof(output_file_path), "%s/community_%d_result.txt", output_dir_path, community);
+//         FILE* out_fp = fopen(output_file_path, "w");
+//         if (out_fp == NULL) {
+//             perror("出力ファイルを開けませんでした");
+//             exit(1);
+//         }
 
-        fclose(out_fp);
-        printf("コミュニティ %d の結果を %s に書き出しました。\n", community, output_file_path);
-    }
-}
+//         // ノードリストの書き出し
+//         for (int i = 0; i < community_size[community]; i++) {
+//             int key_node = community_list[community][i];
+//             fprintf(out_fp, "%d: ", key_node);
+//             for (int c = 0; c < MAX_COMMUNITIES; c++) {
+//                 if (c == community) {
+//                     continue;
+//                 }
+//                 for (int j = 0; j < community_size[c]; j++) {
+//                     fprintf(out_fp, "%d", community_list[c][j]);
+//                     if (j < community_size[c] - 1) {
+//                         fprintf(out_fp, ", ");
+//                     }
+//                 }
+//             }
+//             fprintf(out_fp, "\n");
+//         }
 
-int main() {
-    char selected_graph[256];
-    select_graph(selected_graph);
-    printf("選択されたグラフ: %s\n", selected_graph);
-    process_communities(selected_graph);
-    return 0;
-}
+//         fclose(out_fp);
+//         printf("コミュニティ %d の結果を %s に書き出しました。\n", community, output_file_path);
+//     }
+// }
+
+// int main() {
+//     char selected_graph[256];
+//     select_graph(selected_graph);
+//     printf("選択されたグラフ: %s\n", selected_graph);
+//     process_communities(selected_graph);
+//     return 0;
+// }
