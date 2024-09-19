@@ -444,6 +444,8 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 */
 
 
+
+//Rwerごとのを求める臨時のもの、一般的なのは上なので適宜コメントアウトを外す
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -455,7 +457,6 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 #include <chrono>
 #include "construction.cpp"
 // #include "define_jwt.cpp"
-#include <mpi.h>
 #include "jwt-cpp/jwt.h"
 #include <map>
 #include "read_data.cpp"
@@ -580,6 +581,7 @@ RandomWalker_nojwt create_random_walker(int ver_id, int flag, int RWer_size, int
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
 vector<int> random_walk(int& total_move, int start_node, double ALPHA, const RandomWalker_nojwt& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
+    std::cout << "rwer size" << sizeof(RandomWalker_nojwt) << std::endl;
     int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
     int move_count = 0;
@@ -717,13 +719,14 @@ int main(int argc, char* argv[])
     // 定数設定ファイルの読み込み
     std::vector<std::string> community_file_list = {
         "2_communities.txt",   // 0
+         "3_communities.txt",   // 0
         "4_communities.txt",  // 1
         "5_communities.txt",    // 2
         "6_communities.txt",  // 3
         "7_communities.txt",  // 4
         "8_communities.txt",  // 5
         "9_communities.txt",  // 6
-        "10_communities.txt",  // 7
+        "10_communities.txt",  // 7x
         "11_communities.txt",  // 8
         "12_communities.txt",  // 9
         "13_communities.txt",  // 10
