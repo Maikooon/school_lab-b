@@ -14,7 +14,7 @@ G = nx.gnm_random_graph(num_nodes, num_edges)
 # partition = community_louvain.best_partition(G)  # Louvainコミュニティ分割は使用しない
 
 # 3. クラスタリングで指定したコミュニティ数に分割 (例: 12コミュニティ)
-COMMUNITY = 12  # クラスタ数
+COMMUNITY = 18  # クラスタ数
 pos = nx.spring_layout(G)
 pos_array = np.array([pos[n] for n in G.nodes()])
 kmeans = KMeans(n_clusters=COMMUNITY, random_state=0)

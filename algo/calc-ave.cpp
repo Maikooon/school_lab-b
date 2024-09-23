@@ -15,7 +15,7 @@
 
 namespace fs = std::filesystem;
 // const fs::path BASEFOLDER = "./nojwt/result/";
-const fs::path BASEFOLDER = "./research/rwer-count-fb/once/";
+const fs::path BASEFOLDER = "./research/rwer-count-fb/every+token/";
 
 // 各フォルダのファイル情報から平均を計算する関数
 bool parseResultFile(const std::string& filePath, double& averageLength, double& totalLength, int& totalMoves, int& executionTime)

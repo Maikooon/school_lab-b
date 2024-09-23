@@ -13,26 +13,25 @@ def read_file(path):
     execution_time = re.findall(r"Execution time: (\d+)", data)
 
     for i in range(len(moves)):
+        print(folders[i])
         moves[i] = int(moves[i]) / node
         execution_time[i] = int(execution_time[i]) / node
-    print(moves)
-    print(execution_time)
-    return folders, moves, execution_time
+    return folders, path, moves, execution_time
 
 
-way1, x1, y1 = read_file("every")
-way2, x2, y2 = read_file("once")
+way1, path1, x1, y1 = read_file("every")
+way2, path2, x2, y2 = read_file("once")
+# way3, path3, x3, y3 = read_file("every+token")
 
 
 # グラフの出力
-plt.scatter(x1, y1, label=way1)
-plt.scatter(x2, y2, label=way2)
+plt.scatter(x1, y1, label=path1, color="blue")
+plt.scatter(x2, y2, label=path2, color="orange")
+# plt.scatter(x3, y3, label=path3, color="green")
+plt.xlabel("Average moves count per Rwer")
+plt.ylabel("Average execution time per Rwer")
+plt.legend()
+
+
 # plt.show()
-plt.savefig("every.png")
-# # 　ファイルへの書き込みを行う
-# with open("./every.txt", "w") as f:
-#     for graph, move_count, time in zip(folders, moves, execution_time):
-#         f.write(f"Folder: {graph}\n")
-#         f.write(f"Total moves across communities: {move_count}\n")
-#         f.write(f"Execution time: {time}\n")
-#         f.write("\n")
+plt.savefig("12.png")

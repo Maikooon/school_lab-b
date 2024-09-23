@@ -40,6 +40,11 @@ community_file_list = [
     "11_communities.txt",  # 8
     "12_communities.txt",  # 9
     "13_communities.txt",  # 10
+    "14_communities.txt",  # 11
+    "15_communities.txt",  # 12
+    "16_communities.txt",  # 13
+    "17_communities.txt",  # 14
+    "18_communities.txt",  # 15
 ]
 
 

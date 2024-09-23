@@ -503,7 +503,6 @@ std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KE
 //構造体のなかからTokeを取り出して検証する　
 bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
-
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
     try
@@ -720,6 +719,11 @@ int main(int argc, char* argv[])
             "11_communities.txt",  // 8
             "12_communities.txt",  // 9
             "13_communities.txt",  // 10
+            "14_communities.txt",  // 11
+            "15_communities.txt",  // 12
+            "16_communities.txt",  // 13
+            "17_communities.txt",  // 14
+            "18_communities.txt",  // 15
     };
 
     std::vector<std::string> graph_file_list = {
@@ -735,6 +739,11 @@ int main(int argc, char* argv[])
         "11_communities.txt",  // 8
         "12_communities.txt",  // 9
         "13_communities.txt",  // 10
+        "14_communities.txt",  // 11
+        "15_communities.txt",  // 12
+        "16_communities.txt",  // 13
+        "17_communities.txt",  // 14
+        "18_communities.txt",  // 15
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";

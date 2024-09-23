@@ -443,8 +443,6 @@ mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/
 8
 */
 
-
-
 //Rwerごとのを求める臨時のもの、一般的なのは上なので適宜コメントアウトを外す
 #include <iostream>
 #include <fstream>
@@ -573,6 +571,9 @@ RandomWalker_nojwt create_random_walker(int ver_id, int flag, int RWer_size, int
 {
     // 一意のIDを生成
     int id = generate_unique_id();
+    //　ここでTokenと同じ値の適当な値を追加、固定値とする
+    // std::string token = "abcdefghijklmnopqrstuvwx";  // 24文字（バイト）
+
     return RandomWalker_nojwt(id, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
@@ -730,6 +731,11 @@ int main(int argc, char* argv[])
         "11_communities.txt",  // 8
         "12_communities.txt",  // 9
         "13_communities.txt",  // 10
+        "14_communities.txt",  // 11
+        "15_communities.txt",  // 12
+        "16_communities.txt",  // 13
+        "17_communities.txt",  // 14
+        "18_communities.txt",  // 15
     };
 
     std::vector<std::string> graph_file_list = {
@@ -745,6 +751,11 @@ int main(int argc, char* argv[])
         "11_communities.txt",  // 8
         "12_communities.txt",  // 9
         "13_communities.txt",  // 10
+        "14_communities.txt",  // 11
+        "15_communities.txt",  // 12
+        "16_communities.txt",  // 13
+        "17_communities.txt",  // 14
+        "18_communities.txt",  // 15
     };
     std::int16_t graph_number;
     std::cout << "Community number: ";
