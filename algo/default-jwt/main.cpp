@@ -25,7 +25,6 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 #include <ctime>
 #include <chrono>
 #include "construction.cpp"
-// #include "define_jwt.cpp"
 #include "jwt-cpp/jwt.h"
 #include <map>
 #include <filesystem>  
@@ -34,7 +33,8 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 
 using namespace std;
 
-// グラフの定義
+
+// グラフの定義    testtest
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
 
@@ -42,7 +42,7 @@ const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
 // const double expiration_seconds = 0; // トークンの有効期限（秒）
-int expiration_milliseconds = 1000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
+int expiration_milliseconds = 1000000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
 
 // 所要時間の内訳を調べる
@@ -125,13 +125,15 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
         // debug;;comment off
         //  トークンから経路情報と出発ノードIDを取得
          // ペイロードからクレームを取得
-        auto rwer_id = decoded.get_payload_claim("RWer_id").as_string();
-        std::cout << "rwer_id: " << rwer_id << std::endl;
+        auto start_node_id = decoded.get_payload_claim("RWer_id").as_string();
+
+
+        std::cout << "start_node_id: " << start_node_id << std::endl;
 
         std::cout << "next node: " << next_node << std::endl;
 
         // return true;
-        return isNodeAllowed(current_node, next_node, next_community, all_node_maps);
+        return isNodeAllowed(std::stoi(start_node_id), next_node, next_community, all_node_maps);
 
     }
     catch (const std::exception& e)
@@ -142,27 +144,14 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
 
 }
 
-// 一意のID生成関数
-int generate_unique_id()
-{
-    static int id_counter = 0;
-    auto now = std::chrono::high_resolution_clock::now();
-    auto duration_1 = now.time_since_epoch();
-    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration_1).count() + id_counter++;
-    return unique_id;
-}
-
 // rwの作成関数を定義
 RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
 {
-    // 一意のIDを生成
-    int id = generate_unique_id();
-
     // 実行時間計測開始
     auto start_time_token_generate = std::chrono::high_resolution_clock::now();
 
     //token生成
-    std::string token = generate_token(expiration_seconds, id, SECRET_KEY);
+    std::string token = generate_token(expiration_seconds, RWer_id, SECRET_KEY);
 
     //実行時間計測終了
     auto end_time_token_generate = std::chrono::high_resolution_clock::now();
@@ -173,7 +162,7 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
     total_duration_token_generate += duration_token_generate;
     aaa++;
 
-    return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
+    return RandomWalker(token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +243,9 @@ void output_results(int global_total, int global_total_move, const string& commu
         filename = filename.substr(0, period_idx);
     }
 
-    std::string filepath = OUTPUT_PATH + filename + "/" + path;
+    // std::string filepath = OUTPUT_PATH + filename + "/" + path;
+    std::string filepath = OUTPUT_PATH + path;
+
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -412,7 +403,7 @@ int main(int argc, char* argv[])
             /* ver_id */ 1,             // 適切な値に設定
             /* flag */ 0,               // 適切な値に設定
             /* RWer_size */ 100,        // 適切な値に設定
-            /* RWer_id */ 1,            // 適切な値に設定
+            /* RWer_id */ start_node,            // 適切な値に設定
             /* RWer_life */ 10,         // 適切な値に設定
             /* path_length */ 0,        // 適切な値に設定
             /* reserved */ 0,           // 適切な値に設定

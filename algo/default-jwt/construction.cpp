@@ -10,7 +10,6 @@ Rwerのコンストラクタを生成するファイル
 // RandomWalker構造体
 struct RandomWalker
 {
-  int id;            // 一意のID
   std::string token; // トークン
   int ver_id_;
   int flag_;
@@ -23,8 +22,8 @@ struct RandomWalker
   std::vector<int> path_;
 
   // 構造体を生成する
-  RandomWalker(int id, const std::string& token, int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index)
-    : id(id), token(token), ver_id_(ver_id), flag_(flag), RWer_size_(RWer_size), RWer_id_(RWer_id), RWer_life_(RWer_life),
+  RandomWalker(const std::string& token, int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index)
+    : token(token), ver_id_(ver_id), flag_(flag), RWer_size_(RWer_size), RWer_id_(RWer_id), RWer_life_(RWer_life),
     path_length_at_current_host_(path_length), reserved_(reserved), next_index_(next_index) {}
 };
 
