@@ -25,7 +25,6 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 #include <ctime>
 #include <chrono>
 #include "construction.cpp"
-// #include "define_jwt.cpp"
 #include "jwt-cpp/jwt.h"
 #include <map>
 #include <filesystem>  
@@ -34,7 +33,8 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 
 using namespace std;
 
-// グラフの定義
+
+// グラフの定義    testtest
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
 
@@ -60,7 +60,7 @@ std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数
 
 
 
-string OUTPUT_PATH = "./result/karate-graph-2/";
+string OUTPUT_PATH = "./result/";
 string TABLE_PATH = "./../../create_table/table/";
 string COMMUNITY_FOLDER = "./../../Louvain/community/";
 string GRAPH_FOLDER = "./../../Louvain/graph/";
