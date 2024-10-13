@@ -14,6 +14,8 @@
 #include <map>
 #include <filesystem>  
 #include <iostream>
+#include <algorithm>
+#include "globals.h"
 
 using namespace std;
 
@@ -39,12 +41,12 @@ std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, s
     return token;
 }
 
+// RandomWalker構造体のキャッシュを調べて、次のノードに移動するかどうかを決定する
+
+
 // 特定のファイルのデータを参照して、ノードが許可されているかを確認
-bool isNodeAllowed(int start_node, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
-
-    //TODO ここでファイルを参照する前にキャッシュを参照できるようにしたい
-
-
+bool isNodeAllowed(int start_node, int start_community, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+{
     std::string filename = "community_" + std::to_string(next_community) + "_result.txt";
     //ファイルのコミュニテイxを指定する
     auto file_it = all_node_maps.find(filename);
@@ -55,6 +57,11 @@ bool isNodeAllowed(int start_node, int next_node, int next_community, const std:
             const std::vector<int>& allowed_nodes = it->second;
             if (std::find(allowed_nodes.begin(), allowed_nodes.end(), start_node) != allowed_nodes.end()) {
                 std::cout << "数字 " << start_node << " はリストに存在します。\n";
+                return true;
+            }
+            //次のノードのコミュニティが始点と同じコミュニティだったとき
+            else if (next_community == start_community) {
+                std::cout << "数字 " << start_node << " が移動先と同じコミュニティです。\n";
                 return true;
             }
             else {
@@ -75,8 +82,16 @@ bool isNodeAllowed(int start_node, int next_node, int next_community, const std:
 
 
 // 認証情報を検証する関数
-bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+bool authenticate_move(const RandomWalker& rwer, int start_node, int start_community, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
 {
+    //認証せずとも、キャッシュに一度次ホップの０ーどへの移動履歴があれば許可->デコードの必要なし
+    //　ここでReturn をしておくことで、デコード処理が行われない
+    if (std::find(rwer.path_.begin(), rwer.path_.end(), next_node) != rwer.path_.end()) {
+        cout << "キャッシュに一度次ホップの０ーどへの移動履歴があるので許可" << endl;
+        cache_use_count++;
+        return true;
+    }
+
     /// 受け取ったTOkenを出力
     std::cout << "auth Token" << rwer.token << std::endl;
     try
@@ -113,7 +128,9 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
 
         std::cout << "next node: " << next_node << std::endl;
 
-        return isNodeAllowed(start_node, next_node, next_community, all_node_maps);
+        std::cout << "next_community " << next_community << std::endl;
+
+        return isNodeAllowed(start_node, start_community, next_node, next_community, all_node_maps);
 
     }
     catch (const std::exception& e)
@@ -124,4 +141,64 @@ bool authenticate_move(const RandomWalker& rwer, int start_node, int next_node, 
 
 }
 
+
+// bool authenticate_move_hash(const RandomWalker& rwer, int start_node, int start_community, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+// {
+//     //認証せずとも、キャッシュに一度次ホップの０ーどへの移動履歴があれば許可->デコードの必要なし
+//     //　ここでReturn をしておくことで、デコード処理が行われない
+//     if (rwer.path_.find(next_node) != rwer.path_.end()) {
+//         cout << "キャッシュに一度次ホップのノードへの移動履歴があるので許可" << endl;
+//         cache_use_count++;
+//         return true;
+//     }
+
+
+//     /// 受け取ったTOkenを出力
+//     std::cout << "auth Token" << rwer.token << std::endl;
+//     try
+//     {
+//         // トークンを検証
+//         auto decoded = jwt::decode(rwer.token);
+//         auto verifier = jwt::verify()
+//             .allow_algorithm(jwt::algorithm::hs256{ VERIFY_SECRET_KEY })
+//             .with_issuer("auth0");
+
+//         verifier.verify(decoded);
+
+//         // 有効期限の検証
+//         auto exp_claim = decoded.get_expires_at(); // すでに time_point 型
+//         auto now = std::chrono::system_clock::now();
+
+//         // debug;;comment off
+//         std::cout << "Current time: " << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
+//         std::cout << "Token expiration time: " << std::chrono::duration_cast<std::chrono::milliseconds>(exp_claim.time_since_epoch()).count() << " milliseconds since epoch" << std::endl;
+
+//         if (now >= exp_claim)
+//         {
+//             cerr << "Token expired." << endl;
+//             ///グローバル変数で持って回数を数える
+//             return false;
+//         }
+
+//         // debug;;comment off
+//         //  トークンから経路情報と出発ノードIDを取得
+//          // ペイロードからクレームを取得
+//         auto rwer_id = decoded.get_payload_claim("RWer_id").as_string();
+//         // int rwer_id = std::stoi(decoded.get_payload_claim("rwer_id").as_string());
+//         std::cout << "rwer_id: " << rwer_id << std::endl;
+
+//         std::cout << "next node: " << next_node << std::endl;
+
+//         std::cout << "next_community " << next_community << std::endl;
+
+//         return isNodeAllowed(start_node, start_community, next_node, next_community, all_node_maps);
+
+//     }
+//     catch (const std::exception& e)
+//     {
+//         cerr << "Token validation failed: " << e.what() << endl;
+//         return false;
+//     }
+
+// }
 

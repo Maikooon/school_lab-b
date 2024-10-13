@@ -42,6 +42,12 @@ std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数
 int total_token_generation_time = 0; // 合計時間
 
 
+
+string COMMUNITY_FOLDER = "./../../../calc-modularity/new-community/";
+string GRAPH_FOLDER = "./../../../Louvain/graph/";
+string TABLE_PATH = "./../../create_table/new-table/";
+string OUTPUT_PATH = "./jwt-result-new/";
+
 // トークンの生成
 std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, string SECRET_KEY)
 {
@@ -170,7 +176,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         // トークン生成の時間計測
         auto start = std::chrono::high_resolution_clock::now();
         //次のノードが決まり次第Tokenを生成する
-        std::string token = generate_token(proc_rank, expiration_microseconds, rwer.RWer_id_, SECRET_KEY);
+        // std::string token = generate_token(proc_rank, expiration_microseconds, rwer.RWer_id_, SECRET_KEY);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         total_token_generation_time += 1; // 合計時間に加算
@@ -181,6 +187,8 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_
         if (node_communities[current_node] != node_communities[next_node])
         {
             std::cout << "コミュニティが異なるので認証を行います " << next_node << std::endl;
+            //TODO;次ノードが異なるとわかって初めてトークン生成する
+            std::string token = generate_token(proc_rank, expiration_microseconds, rwer.RWer_id_, SECRET_KEY);
 
             // 認証情報が一致するのかどうか確認する
             if (!authenticate_move(token, current_node, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
@@ -226,7 +234,7 @@ void output_results(int global_total, int global_total_move, const string& commu
 
     // 出力先のパスを生成
     // std::string filepath = "./result/" + filename + "/" + path + "_time_" + std::to_string(expiration_microseconds);
-    std::string filepath = "./jwt-result-0.15-table/" + filename + "/" + path;
+    std::string filepath = OUTPUT_PATH + filename + "/" + path;
 
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
@@ -301,12 +309,15 @@ int main(int argc, char* argv[])
     std::getline(std::cin, filename);
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
-    string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
-    string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+    // string COMMUNITY_FILE_PATH = "./../../../Louvain/community/" + community_file_list[graph_number];
+    // string GRAPH_FILE_PATH = "./../../../Louvain/graph/" + graph_file_list[graph_number];
+    string COMMUNITY_FILE_PATH = COMMUNITY_FOLDER + community_file_list[graph_number];
+    string GRAPH_FILE_PATH = GRAPH_FOLDER + graph_file_list[graph_number];
 
     //テーブルのファイルをすべて読み込む
     std::string name = graph_name.substr(0, graph_name.find_last_of("."));
-    std::string base_dir = "./../create_table/table/" + name + "/";
+    // std::string base_dir = "./../../create_table/table/" + name + "/";
+    std::string base_dir = TABLE_PATH + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
 
