@@ -101,14 +101,24 @@ def dynamic_grouping_by_community(node_community):
     return community_group_mapping
 
 
+# わかりやすい方の出力方法
 # 動的グループ分けをファイルに書き込む関数
+# def write_dynamic_groups_to_file(community_group_mapping, file_path):
+#     with open(file_path, "w") as file:
+#         for community, groups in community_group_mapping.items():
+#             file.write(f"Community {community}:\n")
+#             for group_name, group in groups.items():
+#                 group_str = ", ".join(map(str, group))
+#                 file.write(f"  {group_name}: {group_str}\n")
+#             file.write("\n")  # コミュニティごとに改行
 def write_dynamic_groups_to_file(community_group_mapping, file_path):
     with open(file_path, "w") as file:
         for community, groups in community_group_mapping.items():
-            file.write(f"Community {community}:\n")
             for group_name, group in groups.items():
-                group_str = ", ".join(map(str, group))
-                file.write(f"  {group_name}: {group_str}\n")
+                file.write(f"{community}")
+                group_str = " ".join(map(str, group))
+                group_name = group_name[6]
+                file.write(f" {group_name} {group_str}\n")
             file.write("\n")  # コミュニティごとに改行
 
 
@@ -138,17 +148,25 @@ def select_ng_nodes_per_group(community_group_mapping, node_community, percentag
 
 
 # NGノードをファイルに書き込む関数
+# わかりやすく出力する方法
+# def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
+#     with open(file_path, "w") as file:
+#         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
+#             file.write(f"コミュニティ {community}:\n")
+#             for group_name, ng_nodes in ng_nodes_for_groups.items():
+#                 ng_node_str = ", ".join(map(str, ng_nodes))
+#                 file.write(f"  NG for {group_name}: {ng_node_str}\n")
+#             file.write("\n")  # コミュニティごとに改行
+# 簡略化した出力方法
 def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
     with open(file_path, "w") as file:
         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
-            file.write(f"コミュニティ {community}:\n")
             for group_name, ng_nodes in ng_nodes_for_groups.items():
-                ng_node_str = ", ".join(map(str, ng_nodes))
-                file.write(f"  NG for {group_name}: {ng_node_str}\n")
+                file.write(f" {community} ")
+                ng_node_str = " ".join(map(str, ng_nodes))
+                group_name = group_name[6]
+                file.write(f"{group_name} {ng_node_str}\n")
             file.write("\n")  # コミュニティごとに改行
-
-
-# ここまで追加中
 
 
 # コミュニティに基づいてノードをグループに分ける関数

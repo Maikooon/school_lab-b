@@ -2,6 +2,7 @@
 いじらない
 
 何も汚染されていないRWのアルゴリズム
+g++ -std=c++11 rw.cpp -o rw
 */
 
 #include <iostream>
@@ -20,7 +21,7 @@ using namespace std;
 const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
 const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
 const double ALPHA = 0.15;
-const int RW_COUNT = 10;  // ランダムウォークの実行回数
+const int RW_COUNT = 1;  // ランダムウォークの実行回数
 int START_NODE = 1;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
