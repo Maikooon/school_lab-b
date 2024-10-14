@@ -21,7 +21,7 @@ const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
 const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 1;         // ランダムウォークの開始ノード
+int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;

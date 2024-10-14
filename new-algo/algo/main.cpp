@@ -27,7 +27,7 @@ const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynami
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 2;  // ランダムウォークの実行回数
+const int RW_COUNT = 1;  // ランダムウォークの実行回数
 int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
@@ -139,6 +139,8 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
     //遷移確立が終わるまで繰り返す
     printf("start_community: %d\n", start_community);
+    std::cout << (double)rand() / RAND_MAX << std::endl;
+    printf("ALPHA: %f\n", ALPHA);
     while ((double)rand() / RAND_MAX > ALPHA) {
         auto neighbors = graph[current_node];
         if (neighbors.empty()) {
