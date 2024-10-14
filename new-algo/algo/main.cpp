@@ -27,8 +27,8 @@ const std::string GROUP_PER_COMMUNITY = "./../create-tables/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/ng_nodes.txt";
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 1;  // ランダムウォークの実行回数
-int START_NODE = 1;         // ランダムウォークの開始ノード
+const int RW_COUNT = 1000;  // ランダムウォークの実行回数
+int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -133,6 +133,7 @@ vector<int> random_walk(int& total_move, int START_NODE) {
     int move_count = 0;
     vector<int> path;
     int current_node = START_NODE;
+    std::set <int> ng_list;
     path.push_back(current_node);
 
     //遷移確立が終わるまで繰り返す
@@ -143,7 +144,14 @@ vector<int> random_walk(int& total_move, int START_NODE) {
         }
 
         // 隣接ノードからランダムに次のノードを選択
+        //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
+        if (ng_list.find(next_node) != ng_list.end()) {
+            std::cout << "Skipping NG node: " << next_node << std::endl;
+            continue; // NGノードの場合は次のHopを探す
+        }
+
         printf("current_node: %d, next_node: %d\n", current_node, next_node);
 
         // 現在のノードとHop先のコミュニティが異なる場合
@@ -158,10 +166,17 @@ vector<int> random_walk(int& total_move, int START_NODE) {
                 printf("group: %d\n", group.first);
                 if (std::find(group.second.begin(), group.second.end(), current_community) != group.second.end()) {
                     // NGリストを参照
-                    auto ng_list = community_ng_nodes[next_community][group.first];
+                    ng_list = community_ng_nodes[next_community][group.first];
+                    //参照したリストを出力
+                    std::cout << "NG nodes for Group " << group.first << ": ";
+                    for (const int node : ng_list) {
+                        std::cout << node << " ";
+                    }
+                    std::cout << std::endl;
 
                     // 次のHop先がNGノードであるかを確認
                     if (ng_list.find(next_node) != ng_list.end()) {
+                        std::cout << "NG node not found" << next_node << ::endl;
                         continue; // NGノードの場合は次のHopを探す
                     }
                     break; // NGノードではない場合、次のHopを許可

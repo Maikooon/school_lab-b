@@ -128,8 +128,12 @@ def select_ng_nodes_per_group(community_group_mapping, node_community, percentag
 
     for community, groups in community_group_mapping.items():
         group_nodes = {
-            group_name: [node for node, comm in node_community.items() if comm in group]
-            for group_name, group in groups.items()
+            group_name: [
+                node
+                for node, comm in node_community.items()
+                if comm == community and group_name in groups
+            ]
+            for group_name in groups.keys()
         }
 
         ng_nodes_for_community = defaultdict(list)
@@ -138,7 +142,9 @@ def select_ng_nodes_per_group(community_group_mapping, node_community, percentag
             for other_group_name, other_nodes in group_nodes.items():
                 if group_name == other_group_name:
                     continue  # 同じグループに対してはNGノードを選ばない
-                num_to_select = max(1, int(len(nodes) * percentage))  # 5%選択
+                num_to_select = max(
+                    1, int(len(nodes) * percentage)
+                )  # 指定された割合で選択
                 selected_ng_nodes = random.sample(nodes, num_to_select)
                 ng_nodes_for_community[other_group_name].extend(selected_ng_nodes)
 
@@ -153,20 +159,25 @@ def select_ng_nodes_per_group(community_group_mapping, node_community, percentag
 #     with open(file_path, "w") as file:
 #         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
 #             file.write(f"コミュニティ {community}:\n")
-#             for group_name, ng_nodes in ng_nodes_for_groups.items():
+#             sorted_groups = sorted(ng_nodes_for_groups.keys())
+#             for group_name in sorted_groups:
+#                 ng_nodes = ng_nodes_for_groups[group_name]
 #                 ng_node_str = ", ".join(map(str, ng_nodes))
 #                 file.write(f"  NG for {group_name}: {ng_node_str}\n")
 #             file.write("\n")  # コミュニティごとに改行
+
+
 # 簡略化した出力方法
 def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
     with open(file_path, "w") as file:
         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
-            for group_name, ng_nodes in ng_nodes_for_groups.items():
-                file.write(f" {community} ")
+            sorted_groups = sorted(ng_nodes_for_groups.keys())
+            for group_name in sorted_groups:
+                ng_nodes = ng_nodes_for_groups[group_name]
                 ng_node_str = " ".join(map(str, ng_nodes))
-                group_name = group_name[6]
-                file.write(f"{group_name} {ng_node_str}\n")
-            file.write("\n")  # コミュニティごとに改行
+                shortened_group_name = group_name[6:]
+                file.write(f"{community} {shortened_group_name} {ng_node_str}\n")
+            file.write("\n")
 
 
 # コミュニティに基づいてノードをグループに分ける関数
