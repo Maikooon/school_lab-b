@@ -7,12 +7,20 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk3MDIwNCw
 recieced token
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiMSIsImV4cCI6MTcyMzk2OTk4NSwiaXNzIjoiYXV0aDAifQ.0ustSRCe1-aR-zFFWGp6wNUBl7cja8KEoQPqKiCOgHg
 
+<<<<<<< Updated upstream
 mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
 
 g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
 
 
 8
+=======
+g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main-no main-no.cpp -lssl -lcrypto
+
+
+mpic++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib -o main main.cpp -lssl -lcrypto
+
+>>>>>>> Stashed changes
 */
 
 #include <iostream>
@@ -25,6 +33,10 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 #include <ctime>
 #include <chrono>
 #include "construction.cpp"
+<<<<<<< Updated upstream
+=======
+// #include "define_jwt.cpp"
+>>>>>>> Stashed changes
 #include "jwt-cpp/jwt.h"
 #include <map>
 #include <filesystem>  
@@ -33,8 +45,12 @@ g++ -std=c++11 -I../json/single_include -I../jwt-cpp/include -I/opt/homebrew/opt
 
 using namespace std;
 
+<<<<<<< Updated upstream
 
 // グラフの定義    testtest
+=======
+// グラフの定義
+>>>>>>> Stashed changes
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
 
@@ -42,11 +58,16 @@ const string SECRET_KEY = "your_secret_key";
 const string VERIFY_SECRET_KEY = "your_secret_key";
 
 // const double expiration_seconds = 0; // トークンの有効期限（秒）
+<<<<<<< Updated upstream
 int expiration_milliseconds = 1000000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
+=======
+int expiration_milliseconds = 1000; // 1000ms = 1秒　　トークンの有効期限（マイクロ秒）
+>>>>>>> Stashed changes
 std::int16_t count_token_expired = 0;  //時間切れのトークンの数を数える
 
 // 所要時間の内訳を調べる
 //認証生成時間
+<<<<<<< Updated upstream
 // double total_token_generation_time = 0;
 // //探索時間
 // double total_search_time = 0;
@@ -76,6 +97,33 @@ std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KE
 {
     auto now = chrono::system_clock::now();
     auto exp_time = now + std::chrono::microseconds(expiration_milliseconds);
+=======
+double total_token_generation_time = 0;
+//探索時間
+double total_search_time = 0;
+// トークンの検証時間
+double total_token_verification_time = 0.0;
+
+double total_token_construction_time = 0;   //構築時間
+//デフォルトとの差分時間
+double total_difference_time = 0;
+double default_time = 28205; //soc
+
+
+
+string OUTPUT_PATH = "./all-jwt-result/jwt-result-new-community/";
+string TABLE_PATH = "./../../create_table/new-table/";
+string COMMUNITY_FOLDER = "./../../../calc-modularity/new-community/";
+string GRAPH_FOLDER = "./../../../Louvain/graph/";
+
+
+// トークンの生成
+std::string generate_token(int proc_rank, int expiration_seconds, int RWer_id, string SECRET_KEY)
+{
+
+    auto now = chrono::system_clock::now();
+    auto exp_time = now + std::chrono::milliseconds(expiration_milliseconds);
+>>>>>>> Stashed changes
 
     // 認証する要素をつけたしたい場合にはここに加える
     auto token = jwt::create()
@@ -90,8 +138,12 @@ std::string generate_token(int expiration_seconds, int RWer_id, string SECRET_KE
 }
 
 // 認証情報を検証する関数
+<<<<<<< Updated upstream
 //構造体のなかからTokeを取り出して検証する　
 bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+=======
+bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node, int next_community, int proc_rank, string VERIFY_SECRET_KEY, std::string& graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+>>>>>>> Stashed changes
 {
 
     /// 受け取ったTOkenを出力
@@ -125,6 +177,7 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
         // debug;;comment off
         //  トークンから経路情報と出発ノードIDを取得
          // ペイロードからクレームを取得
+<<<<<<< Updated upstream
         auto start_node_id = decoded.get_payload_claim("RWer_id").as_string();
 
 
@@ -134,6 +187,16 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
 
         // return true;
         return isNodeAllowed(std::stoi(start_node_id), next_node, next_community, all_node_maps);
+=======
+        auto rwer_id = decoded.get_payload_claim("RWer_id").as_string();
+        // int rwer_id = std::stoi(decoded.get_payload_claim("rwer_id").as_string());
+        std::cout << "rwer_id: " << rwer_id << std::endl;
+
+        std::cout << "next node: " << next_node << std::endl;
+
+
+        return isNodeAllowed(current_node, next_node, next_community, all_node_maps);
+>>>>>>> Stashed changes
 
     }
     catch (const std::exception& e)
@@ -144,6 +207,7 @@ bool authenticate_move(const RandomWalker& rwer, int current_node, int next_node
 
 }
 
+<<<<<<< Updated upstream
 // rwの作成関数を定義
 RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
 {
@@ -163,12 +227,50 @@ RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_
     aaa++;
 
     return RandomWalker(token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
+=======
+// 一意のID生成関数
+int generate_unique_id()
+{
+    static int id_counter = 0;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = now.time_since_epoch();
+    int unique_id = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() + id_counter++;
+    return unique_id;
+}
+
+// rwの作成関数を定義
+RandomWalker create_random_walker(int ver_id, int flag, int RWer_size, int RWer_id, int RWer_life, int path_length, int reserved, int next_index, int expiration_seconds)
+{
+    // 一意のIDを生成
+    int id = generate_unique_id();
+    // ここでは上の乱数に変わり簡単のためidを固定して認証機能を確かめる
+    // int id = 1;
+
+    // 実行時間を計測する
+    auto start_time_generate = std::chrono::high_resolution_clock::now();
+    //token生成
+    std::string token = generate_token(id, expiration_seconds, id, SECRET_KEY);
+    // プログラムの終了時間を記録
+    auto end_time_generate = std::chrono::high_resolution_clock::now();
+    // 経過時間を計算
+    auto duration_generate = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_generate - start_time_generate).count();
+    total_token_generation_time += duration_generate;
+
+    // std::string token = "a";
+    /// 生成したTokenをRwer構造体に格納
+       // printf("Token: %s\n", token.c_str());
+    return RandomWalker(id, token, ver_id, flag, RWer_size, RWer_id, RWer_life, path_length, reserved, next_index);
+>>>>>>> Stashed changes
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 // ランダムウォークの関数,ここでRandomWalker &rwの中のTOkenも渡される
+<<<<<<< Updated upstream
 vector<int> random_walk(int& total_move, int start_node, double ALPHA, const RandomWalker& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+=======
+vector<int> random_walk(int& total_move, int start_node, double ALPHA, int proc_rank, const RandomWalker& rwer, string graph_name, std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps)
+>>>>>>> Stashed changes
 {
     int fail_count = 0; // 認証が期限切れになった回数をカウント
     // rwの実行を始める、TOkenの受け渡しがきちんとできているのか確認
@@ -189,6 +291,12 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
         // 次のノードをランダムに選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+<<<<<<< Updated upstream
+=======
+        // // 実行時間を計測する
+        auto start_time_verify = std::chrono::high_resolution_clock::now();
+
+>>>>>>> Stashed changes
         // コミュニティが異なる場合には  今のユーザ　！＝　次のユーザ
         if (node_communities[current_node] != node_communities[next_node])
         {
@@ -197,11 +305,15 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
             move_count++;
 
             // 認証情報が一致するのかどうか確認する
+<<<<<<< Updated upstream
             //構造体のTokenを撮ってくるイメージ
              // 実行時間計測開始
             auto start_time_authenticate = std::chrono::high_resolution_clock::now();
 
             if (!authenticate_move(rwer, current_node, next_node, next_community, VERIFY_SECRET_KEY, graph_name, all_node_maps))
+=======
+            if (!authenticate_move(rwer, current_node, next_node, next_community, proc_rank, VERIFY_SECRET_KEY, graph_name, all_node_maps))
+>>>>>>> Stashed changes
             {
                 // 認証が通らない場合はRwerの移動を中止
                 cout << "Authentication failed: Node " << current_node << " attempted to move to Node " << next_node << endl;
@@ -210,6 +322,7 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
             else {
                 cout << "Authentication success: Node " << current_node << " moved to Node " << next_node << endl;
             }
+<<<<<<< Updated upstream
 
             //実行時間計測終了
             auto end_time_authenticate = std::chrono::high_resolution_clock::now();
@@ -219,18 +332,36 @@ vector<int> random_walk(int& total_move, int start_node, double ALPHA, const Ran
             // 処理時間を合計
             total_duration_token_authenticate += duration_authenticate;
         }
+=======
+        }
+        // プログラムの終了時間を記録
+        auto end_time_verify = std::chrono::high_resolution_clock::now();
+        // 経過時間を計算
+        auto duration_verify = std::chrono::duration_cast<std::chrono::milliseconds>(end_time_verify - start_time_verify).count();
+        total_token_verification_time += duration_verify;
+
+
+>>>>>>> Stashed changes
 
         path.push_back(next_node);
 
         current_node = next_node;
     }
     total_move += move_count;
+<<<<<<< Updated upstream
     // std::cout << "total move: " << total_token_verification_time << std::endl;
+=======
+    std::cout << "total move: " << total_token_verification_time << std::endl;
+>>>>>>> Stashed changes
     return path;
 }
 
 // 結果の出力
+<<<<<<< Updated upstream
 void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration, long long total_duration_token_generate, long long total_duration_token_authenticate)
+=======
+void output_results(int global_total, int global_total_move, const string& community_path, const string& path, long long duration)
+>>>>>>> Stashed changes
 {
 
     // 適切なファイル名を取得する（サブディレクトリ名に利用）
@@ -242,10 +373,14 @@ void output_results(int global_total, int global_total_move, const string& commu
     {
         filename = filename.substr(0, period_idx);
     }
+<<<<<<< Updated upstream
 
     // std::string filepath = OUTPUT_PATH + filename + "/" + path;
     std::string filepath = OUTPUT_PATH + path;
 
+=======
+    std::string filepath = OUTPUT_PATH + filename + "/" + path;
+>>>>>>> Stashed changes
     // 出力ファイルのストリームを開く
     std::ofstream outputFile(filepath);
     if (!outputFile.is_open())
@@ -268,6 +403,7 @@ void output_results(int global_total, int global_total_move, const string& commu
     cout << "Program execution time: " << duration << " milliseconds" << endl;
     outputFile << "Execution time: " << duration << std::endl;
 
+<<<<<<< Updated upstream
     //tokenの作成時間を測定する
     cout << "Token generate time: " << total_duration_token_generate << " milliseconds" << endl;
     outputFile << "Token generate time: " << total_duration_token_generate << std::endl;
@@ -279,6 +415,28 @@ void output_results(int global_total, int global_total_move, const string& commu
     //ファイルを閉じる
     outputFile.close();
     cout << "Result has been written to " << filepath << endl;
+=======
+    //時間の内訳を調査する
+    cout << "total token generate time; " << total_token_generation_time << std::endl;
+    outputFile << "total token generate time: " << total_token_generation_time << std::endl;
+
+    cout << "total token verification time: " << total_token_verification_time << std::endl;
+    outputFile << "total token verification time: " << total_token_verification_time << std::endl;
+
+    total_difference_time = duration - default_time - total_token_generation_time - total_token_verification_time;
+    cout << "total difference time: " << total_difference_time << std::endl;
+    outputFile << "total difference time: " << total_difference_time << std::endl;
+
+    cout << "total construction time: " << total_token_construction_time << std::endl;
+    outputFile << "total construction time: " << total_token_construction_time << std::endl;
+    //ここまで
+
+        //ファイルを閉じる
+    outputFile.close();
+    cout << "Result has been written to " << filepath << endl;
+
+
+>>>>>>> Stashed changes
 }
 
 int main(int argc, char* argv[])
@@ -290,9 +448,15 @@ int main(int argc, char* argv[])
         "ca-grqc-connected.cm",
         "cmu.cm",
         "com-amazon-connected.cm",
+<<<<<<< Updated upstream
         // "email-enron-connected.cm",
         "fb-caltech-connected.cm",
         // "fb-pages-company.cm",
+=======
+        "email-enron-connected.cm",
+        "fb-caltech-connected.cm",
+        "fb-pages-company.cm",
+>>>>>>> Stashed changes
         "karate-graph.cm",
         "karate.tcm",
         "rt-retweet.cm",
@@ -305,9 +469,15 @@ int main(int argc, char* argv[])
         "ca-grqc-connected.gr",
         "cmu.gr",
         "com-amazon-connected.gr",
+<<<<<<< Updated upstream
         // "email-enron-connected.gr",
         "fb-caltech-connected.gr",
         // "fb-pages-company.gr",
+=======
+        "email-enron-connected.gr",
+        "fb-caltech-connected.gr",
+        "fb-pages-company.gr",
+>>>>>>> Stashed changes
         "karate-graph.gr",
         "karate.gr",
         "rt-retweet.gr",
@@ -323,6 +493,7 @@ int main(int argc, char* argv[])
     std::cout << "Output file name: ";
     std::getline(std::cin, filename);
 
+<<<<<<< Updated upstream
     int total_move = 0;
     int invalid_move = 0;
     // αの確率
@@ -331,6 +502,8 @@ int main(int argc, char* argv[])
     int global_total = 0;
     int global_total_move = 0;
 
+=======
+>>>>>>> Stashed changes
     // ファイルパスを指定
     std::string graph_name = graph_file_list[graph_number];
 
@@ -342,6 +515,16 @@ int main(int argc, char* argv[])
     std::string base_dir = TABLE_PATH + name + "/";
     auto all_node_maps = loadAllowedNodesFromFiles(base_dir);
 
+<<<<<<< Updated upstream
+=======
+
+    int total_move = 0;
+    int invalid_move = 0;
+    // αの確率
+    double ALPHA = 0.15;
+    int total = 0;
+
+>>>>>>> Stashed changes
     srand(time(nullptr)); // ランダムシードを初期化
 
     // エッジリストファイルとコミュニティファイルの読み込み
@@ -400,6 +583,7 @@ int main(int argc, char* argv[])
         int start_node = node_entry.first;
 
         RandomWalker rwer = create_random_walker(
+<<<<<<< Updated upstream
             /* ver_id */ 1,             // 適切な値に設定
             /* flag */ 0,               // 適切な値に設定
             /* RWer_size */ 100,        // 適切な値に設定
@@ -417,11 +601,28 @@ int main(int argc, char* argv[])
         global_total += path.size();
         aaa++;
     }
+=======
+            /* ver_id */ 1,
+            /* flag */ 0,
+            /* RWer_size */ 100,
+            /* RWer_id */ 1,
+            /* RWer_life */ 10,
+            /* path_length */ 0,
+            /* reserved */ 0,
+            /* next_index */ 0
+        );
+
+        vector<int> path = random_walk(total_move, start_node, ALPHA);
+        total += path.size();
+    }
+
+>>>>>>> Stashed changes
     auto end_time = std::chrono::high_resolution_clock::now();
     // ナノ秒単位で計測してからミリ秒に変換し、小数点付きのミリ秒として表示
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
     double duration_in_milliseconds = static_cast<double>(duration) / 1e6; // ナノ秒をミリ秒に変換
 
+<<<<<<< Updated upstream
     output_results(global_total, total_move, COMMUNITY_FILE_PATH, filename, duration, total_duration_token_generate, total_duration_token_authenticate);
 
     cout << "aaa " << aaa << endl;
@@ -842,3 +1043,10 @@ int main(int argc, char* argv[])
 //     cout << "aaa " << aaa << endl;
 //     return 0;
 // }
+=======
+    // long long duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+
+    output_results(total, total_move, COMMUNITY_FILE_PATH, filename, duration);
+
+    return 0;
+>>>>>>> Stashed changes
