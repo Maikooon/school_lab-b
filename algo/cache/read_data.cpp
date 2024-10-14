@@ -52,35 +52,3 @@ std::map<std::string, std::map<int, std::vector<int>>> loadAllowedNodesFromFiles
 
     return all_node_maps;
 }
-
-
-
-// // 特定のファイルのデータを参照して、ノードが許可されているかを確認
-// bool isNodeAllowed(int start_node, int next_node, int next_community, const std::map<std::string, std::map<int, std::vector<int>>>& all_node_maps) {
-//     std::string filename = "community_" + std::to_string(next_community) + "_result.txt";
-//     //ファイルのコミュニテイxを指定する
-//     auto file_it = all_node_maps.find(filename);
-//     if (file_it != all_node_maps.end()) {
-//         const std::map<int, std::vector<int>>& node_map = file_it->second;
-//         auto it = node_map.find(next_node);
-//         if (it != node_map.end()) {
-//             const std::vector<int>& allowed_nodes = it->second;
-//             if (std::find(allowed_nodes.begin(), allowed_nodes.end(), start_node) != allowed_nodes.end()) {
-//                 std::cout << "数字 " << start_node << " はリストに存在します。\n";
-//                 return true;
-//             }
-//             else {
-//                 std::cout << "数字 " << start_node << " はリストに存在しません。\n";
-//                 return false;
-//             }
-//         }
-//         else {
-//             std::cerr << "ノードが見つかりませんでした: " << next_node << std::endl;
-//             return false;
-//         }
-//     }
-//     else {
-//         std::cerr << "ファイルが見つかりませんでした: " << filename << std::endl;
-//         return false;
-//     }
-// }
