@@ -20,14 +20,22 @@ g++ -std=c++11 main.cpp -o main
 
 using namespace std;
 
+
 // グローバル変数の定義
-const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
-const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
-const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
+// const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
+// const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
+// const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
+// const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
+
+
+const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";
+const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/fb-caltech-connected/dynamic_groups.txt";
+const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/fb-caltech-connected/ng_nodes.txt";
+
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 1;  // ランダムウォークの実行回数
+const int RW_COUNT = 1000;  // ランダムウォークの実行回数
 int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
@@ -138,9 +146,10 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     path.push_back(current_node);
 
     //遷移確立が終わるまで繰り返す
-    printf("start_community: %d\n", start_community);
-    std::cout << (double)rand() / RAND_MAX << std::endl;
-    printf("ALPHA: %f\n", ALPHA);
+    // printf("start_community: %d\n", start_community);
+    // std::cout << (double)rand() / RAND_MAX << std::endl;
+
+    // printf("ALPHA: %f\n", ALPHA);
     while ((double)rand() / RAND_MAX > ALPHA) {
         auto neighbors = graph[current_node];
         if (neighbors.empty()) {
@@ -149,25 +158,41 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         // 隣接ノードからランダムに次のノードを選択
         //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
-        int next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        //ここから
+        int next_node;
+        do {
+            // 隣接ノードからランダムに次のノードを選択
+            next_node = *next(neighbors.begin(), rand() % neighbors.size());
+
+            // NGリストに含まれている場合は、再度選び直す
+            if (ng_list.find(next_node) != ng_list.end()) {
+                std::cout << "NGなのでスキップ" << next_node << std::endl;
+                next_node = current_node;  // 現在のノードに戻す
+            }
+
+        } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
+        //ここまで
+
+        // int next_node = *next(neighbors.begin(), rand() % neighbors.size());
+
         //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
         if (ng_list.find(next_node) != ng_list.end()) {
-            std::cout << "NGなのでスキップ" << next_node << std::endl;
+            // std::cout << "NGなのでスキップ" << next_node << std::endl;
             next_node = current_node;
             continue; // NGノードの場合は次のHopを探す
         }
 
-        printf("current_node: %d, next_node: %d\n", current_node, next_node);
+        // printf("current_node: %d, next_node: %d\n", current_node, next_node);
 
         // 現在のノードとHop先のコミュニティが異なる場合
         if (node_communities[current_node] != node_communities[next_node]) {
             int current_community = node_communities[current_node];
             int next_community = node_communities[next_node];
-            printf("current_community: %d, next_community: %d\n", current_community, next_community);
+            // printf("current_community: %d, next_community: %d\n", current_community, next_community);
             //始点コミュニティと移動さきコミュニティが同じ時にはアクセス権の確認なし
             if (next_community == start_community) {
                 move_count++;
-                printf("skip access check\n");
+                // printf("skip access check\n");
                 continue;
             }
 
@@ -180,7 +205,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                     // NGリストを参照
                     ng_list = community_ng_nodes[next_community][group.first];
                     //参照したリストを出力
-                    std::cout << "NG nodes for Group " << group.first << ": ";
+                    // std::cout << "NG nodes for Group " << group.first << ": ";
                     for (const int node : ng_list) {
                         std::cout << node << " ";
                     }
@@ -188,10 +213,10 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
                     // 次のHop先がNGノードであるかを確認
                     if (ng_list.find(next_node) != ng_list.end()) {
-                        std::cout << "NG node found" << next_node << ::endl;
+                        // std::cout << "NG node found" << next_node << ::endl;
                         //進まないようにやり直す
                         next_node = current_node;
-                        printf("やり直し！");
+                        // printf("やり直し！");
                         continue; // NGノードの場合は次のHopを探す
                     }
                     break; // NGノードではない場合、次のHopを許可

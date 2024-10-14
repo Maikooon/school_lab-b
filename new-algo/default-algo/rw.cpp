@@ -17,8 +17,8 @@ g++ -std=c++11 rw.cpp -o rw
 using namespace std;
 
 // グローバル変数の定義
-const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
+const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
 int START_NODE = 12;         // ランダムウォークの開始ノード
@@ -90,7 +90,7 @@ vector<int> random_walk(int& total_move, int START_NODE) {
 
         // コミュニティが異なる場合
         if (node_communities[current_node] != node_communities[next_node]) {
-            cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
+            // cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
             move_count++;
         }
 
