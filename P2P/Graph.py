@@ -35,19 +35,26 @@ class Graph:
         executer = source_node.manager
         end_walk = dict()
         escaped_walk = dict()
+        all_paths = []
 
         # 指定された数だけRWする
         for i in range(count):
             current_node = source_node
+            path = [current_node.id]
             while True:
+                # 異なるサーバに移動
                 if current_node.manager != executer:
                     escaped_walk[current_node.id] = (
                         escaped_walk.get(current_node.id, 0) + 1
                     )
+                    all_paths.append(path)
                     break
+                # 終了確率より小さいときには終了
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
+                    all_paths.append(path)
                     break
                 current_node = current_node.get_random_adjacent()
-
-        return end_walk, escaped_walk
+                path.append(current_node.id)
+            print("all-path", all_paths)
+        return end_walk, escaped_walk, all_paths
