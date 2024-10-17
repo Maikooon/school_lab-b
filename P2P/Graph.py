@@ -2,7 +2,8 @@ from Node import *
 import random
 from queue import Queue
 
-class Graph():
+
+class Graph:
     def __init__(self, ADJ, nodes):
         self.nodes = dict()
         self.outside_nodes = dict()
@@ -14,7 +15,9 @@ class Graph():
             for adjacent_id in ADJ[node_id]:
                 self.nodes[node_id].add_edge(nodes[adjacent_id])
                 if adjacent_id not in ADJ.keys():
-                    self.outside_nodes[adjacent_id] = self.nodes[node_id].adj[adjacent_id]
+                    self.outside_nodes[adjacent_id] = self.nodes[node_id].adj[
+                        adjacent_id
+                    ]
                     self.all_nodes[adjacent_id] = nodes[adjacent_id]
 
         self.node_count = len(self.nodes)
@@ -33,11 +36,14 @@ class Graph():
         end_walk = dict()
         escaped_walk = dict()
 
+        # 指定された数だけRWする
         for i in range(count):
             current_node = source_node
             while True:
                 if current_node.manager != executer:
-                    escaped_walk[current_node.id] = escaped_walk.get(current_node.id, 0) + 1
+                    escaped_walk[current_node.id] = (
+                        escaped_walk.get(current_node.id, 0) + 1
+                    )
                     break
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
