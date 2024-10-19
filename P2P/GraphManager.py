@@ -25,6 +25,7 @@ class GraphManager:
         host_name = os.uname()[1]
         host_ip = socket.gethostbyname(host_name)
         graph_txt_file = dir_path + host_name + ".txt"
+        print("Graph txt file: ", graph_txt_file)
         f = open(graph_txt_file)
         data = f.read()
         f.close()
@@ -89,11 +90,11 @@ class GraphManager:
             print("ここでTokenを検証して認証したい")
 
             # 他のノードに接続されていないノードの格納
-            if message.source_id not in self.graph.nodes.keys():
-                self.notify_queue.put(
-                    (message.user, {message.source_id: message.count})
-                )
-                continue
+            # if message.source_id not in self.graph.nodes.keys():
+            #     self.notify_queue.put(
+            #         (message.user, {message.source_id: message.count})
+            #     )
+            #     continue
 
             # RWを実行
             end_walk, escaped_walk, all_paths = self.graph.random_walk(
@@ -145,7 +146,9 @@ class GraphManager:
             socket.send_string(str(message))  # 辞書を文字列に変換して送信
             socket.close()
             context.destroy()
-            print("Notified to {}\n{} {}".format(user, end_walk, all_paths))
+            # print("Notified to {}\n{} {}".format(user, end_walk, all_paths))
+
+            print("Notified to {},{}".format(user, end_walk))
 
     def send_message(self):
         print("send_message-self")

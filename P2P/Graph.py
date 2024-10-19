@@ -49,7 +49,6 @@ class Graph:
 
         # 指定された数だけRWする
         for i in range(count):
-            print("今から{}回目のRWを始めます".format(i))
             current_node = source_node
             while True:
                 # 異なるサーバに移動
