@@ -94,10 +94,12 @@ class GraphManager:
                     (message.user, {message.source_id: message.count})
                 )
                 continue
+
             # RWを実行
             end_walk, escaped_walk, all_paths = self.graph.random_walk(
                 message.source_id, message.count, message.alpha, message.all_paths
             )
+
             print("RWの実行終了")
             # 終了RWとして集計用箱に格納
             print("end_walk", end_walk)
@@ -137,8 +139,6 @@ class GraphManager:
             context = zmq.Context()
             socket = context.socket(zmq.PUSH)
             socket.connect("tcp://{}:{}".format(user, self.port))
-            # socket.send(str(end_walk).encode("utf-8"))
-            # socket.send(str(all_paths).encode("utf-8"))
             # 辞書にまとめて送信
             message = {"end_walk": end_walk, "all_paths": all_paths}
 
@@ -168,11 +168,11 @@ class GraphManager:
         while True:
             message_bytes = socket.recv()
             message = Message.from_bytes(message_bytes)
-            # 他から受け取ったメッセージを保存
+            # 他から受け取ったメッセージを.pathを朱通力したかったらここで見る保存
             self.receive_queue.put(message)
             print(
-                "Recieved message\nsource {}, count {} pathhhhh{}".format(
-                    message.source_id, message.count, message.all_paths
+                "Recieved message\nsource {}, count {} ".format(
+                    message.source_id, message.count
                 )
             )
 
