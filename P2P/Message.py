@@ -1,16 +1,16 @@
 import ast
+from Jwt import *
 
 
 class Message:
-    def __init__(self, source_id, count, GM, user, alpha=0.2, all_paths=None):
+    def __init__(self, source_id, count, GM, user, alpha=0.2, all_paths=None, jwt=None):
         self.source_id = source_id
         self.count = count
         self.GM = GM  # IP e.g., 127.0.0.1
         self.user = user  # IP e.g., 127.0.0.1
         self.alpha = alpha
-        self.all_paths = (
-            all_paths if all_paths is not None else []
-        )  # Ensure default empty list
+        self.all_paths = all_paths if all_paths is not None else []
+        self.jwt = generate_jwt(source_id) if jwt is None else jwt
 
     def __repr__(self):
         return "from: {}, count: {}, user: {}".format(
@@ -27,7 +27,8 @@ class Message:
             "GM": self.GM,
             "user": self.user,
             "alpha": self.alpha,
-            "all_paths": self.all_paths,  # Include all_paths in the byte conversion
+            "all_paths": self.all_paths,
+            "jwt": self.jwt,
         }
         return str(dict_rep).encode("utf-8")
 
@@ -42,4 +43,5 @@ class Message:
             dic["user"],
             dic["alpha"],
             dic.get("all_paths", []),
+            dic.get("jwt", None),
         )
