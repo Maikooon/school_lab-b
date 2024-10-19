@@ -137,8 +137,12 @@ class GraphManager:
             context = zmq.Context()
             socket = context.socket(zmq.PUSH)
             socket.connect("tcp://{}:{}".format(user, self.port))
-            socket.send(str(end_walk).encode("utf-8"))
-            socket.send(str(all_paths).encode("utf-8"))
+            # socket.send(str(end_walk).encode("utf-8"))
+            # socket.send(str(all_paths).encode("utf-8"))
+            # 辞書にまとめて送信
+            message = {"end_walk": end_walk, "all_paths": all_paths}
+
+            socket.send_string(str(message))  # 辞書を文字列に変換して送信
             socket.close()
             context.destroy()
             print("Notified to {}\n{} {}".format(user, end_walk, all_paths))

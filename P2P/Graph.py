@@ -32,7 +32,7 @@ class Graph:
                 adj[str(node)].add(str(adj_node))
         return str(adj)
 
-    def random_walk(self, source_id, count, alpha=0.2, all_paths=None):
+    def random_walk(self, source_id, count, alpha=0.85, all_paths=None):
         print("random_walk-0,2")
         source_node = self.nodes[source_id]
         executer = source_node.manager
@@ -50,7 +50,7 @@ class Graph:
         # 指定された数だけRWする
         for i in range(count):
             print("今から{}回目のRWを始めます".format(i))
-            self.all_paths = []  # 経路長の初期化
+            # self.all_paths = []  # 経路長の初期化
             current_node = source_node
             while True:
                 # 異なるサーバに移動
