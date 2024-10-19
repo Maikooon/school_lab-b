@@ -1,5 +1,6 @@
 from Graph import *
 from Message import *
+from Jwt import *
 import threading
 import time
 import zmq
@@ -85,16 +86,13 @@ class GraphManager:
         while True:
             # キューからメッセージを取り出す、RWを実行するためのメッセージが得られる
             message = self.receive_queue.get()
+            print("ここにJWT入ってろ", message.jwt)
+            print("rw-count", message.count)  # ここが1回目以上ならいいのでは
+            jwt_result = verify_jwt(message.jwt)
+            print("JWT検証結果", jwt_result)
 
             # 取り出したところで処理していいのかを査定する
             print("ここでTokenを検証して認証したい")
-
-            # 他のノードに接続されていないノードの格納
-            # if message.source_id not in self.graph.nodes.keys():
-            #     self.notify_queue.put(
-            #         (message.user, {message.source_id: message.count})
-            #     )
-            #     continue
 
             # RWを実行
             end_walk, escaped_walk, all_paths = self.graph.random_walk(
@@ -115,7 +113,8 @@ class GraphManager:
             if len(escaped_walk) > 0:
                 for node_id, val in escaped_walk.items():
                     # 続きのサーバにRW情報を送信するために、キューに格納される
-                    print("ここでTokenの作成が必要")
+                    # 何を認証すればいいのかわからないので、とりあえずnode_idを認証情報として使う
+                    jwt = generate_jwt(node_id)
                     self.send_queue.put(
                         Message(
                             node_id,
@@ -124,6 +123,7 @@ class GraphManager:
                             message.user,
                             message.alpha,
                             message.all_paths,
+                            jwt,
                         )
                     )
 
