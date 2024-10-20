@@ -62,7 +62,11 @@ class Graph:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     print("RWが終了しました")
                     break
-
+                """
+                ここで次のノードの選択をしている
+                具体的な選択ノードはNOde.jsに定義されているので、そちらを参照
+                
+                """
                 current_node = current_node.get_random_adjacent()
                 # 通ったノードを追加する
                 self.all_paths.append(current_node.id)
