@@ -164,6 +164,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             // 隣接ノードからランダムに次のノードを選択
             next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+            // コミュニぃ云々の前に、今の自分のリストに含まれていたらアウトなので、確認
             // NGリストに含まれている場合は、再度選び直す
             if (ng_list.find(next_node) != ng_list.end()) {
                 std::cout << "NGなのでスキップ" << next_node << std::endl;
@@ -176,11 +177,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
         //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
-        if (ng_list.find(next_node) != ng_list.end()) {
-            // std::cout << "NGなのでスキップ" << next_node << std::endl;
-            next_node = current_node;
-            continue; // NGノードの場合は次のHopを探す
-        }
+    //たぶんここは上のループとおあなじ処理をしているのでコメントアウト
+        // if (ng_list.find(next_node) != ng_list.end()) {
+        //     // std::cout << "NGなのでスキップ" << next_node << std::endl;
+        //     next_node = current_node;
+        //     continue; // NGノードの場合は次のHopを探す
+        // }
 
         // printf("current_node: %d, next_node: %d\n", current_node, next_node);
 
@@ -202,7 +204,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             //ここから二つのテーブルを参照して行う
             for (auto& group : community_groups[next_community]) {
                 if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
-                    // NGリストを参照
+                    // NGリストを参照、ここでコミュニティが異なる場合には更新する
                     ng_list = community_ng_nodes[next_community][group.first];
                     //参照したリストを出力
                     // std::cout << "NG nodes for Group " << group.first << ": ";

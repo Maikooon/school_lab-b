@@ -1,3 +1,9 @@
+"""
+それぞれのコミュニティに対して、Roleを割り当てる
+自分のサーバ以外のものに対してもRoleを割り当てることで、サーバ間での一貫した認可を実現
+
+"""
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
@@ -39,6 +45,7 @@ def load_edges(file_path):
 
 
 # ランダムに1〜2のグループにコミュニティを分ける関数
+# TODO:サーバ内のコミュニティのみの割り当てにから、サーバが異なるコミュニティにもRoleを割り当てるようにする
 def create_random_groups(communities, min_groups=1, max_groups=2):
     num_groups = random.randint(
         min_groups, max_groups

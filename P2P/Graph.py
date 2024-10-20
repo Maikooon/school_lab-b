@@ -38,6 +38,7 @@ class Graph:
         executer = source_node.manager
         end_walk = dict()
         escaped_walk = dict()
+        # 　異なるサーバから移ってきた場合には、そのNGリストの更新が行われていないので、そのサーバカそのコミュニティからNGリストを取得する必要がある
 
         # Use passed all_paths if available
 
@@ -52,6 +53,7 @@ class Graph:
             current_node = source_node
             while True:
                 # 異なるサーバに移動
+                # 先ほど選んだノードが異なるサーバだったらそこに移動する
                 if current_node.manager != executer:
                     escaped_walk[current_node.id] = (
                         escaped_walk.get(current_node.id, 0) + 1
