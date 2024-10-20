@@ -3,15 +3,16 @@ import matplotlib.pyplot as plt
 import random
 from collections import defaultdict
 
-node_community_file = "./../../Louvain/community/karate.tcm"
-edges_file = "./../../Louvain/graph/karate.gr"
+NUMBER = "2"
 
-# node_community_file = "./../divide-community/3_communities.txt"
-# edges_file = "./../../Louvain/graph/ns.gr"
+node_community_file = "./karate/server_" + NUMBER + "_edges_community.txt"
+edges_file = "./karate/server_" + NUMBER + "_edges.txt"
 
-output_file = "external_neighbors.txt"
-group_output_file = "grouped_communities.txt"
-output_file_selected_nodes = "selected_nodes.txt"
+# group_output_file = "./karate/group/grouped_communities.txt"
+# output_file_selected_nodes = "./karate/group/selected_nodes.txt"
+
+group_output_file = "./karate/group/server_" + NUMBER + "_dynamic_groups.txt"
+output_file_selected_node = "./karate/group/server_" + NUMBER + "_ng_nodes.txt"
 
 
 # ノードとコミュニティをファイルから読み込む関数
@@ -37,35 +38,8 @@ def load_edges(file_path):
     return edges
 
 
-# 異なるコミュニティの隣接ノードを調べる関数
-# def find_external_neighbors(G, node_community):
-#     external_neighbors = defaultdict(list)  # 外部隣接ノードを保持する辞書
-
-#     for node in G.nodes():
-#         current_community = node_community[node]
-#         for neighbor in G.neighbors(node):
-#             neighbor_community = node_community[neighbor]
-#             if (
-#                 neighbor_community != current_community
-#             ):  # 隣接ノードが異なるコミュニティに属するか確認
-#                 external_neighbors[node].append((neighbor, neighbor_community))
-
-#     return external_neighbors
-
-
-# # 結果をファイルに書き込む関数
-# def write_external_neighbors_to_file(external_neighbors, output_file):
-#     with open(output_file, "w") as file:
-#         for node, neighbors in external_neighbors.items():
-#             file.write(
-#                 f"Node {node} (Community {node_community[node]}) is connected to:\n"
-#             )
-#             for neighbor, community in neighbors:
-#                 file.write(f"  - Node {neighbor} (Community {community})\n")
-
-
-# ランダムに2〜3のグループにコミュニティを分ける関数
-def create_random_groups(communities, min_groups=2, max_groups=3):
+# ランダムに1〜2のグループにコミュニティを分ける関数
+def create_random_groups(communities, min_groups=1, max_groups=2):
     num_groups = random.randint(
         min_groups, max_groups
     )  # ランダムに2〜3のグループ数を選ぶ
@@ -103,23 +77,25 @@ def dynamic_grouping_by_community(node_community):
 
 # わかりやすい方の出力方法
 # 動的グループ分けをファイルに書き込む関数
-# def write_dynamic_groups_to_file(community_group_mapping, file_path):
-#     with open(file_path, "w") as file:
-#         for community, groups in community_group_mapping.items():
-#             file.write(f"Community {community}:\n")
-#             for group_name, group in groups.items():
-#                 group_str = ", ".join(map(str, group))
-#                 file.write(f"  {group_name}: {group_str}\n")
-#             file.write("\n")  # コミュニティごとに改行
 def write_dynamic_groups_to_file(community_group_mapping, file_path):
     with open(file_path, "w") as file:
         for community, groups in community_group_mapping.items():
+            file.write(f"Community {community}:\n")
             for group_name, group in groups.items():
-                file.write(f"{community}")
-                group_str = " ".join(map(str, group))
-                group_name = group_name[6]
-                file.write(f" {group_name} {group_str}\n")
+                group_str = ", ".join(map(str, group))
+                file.write(f"  {group_name}: {group_str}\n")
             file.write("\n")  # コミュニティごとに改行
+
+
+# def write_dynamic_groups_to_file(community_group_mapping, file_path):
+#     with open(file_path, "w") as file:
+#         for community, groups in community_group_mapping.items():
+#             for group_name, group in groups.items():
+#                 file.write(f"{community}")
+#                 group_str = " ".join(map(str, group))
+#                 group_name = group_name[6]
+#                 file.write(f" {group_name} {group_str}\n")
+#             file.write("\n")  # コミュニティごとに改行
 
 
 # グループ分けされたコミュニティでNGノードを選択する関数
@@ -155,29 +131,29 @@ def select_ng_nodes_per_group(community_group_mapping, node_community, percentag
 
 # NGノードをファイルに書き込む関数
 # わかりやすく出力する方法
-# def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
-#     with open(file_path, "w") as file:
-#         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
-#             file.write(f"コミュニティ {community}:\n")
-#             sorted_groups = sorted(ng_nodes_for_groups.keys())
-#             for group_name in sorted_groups:
-#                 ng_nodes = ng_nodes_for_groups[group_name]
-#                 ng_node_str = ", ".join(map(str, ng_nodes))
-#                 file.write(f"  NG for {group_name}: {ng_node_str}\n")
-#             file.write("\n")  # コミュニティごとに改行
-
-
-# 簡略化した出力方法
 def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
     with open(file_path, "w") as file:
         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
+            file.write(f"コミュニティ {community}:\n")
             sorted_groups = sorted(ng_nodes_for_groups.keys())
             for group_name in sorted_groups:
                 ng_nodes = ng_nodes_for_groups[group_name]
-                ng_node_str = " ".join(map(str, ng_nodes))
-                shortened_group_name = group_name[6:]
-                file.write(f"{community} {shortened_group_name} {ng_node_str}\n")
-            file.write("\n")
+                ng_node_str = ", ".join(map(str, ng_nodes))
+                file.write(f"  NG for {group_name}: {ng_node_str}\n")
+            file.write("\n")  # コミュニティごとに改行
+
+
+# # 簡略化した出力方法
+# def write_ng_nodes_per_community_to_file(ng_nodes_per_community, file_path):
+#     with open(file_path, "w") as file:
+#         for community, ng_nodes_for_groups in ng_nodes_per_community.items():
+#             sorted_groups = sorted(ng_nodes_for_groups.keys())
+#             for group_name in sorted_groups:
+#                 ng_nodes = ng_nodes_for_groups[group_name]
+#                 ng_node_str = " ".join(map(str, ng_nodes))
+#                 shortened_group_name = group_name[6:]
+#                 file.write(f"{community} {shortened_group_name} {ng_node_str}\n")
+#             file.write("\n")
 
 
 # コミュニティに基づいてノードをグループに分ける関数
@@ -232,17 +208,13 @@ G = nx.Graph()
 G.add_nodes_from(node_community)
 G.add_edges_from(edges)
 
-# # 異なるコミュニティの隣接ノードを検索
-# external_neighbors = find_external_neighbors(G, node_community)
-
-# # 結果をファイルに書き込み
-# write_external_neighbors_to_file(external_neighbors, output_file)
-
 # 各コミュニティに基づいてノードをグループに分ける
 community_group_mapping = dynamic_grouping_by_community(node_community)
-write_dynamic_groups_to_file(community_group_mapping, "dynamic_groups.txt")
+write_dynamic_groups_to_file(community_group_mapping, group_output_file)
 
 select_ng_nodes_per_group = select_ng_nodes_per_group(
     community_group_mapping, node_community
 )
-write_ng_nodes_per_community_to_file(select_ng_nodes_per_group, "ng_nodes.txt")
+write_ng_nodes_per_community_to_file(
+    select_ng_nodes_per_group, output_file_selected_node
+)

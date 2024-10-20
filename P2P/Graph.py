@@ -61,8 +61,8 @@ class Graph:
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     print("RWが終了しました")
-                    print("終了時のall_paths", self.all_paths)
                     break
+
                 current_node = current_node.get_random_adjacent()
                 # 通ったノードを追加する
                 self.all_paths.append(current_node.id)
