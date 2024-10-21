@@ -7,7 +7,7 @@ import zmq
 import os
 import socket
 import sys
-import json
+import re
 
 
 class GraphManager:
@@ -25,6 +25,7 @@ class GraphManager:
     def init_for_espresso(cls, dir_path):
         host_name = os.uname()[1]
         host_ip = socket.gethostbyname(host_name)
+        # 　読み込むファイル名をIPに基づいて変更
         graph_txt_file = dir_path + host_name + ".txt"
         print("Graph txt file: ", graph_txt_file)
         f = open(graph_txt_file)
@@ -48,9 +49,60 @@ class GraphManager:
                 nodes[edge[1]] = Node(edge[1], dest_ip)
             ADJ[edge[0]].append(edge[1])
 
-        graph = Graph(ADJ, nodes)
+        # 2. ノードのコミュニティマッピングファイルの読み込み
+        node_community_mapping = {}
+        node_community_mapping_file = os.path.join(
+            dir_path, f"server_{host_name}_edges_community.txt"
+        )
+        if not os.path.exists(node_community_mapping_file):
+            raise FileNotFoundError(
+                f"Node community mapping file for {host_name} not found."
+            )
+        with open(node_community_mapping_file, "r") as f:
+            for line in f:
+                node_id, community_id = map(int, line.strip().split())
+                node_community_mapping[node_id] = community_id
+
+        # 3. community_groups と ng_list の読み込み（全サーバ共通）
+        community_groups = {}
+        ng_list = {}
+
+        # Community groups の読み込み
+        community_groups_file = os.path.join(dir_path, "all_dynamic_groups.txt")
+        with open(community_groups_file, "r") as f:
+            current_community = None
+            for line in f:
+                line = line.strip()
+                if line.startswith("Community"):
+                    current_community = int(line.split()[1][:-1])
+                    community_groups[current_community] = {}
+                elif line.startswith("Group"):
+                    group_name = line.split(":")[0].strip()
+                    group_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
+                    community_groups[current_community][group_name] = group_nodes
+
+        # NGリストの読み込み
+        ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
+        with open(ng_list_file, "r") as f:
+            current_community = None
+            for line in f:
+                line = line.strip()
+                if line.startswith("コミュニティ"):
+                    current_community = int(line.split()[1][:-1])
+                    ng_list[current_community] = {}
+                elif line.startswith("NG"):
+                    group_name = line.split(":")[0].strip()
+                    ng_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
+                    ng_list[current_community][group_name] = ng_nodes
+
+        # 4. GraphManagerのインスタンス作成
+        # graph = Graph(ADJ, nodes)
+        graph = Graph(ADJ, nodes, node_community_mapping, community_groups, ng_list)
         gm = GraphManager(host_name, graph, host_ip)
         gm.host_name = host_name
+        gm.node_community_mapping = node_community_mapping
+        gm.community_groups = community_groups
+        gm.ng_list = ng_list
 
         return gm
 
