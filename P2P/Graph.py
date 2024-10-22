@@ -35,7 +35,7 @@ class Graph:
                 adj[str(node)].add(str(adj_node))
         return str(adj)
 
-    def determine_next_hop(self, source_community, next_node_id):
+    def determine_next_hop(self, source_community, next_node_id, start_node_id):
         """
         次ノードへのホップを許可するかどうかを判定する関数。
 
@@ -49,8 +49,11 @@ class Graph:
 
         # 次ノードのコミュニティIDを取得
         next_community = self.node_community_mapping.get(next_node_id)
+        start_node_community = self.node_community_mapping.get(
+            start_node_id
+        )  # 参照するグラフが違うのか
         print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
-        print(f"始点コミュニティID: {source_community}")
+        print(f"始点コミュニティID: {start_node_community}")
 
         # 次ノードがどのコミュニティにも属していない場合
         if next_community is None:
@@ -61,13 +64,13 @@ class Graph:
         # 各コミュニティはいくつかのグループに分かれており、そのグループごとにNGリストがある。
         # 例: コミュニティ 2 には Group 1 と Group 2 があり、それぞれ別のNGリストを持つ
         for group, nodes in self.community_groups[next_community].items():
-            if source_community in nodes:
+            if start_node_community in nodes:
                 belong_role = group  # 始点コミュニティが所属するグループを保存
                 break
         else:
             # 始点コミュニティが次のコミュニティのどのグループにも属していない場合
             print(
-                f"始点コミュニティ {source_community} が次のコミュニティ {next_community} のどのグループにも属していません"
+                f"始点コミュニティ {start_node_community} が次のコミュニティ {next_community} のどのグループにも属していません"
                 f"つまり、同じコミュニテdxいなので、NGリストを参照せずともホップ可能です"
             )
             # 通常は False を返すべきだが、今回はそのまま次の処理に進む
@@ -109,7 +112,15 @@ class Graph:
             )
         return True
 
-    def random_walk(self, source_id, count, alpha=0.15, all_paths=None):
+    def random_walk(
+        self,
+        source_id,
+        count,
+        alpha=0.15,
+        all_paths=None,
+        start_node_id=None,
+        start_node_community=None,
+    ):
         print("random_walk-0,2")
         source_node = self.nodes[source_id]
         executer = source_node.manager
@@ -153,12 +164,18 @@ class Graph:
                 # 　所属コミュニティをチェック
 
                 # コミュニティとNGチェック
-
+                print("start_node", start_node_id)
+                # start_node_community = self.node_community_mapping[int(start_node_id)]
+                # print(
+                #     f"始点ノード {start_node_id} のコミュニティID: {start_node_community}  ０になって欲しい！！！"
+                # )
                 # コミュニティとNGチェック
                 source_community = self.node_community_mapping[int(current_node.id)]
 
                 # 次ノードが移動可能かチェック
-                if not self.determine_next_hop(source_community, int(current_node.id)):
+                if not self.determine_next_hop(
+                    source_community, int(current_node.id), start_node_id
+                ):
                     print(
                         f"ノード {current_node.id} へのホップはNGです。次のノードを選びます。"
                     )

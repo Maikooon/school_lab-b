@@ -19,6 +19,7 @@ class GraphManager:
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
+        self.start_node_id = None  # Initialize start_node_id
         self.start()
 
     @classmethod
@@ -81,20 +82,6 @@ class GraphManager:
                     group_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
                     community_groups[current_community][group_name] = group_nodes
 
-        # NGリストの読み込み
-        # ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
-        # with open(ng_list_file, "r") as f:
-        #     current_community = None
-        #     for line in f:
-        #         line = line.strip()
-        #         if line.startswith("コミュニティ"):
-        #             current_community = int(line.split()[1][:-1])
-        #             ng_list[current_community] = {}
-        #         elif line.startswith("NG"):
-        #             group_name = line.split(":")[0].strip()
-        #             ng_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
-        #             ng_list[current_community][group_name] = ng_nodes
-
         ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
         with open(ng_list_file, "r") as f:
             for line in f:
@@ -138,7 +125,6 @@ class GraphManager:
         gm.node_community_mapping = node_community_mapping
         gm.community_groups = community_groups
         gm.ng_list = ng_list
-
         return gm
 
     def __repr__(self):
@@ -169,13 +155,31 @@ class GraphManager:
         )
 
     def random_walk(self):
+        # 本当の原点は、self.start_node_idに格納
         print("random_walk-self")
         while True:
             # キューからメッセージを取り出す、RWを実行するためのメッセージが得られる
             message = self.receive_queue.get()
+
+            # 原点を渡すための処理
+            # まだNOneだったら更新する、Nodneではなかったら更新せずに引き続き使う
+            print("受け取ったメッセ", message)
+            if message.start_node_id is None:
+                message.start_node_id = message.source_id  # 初期のstart_node_idを設定
+                print(f"start_node_id が設定されました: {self.start_node_id}")
+            else:
+                print(f"start_node_id は既に設定されています: {self.start_node_id}")
+            self.start_node_id = message.start_node_id
+            #　ここでノード情報をコミュニティ情報に更新してしまう
+            
+            # ここまで
+
+            print("RWが一番初めにHopし始めたノード", self.start_node_id)
             print("ここにJWT入ってろ", message.jwt)
             print("rw-count", message.count)  # ここが1回目以上ならいいのでは
+
             jwt_result = verify_jwt(message.jwt)
+            ######ここでTokenを検証する############################################################################
             print("JWT検証結果", jwt_result)
 
             # 取り出したところで処理していいのかを査定する
@@ -183,7 +187,11 @@ class GraphManager:
 
             # RWを実行
             end_walk, escaped_walk, all_paths = self.graph.random_walk(
-                message.source_id, message.count, message.alpha, message.all_paths
+                message.source_id,
+                message.count,
+                message.alpha,
+                message.all_paths,
+                self.start_node_id,
             )
 
             print("RWの実行終了")
@@ -211,6 +219,7 @@ class GraphManager:
                             message.alpha,
                             message.all_paths,
                             jwt,
+                            start_node_id=self.start_node_id,
                         )
                     )
 
