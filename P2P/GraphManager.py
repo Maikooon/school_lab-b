@@ -82,18 +82,53 @@ class GraphManager:
                     community_groups[current_community][group_name] = group_nodes
 
         # NGリストの読み込み
+        # ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
+        # with open(ng_list_file, "r") as f:
+        #     current_community = None
+        #     for line in f:
+        #         line = line.strip()
+        #         if line.startswith("コミュニティ"):
+        #             current_community = int(line.split()[1][:-1])
+        #             ng_list[current_community] = {}
+        #         elif line.startswith("NG"):
+        #             group_name = line.split(":")[0].strip()
+        #             ng_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
+        #             ng_list[current_community][group_name] = ng_nodes
+
         ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
         with open(ng_list_file, "r") as f:
-            current_community = None
             for line in f:
-                line = line.strip()
+                line = line.strip()  # 行の前後の空白を削除
+
+                # コミュニティIDの行を見つける
                 if line.startswith("コミュニティ"):
-                    current_community = int(line.split()[1][:-1])
-                    ng_list[current_community] = {}
+                    # コミュニティIDを抽出
+                    match = re.match(r"コミュニティ (\d+):", line)
+                    if match:
+                        current_community = int(match.group(1))
+                        ng_list[current_community] = {}  # 新しいコミュニティの初期化
+                    else:
+                        print(f"警告: 不正なフォーマットのコミュニティ行: {line}")
+
+                # NGリストの行を見つける
                 elif line.startswith("NG"):
-                    group_name = line.split(":")[0].strip()
-                    ng_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
-                    ng_list[current_community][group_name] = ng_nodes
+                    if current_community is None:
+                        print(
+                            "エラー: コミュニティが定義されていないのにNGリストが見つかりました"
+                        )
+                        continue
+
+                    # グループ番号を抽出
+                    group_match = re.match(r"NG for Group (\d+):", line)
+                    if group_match:
+                        group_number = int(group_match.group(1))
+                        # NGノードを抽出し、リストに変換
+                        ng_nodes = list(
+                            map(int, line.split(":")[1].strip().split(", "))
+                        )
+                        ng_list[current_community][group_number] = ng_nodes
+                    else:
+                        print(f"警告: 不正なフォーマットのNGリスト行: {line}")
 
         # 4. GraphManagerのインスタンス作成
         # graph = Graph(ADJ, nodes)

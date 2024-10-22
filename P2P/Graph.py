@@ -36,41 +36,77 @@ class Graph:
         return str(adj)
 
     def determine_next_hop(self, source_community, next_node_id):
+        """
+        次ノードへのホップを許可するかどうかを判定する関数。
+
+        Parameters:
+            source_community: 現在のノードが属するコミュニティID。
+            next_node_id: 次に移動しようとしているノードのID。
+
+        Returns:
+            bool: True ならホップ許可、False ならホップ不可。
+        """
+
         # 次ノードのコミュニティIDを取得
         next_community = self.node_community_mapping.get(next_node_id)
         print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
         print(f"始点コミュニティID: {source_community}")
-        # 属していないということは他サーバにあるということなのでこれはなくてもいいかも？
+
+        # 次ノードがどのコミュニティにも属していない場合
         if next_community is None:
             print(f"次ノード {next_node_id} のコミュニティが見つかりません")
             return False
-        # print(
-        #     f"次コミュニティ{source_community}において、視点コミュニティはGroup９０です"
-        # )
-        # 次のコミュニティにおいて、始点コミュニティが属するグループを判定
+
+        # 次のコミュニティで、始点コミュニティがどのグループに属しているかを調べる
+        # 各コミュニティはいくつかのグループに分かれており、そのグループごとにNGリストがある。
+        # 例: コミュニティ 2 には Group 1 と Group 2 があり、それぞれ別のNGリストを持つ
         for group, nodes in self.community_groups[next_community].items():
             if source_community in nodes:
-                source_group = group
+                belong_role = group  # 始点コミュニティが所属するグループを保存
                 break
-        else:  # TODO:この順番にすると、初めがえらるので一旦無視
+        else:
+            # 始点コミュニティが次のコミュニティのどのグループにも属していない場合
             print(
                 f"始点コミュニティ {source_community} が次のコミュニティ {next_community} のどのグループにも属していません"
+                f"つまり、同じコミュニテdxいなので、NGリストを参照せずともホップ可能です"
             )
-            # return False
-        # NGリストの次のコミュニティの欄において、始点コミュニティのグループ欄を確認
-        # 始点グループのNGリストを取得し、次ノードが含まれるか確認
-        group_ng_list = self.ng_list.get(next_community, {}).get(source_group, [])
+            # 通常は False を返すべきだが、今回はそのまま次の処理に進む
+            return True
+
+        # 始点グループを表示
+        print(f"始点グループ: {belong_role}")
+        belong_role_number = int(belong_role.split()[1])  # "Group 2" から 2 を取り出す
+        print(f"始点グループの番号: {belong_role_number}")
+
+        # NGリストから、次のコミュニティで始点グループに対応するリストを取得
+        group_ng_list = self.ng_list.get(next_community, {}).get(belong_role_number, [])
+
+        # NGリストの全体を表示
         print(
-            f"始点グループ {source_group} のNGリスト: {group_ng_list}"
-        )  # TODO:なんでここが空列になるのか
+            f"次のコミュニティ {next_community} のNGリスト: {self.ng_list.get(next_community, {})}"
+        )
+        # 指定したコミュニティのNGリストから、特定のグループのノードリストを取得
+        group_ng_list = self.ng_list.get(next_community, {}).get(belong_role_number, [])
+
+        # 特定のグループのNGリストが存在するかを確認
+        if group_ng_list is None or not group_ng_list:
+            print(
+                f"次のコミュニティ {next_community} のグループ {belong_role} に対するNGリストが見つかりません"
+            )
+            group_ng_list = []  # NGリストが見つからなかった場合は空リストを使用
+        else:
+            print(f"始点グループ {belong_role} のNGリスト: {group_ng_list}")
+
+        # 次ノードの確認
         if next_node_id in group_ng_list:
             print(
-                f"次ノード {next_node_id} は次コミュニティ {next_community} のグループ {source_group} でNGです"
+                f"次ノード {next_node_id} は次コミュニティ {next_community} のグループ {belong_role} でNGです"
             )
             return False
-
-        # NGに含まれていなければホップを許可
-        print(f"NGに含まれていないので次ノード {next_node_id} へホップ可能")
+        else:
+            print(
+                f"次ノード {next_node_id} はNGリストに含まれていません。ホップ可能です。"
+            )
         return True
 
     def random_walk(self, source_id, count, alpha=0.15, all_paths=None):
@@ -102,35 +138,31 @@ class Graph:
                 # 終了確率より小さいときには終了
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
+                    self.all_paths.append(current_node.id)
                     print("RWが終了しました")
                     break
 
-                # 現在のノードが有効かを確認
+                # 次に選択しているnodeが有効かを確認
                 print("current_node.id", current_node.id)
-                print(f"current_node.idの型: {type(current_node.id)}")
 
                 # debug
-                # ノードのIDが整数型であることを確認する
-                current_node_id = int(current_node.id)
-                if current_node_id not in self.node_community_mapping:
-                    print(
-                        f"エラー: ノード {current_node.id} に対応するコミュニティIDが見つかりません"
-                    )
-                    print(
-                        "現在のnode_community_mappingのキー:",
-                        list(self.node_community_mapping.keys()),
-                    )
-                    return [], {}, all_paths
+                print(
+                    "現在のnode_community_mappingのキー:",
+                    list(self.node_community_mapping.keys()),
+                )
+                # 　所属コミュニティをチェック
+
+                # コミュニティとNGチェック
 
                 # コミュニティとNGチェック
                 source_community = self.node_community_mapping[int(current_node.id)]
 
                 # 次ノードが移動可能かチェック
-                # if not self.determine_next_hop(source_community, int(current_node.id)):
-                #     print(
-                #         f"ノード {current_node.id} へのホップはNGです。次のノードを選びます。"
-                #     )
-                #     continue  # NGの場合、次のノードに移動しないで再度選択
+                if not self.determine_next_hop(source_community, int(current_node.id)):
+                    print(
+                        f"ノード {current_node.id} へのホップはNGです。次のノードを選びます。"
+                    )
+                    continue  # NGの場合、次のノードに移動しないで再度選択
 
                 # 通ったノードを追加する
                 self.all_paths.append(current_node.id)
