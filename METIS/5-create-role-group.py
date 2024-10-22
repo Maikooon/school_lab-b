@@ -3,8 +3,8 @@ import random
 from collections import defaultdict
 
 # ファイルリストを指定
-file_numbers = ["0", "1", "2"]  # ファイル番号のリスト
-base_path = "./karate/"
+file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
+base_path = "./new-karate/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数

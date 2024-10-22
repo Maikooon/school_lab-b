@@ -9,6 +9,9 @@ METISで分割されたものを再びMETISで分割
 
 生成されるファイル
 /server_" + NUMBER + "_edges_community.txt
+
+
+新しくなったのでこの実行の必要性なくなった？
 """
 
 import numpy as np
