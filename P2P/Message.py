@@ -13,6 +13,7 @@ class Message:
         all_paths=None,
         jwt=None,
         start_node_id=None,
+        start_node_community=None,
     ):
         self.source_id = source_id
         self.count = count
@@ -22,6 +23,7 @@ class Message:
         self.all_paths = all_paths if all_paths is not None else []
         self.jwt = generate_jwt(source_id) if jwt is None else jwt
         self.start_node_id = start_node_id
+        self.start_node_community = start_node_community
 
     def __repr__(self):
         return "from: {}, count: {}, user: {}, start_Node: {}".format(
@@ -41,6 +43,7 @@ class Message:
             "all_paths": self.all_paths,
             "jwt": self.jwt,
             "start_node_id": self.start_node_id,
+            "start_node_community": self.start_node_community,
         }
         return str(dict_rep).encode("utf-8")
 
@@ -57,4 +60,5 @@ class Message:
             dic.get("all_paths", []),
             dic.get("jwt", None),
             dic.get("start_node_id", None),
+            dic.get("start_node_community", None),
         )

@@ -35,7 +35,7 @@ class Graph:
                 adj[str(node)].add(str(adj_node))
         return str(adj)
 
-    def determine_next_hop(self, source_community, next_node_id, start_node_id):
+    def determine_next_hop(self, source_community, next_node_id, start_node_community):
         """
         次ノードへのホップを許可するかどうかを判定する関数。
 
@@ -49,9 +49,7 @@ class Graph:
 
         # 次ノードのコミュニティIDを取得
         next_community = self.node_community_mapping.get(next_node_id)
-        start_node_community = self.node_community_mapping.get(
-            start_node_id
-        )  # 参照するグラフが違うのか
+        # start_noce_communityがNoneの場合は、初めのノードとして扱う
         print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
         print(f"始点コミュニティID: {start_node_community}")
 
@@ -126,6 +124,7 @@ class Graph:
         executer = source_node.manager
         end_walk = dict()
         escaped_walk = dict()
+        print("コミュニティが渡せていますように！", start_node_community)
 
         # Use passed all_paths if available
         if all_paths is None:
@@ -165,19 +164,15 @@ class Graph:
 
                 # コミュニティとNGチェック
                 print("start_node", start_node_id)
-                # start_node_community = self.node_community_mapping[int(start_node_id)]
-                # print(
-                #     f"始点ノード {start_node_id} のコミュニティID: {start_node_community}  ０になって欲しい！！！"
-                # )
                 # コミュニティとNGチェック
                 source_community = self.node_community_mapping[int(current_node.id)]
 
                 # 次ノードが移動可能かチェック
                 if not self.determine_next_hop(
-                    source_community, int(current_node.id), start_node_id
+                    source_community, int(current_node.id), start_node_community
                 ):
                     print(
-                        f"ノード {current_node.id} へのホップはNGです。次のノードを選びます。"
+                        f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
                     )
                     continue  # NGの場合、次のノードに移動しないで再度選択
 

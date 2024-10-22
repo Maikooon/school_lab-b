@@ -20,6 +20,7 @@ class GraphManager:
         self.send_queue = Queue()
         self.notify_queue = Queue()
         self.start_node_id = None  # Initialize start_node_id
+        self.start_node_community = None  # Initialize start_node_community
         self.start()
 
     @classmethod
@@ -169,12 +170,20 @@ class GraphManager:
                 print(f"start_node_id が設定されました: {self.start_node_id}")
             else:
                 print(f"start_node_id は既に設定されています: {self.start_node_id}")
+            # 　ここでノード情報をコミュニティ情報に更新してしまう         -------------------------------------------------------------------------------------------------------
+            if message.start_node_community is None:
+                message.start_node_community = self.node_community_mapping[
+                    int(message.start_node_id)
+                ]
+                print(
+                    f"始点ノード {message.start_node_id} のコミュニティID: {message.start_node_community}"
+                )
             self.start_node_id = message.start_node_id
-            #　ここでノード情報をコミュニティ情報に更新してしまう
-            
+            self.start_node_community = message.start_node_community
+            print("RWが一番初めにHopし始めたノード", self.start_node_id)
+            print(message.start_node_community)
             # ここまで
 
-            print("RWが一番初めにHopし始めたノード", self.start_node_id)
             print("ここにJWT入ってろ", message.jwt)
             print("rw-count", message.count)  # ここが1回目以上ならいいのでは
 
@@ -192,6 +201,7 @@ class GraphManager:
                 message.alpha,
                 message.all_paths,
                 self.start_node_id,
+                self.start_node_community,
             )
 
             print("RWの実行終了")
@@ -220,6 +230,7 @@ class GraphManager:
                             message.all_paths,
                             jwt,
                             start_node_id=self.start_node_id,
+                            start_node_community=self.start_node_community,
                         )
                     )
 
