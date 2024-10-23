@@ -119,7 +119,6 @@ class GraphManager:
                         print(f"警告: 不正なフォーマットのNGリスト行: {line}")
 
         # 4. GraphManagerのインスタンス作成
-        # graph = Graph(ADJ, nodes)
         graph = Graph(ADJ, nodes, node_community_mapping, community_groups, ng_list)
         gm = GraphManager(host_name, graph, host_ip)
         gm.host_name = host_name
@@ -163,11 +162,9 @@ class GraphManager:
             message = self.receive_queue.get()
 
             # 原点を渡すための処理
-            # まだNOneだったら更新する、Nodneではなかったら更新せずに引き続き使う
             print("受け取ったメッセ", message)
             if message.start_node_id is None:
                 message.start_node_id = message.source_id  # 初期のstart_node_idを設定
-                print(f"start_node_id が設定されました: {self.start_node_id}")
             else:
                 print(f"start_node_id は既に設定されています: {self.start_node_id}")
             # 　ここでノード情報をコミュニティ情報に更新してしまう         -------------------------------------------------------------------------------------------------------
@@ -180,13 +177,13 @@ class GraphManager:
                 )
             self.start_node_id = message.start_node_id
             self.start_node_community = message.start_node_community
-            print("RWが一番初めにHopし始めたノード", self.start_node_id)
+            print(
+                f"RWが一番初めにHopし始めたノード{self.start_node_id}、コミュニティ{self.start_node_community}"
+            )
             print(message.start_node_community)
             # ここまで
 
-            print("ここにJWT入ってろ", message.jwt)
-            print("rw-count", message.count)  # ここが1回目以上ならいいのでは
-
+            print("このJWTを検証する", message.jwt)
             jwt_result = verify_jwt(message.jwt)
             ######ここでTokenを検証する############################################################################
             print("JWT検証結果", jwt_result)
@@ -208,7 +205,6 @@ class GraphManager:
             # 終了RWとして集計用箱に格納
             print("end_walk", end_walk)
             if len(end_walk) > 0:
-                # self.notify_queue.put([message.user, end_walk])
                 print("put", message.user, end_walk, all_paths)
                 self.notify_queue.put(
                     {"user": message.user, "end_walk": end_walk, "all_paths": all_paths}
@@ -253,8 +249,6 @@ class GraphManager:
             socket.send_string(str(message))  # 辞書を文字列に変換して送信
             socket.close()
             context.destroy()
-            # print("Notified to {}\n{} {}".format(user, end_walk, all_paths))
-
             print("Notified to {},{}".format(user, end_walk))
 
     def send_message(self):

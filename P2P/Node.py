@@ -20,12 +20,7 @@ class Node:
     def add_edge(self, node):
         self.adj[node.id] = node
         self.degree = len(self.adj)
-        # print('Node {} add edge to {}'.format(self.id, node.id))
         return
-
-    # 自分のコミュニティのアクセスリストを読み込む関数
-
-    # 自分のRoleの内訳のリストを読み込む関数
 
     def get_random_adjacent(self):
         # 隣接するノードがなかったとき

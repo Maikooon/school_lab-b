@@ -1,3 +1,13 @@
+"""
+3で生成されるコミュニティごとのグループを作成から、それぞれのロール分けとNGノードの選択を行う
+
+出力
+all_dynamic
+ng_node
+
+ここでの出力をP2pのKarate/datasetに適用する
+"""
+
 import os
 import random
 from collections import defaultdict

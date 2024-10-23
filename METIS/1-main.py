@@ -1,5 +1,8 @@
 """
 Louvainで分割したグラフを読み込んで、描画し、分割を行うスクリプト
+
+出力
+node_community.txt: ノードとコミュニティ情報
 """
 
 import numpy as np

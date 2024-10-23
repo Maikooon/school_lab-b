@@ -50,13 +50,22 @@ class Graph:
         # 次ノードのコミュニティIDを取得
         next_community = self.node_community_mapping.get(next_node_id)
         # start_noce_communityがNoneの場合は、初めのノードとして扱う
-        print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
-        print(f"始点コミュニティID: {start_node_community}")
+        # print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
+        # print(f"始点コミュニティID: {start_node_community}")
 
-        # 次ノードがどのコミュニティにも属していない場合
-        if next_community is None:
-            print(f"次ノード {next_node_id} のコミュニティが見つかりません")
-            return False
+        # 始点コミュニティとHopする先が同じであるとき,始点コミュニティには許可なくアクセス可能
+        if start_node_community == next_community:
+            print(
+                f"始点コミュニティ {start_node_community} と次ノード {next_node_id} のコミュニティが同じです、そのためそのままホップします"
+            )
+            return True
+
+        # 次ノードがどのコミュニティにも属していない場合ーーそんなことない
+        # if next_community is None:
+        #     print(f"次ノード {next_node_id} のコミュニティが見つかりません")
+        #     return False
+
+        # 一つ前のコミュニティと同じなら同じNGリストを参照
 
         # 次のコミュニティで、始点コミュニティがどのグループに属しているかを調べる
         # 各コミュニティはいくつかのグループに分かれており、そのグループごとにNGリストがある。
@@ -65,27 +74,32 @@ class Graph:
             if start_node_community in nodes:
                 belong_role = group  # 始点コミュニティが所属するグループを保存
                 break
-        else:
-            # 始点コミュニティが次のコミュニティのどのグループにも属していない場合
-            print(
-                f"始点コミュニティ {start_node_community} が次のコミュニティ {next_community} のどのグループにも属していません"
-                f"つまり、同じコミュニテdxいなので、NGリストを参照せずともホップ可能です"
-            )
-            # 通常は False を返すべきだが、今回はそのまま次の処理に進む
-            return True
+        # else:
+        #     # 始点コミュニティが次のコミュニティのどのグループにも属していない場合,　先ほどInitで定めたNGリストをそのまま使用したい
+        #     print(
+        #         f"始点コミュニティ {start_node_community} が次のコミュニティ {next_community} のどのグループにも属していません"
+        #         f"つまり、始点ち移動先が同じコミュニテdぃなので、先ほどのNGを参照します"
+        #     )
+        #     # 通常は False を返すべきだが、今回はそのまま次の処理に進む
+        #     return True
+
+        # 　ここでNGリストを初期化する、コミュニティを移動したので参照すべきリストも変わる
+        self.previous_ng_list = []
 
         # 始点グループを表示
-        print(f"始点グループ: {belong_role}")
+        # print(f"始点グループ: {belong_role}")
         belong_role_number = int(belong_role.split()[1])  # "Group 2" から 2 を取り出す
-        print(f"始点グループの番号: {belong_role_number}")
+        # print(f"始点グループの番号: {belong_role_number}")
 
         # NGリストから、次のコミュニティで始点グループに対応するリストを取得
         group_ng_list = self.ng_list.get(next_community, {}).get(belong_role_number, [])
+        self.previous_ng_list = group_ng_list  # ------------------------------
+        # print(f"始点グループ {belong_role} のNGリスト: {group_ng_list}")  # あとで消す
 
         # NGリストの全体を表示
-        print(
-            f"次のコミュニティ {next_community} のNGリスト: {self.ng_list.get(next_community, {})}"
-        )
+        # print(
+        #     f"次のコミュニティ {next_community} のNGリスト: {self.ng_list.get(next_community, {})}"
+        # )
         # 指定したコミュニティのNGリストから、特定のグループのノードリストを取得
         group_ng_list = self.ng_list.get(next_community, {}).get(belong_role_number, [])
 
@@ -119,12 +133,12 @@ class Graph:
         start_node_id=None,
         start_node_community=None,
     ):
-        print("random_walk-0,2")
+        print("random_walkの関数が開始")
         source_node = self.nodes[source_id]
         executer = source_node.manager
         end_walk = dict()
         escaped_walk = dict()
-        print("コミュニティが渡せていますように！", start_node_community)
+        # print("コミュニティが渡せていますように！", start_node_community)
 
         # Use passed all_paths if available
         if all_paths is None:
@@ -153,20 +167,21 @@ class Graph:
                     break
 
                 # 次に選択しているnodeが有効かを確認
-                print("current_node.id", current_node.id)
+                # print("current_node.id", current_node.id)
 
                 # debug
-                print(
-                    "現在のnode_community_mappingのキー:",
-                    list(self.node_community_mapping.keys()),
-                )
+                # print(
+                #     "現在のnode_community_mappingのキー:",
+                #     list(self.node_community_mapping.keys()),
+                # )
                 # 　所属コミュニティをチェック
 
                 # コミュニティとNGチェック
-                print("start_node", start_node_id)
+                # print("start_node", start_node_id)
                 # コミュニティとNGチェック
                 source_community = self.node_community_mapping[int(current_node.id)]
 
+                # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
                 # 次ノードが移動可能かチェック
                 if not self.determine_next_hop(
                     source_community, int(current_node.id), start_node_community

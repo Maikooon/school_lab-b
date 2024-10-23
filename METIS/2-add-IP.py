@@ -1,6 +1,12 @@
-'''
+"""
 Louvainで与えられたグラフとMETISで分割したグラフに対してIPを振り当てる
-'''
+abileneサーバごとにエッジにIPを振り当てる
+
+出力
+abilene03.txt
+abilene06.txt
+abilene11.txt
+"""
 
 GRAPHNAME = "karate"
 # community_file = "./../../Louvain/community/karate.tcm"
