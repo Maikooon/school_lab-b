@@ -164,6 +164,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             // 隣接ノードからランダムに次のノードを選択
             next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+            // 自分のコミュニティ内を移動する時には、そのノードに対して移動していいのかを確かめる
             // NGリストに含まれている場合は、再度選び直す
             if (ng_list.find(next_node) != ng_list.end()) {
                 std::cout << "NGなのでスキップ" << next_node << std::endl;
@@ -176,18 +177,22 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // int next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
         //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
-        if (ng_list.find(next_node) != ng_list.end()) {
-            // std::cout << "NGなのでスキップ" << next_node << std::endl;
-            next_node = current_node;
-            continue; // NGノードの場合は次のHopを探す
-        }
+    //たぶんここは上のループとおあなじ処理をしているのでコメントアウト
+        // if (ng_list.find(next_node) != ng_list.end()) {
+        //     // std::cout << "NGなのでスキップ" << next_node << std::endl;
+        //     next_node = current_node;
+        //     continue; // NGノードの場合は次のHopを探す
+        // }
 
         // printf("current_node: %d, next_node: %d\n", current_node, next_node);
 
         // 現在のノードとHop先のコミュニティが異なる場合
+        //NGノードは、自分と同じコミュニティに対してしか設定されていない
+        // 次のコミュニティにおいて、どのノードにアクセス可能なのかを知るためには、次のコミュニティのアクセスリストを改めて参照する必要がある
         if (node_communities[current_node] != node_communities[next_node]) {
             int current_community = node_communities[current_node];
             int next_community = node_communities[next_node];
+
             // printf("current_community: %d, next_community: %d\n", current_community, next_community);
             //始点コミュニティと移動さきコミュニティが同じ時にはアクセス権の確認なし
             if (next_community == start_community) {
@@ -196,20 +201,20 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                 continue;
             }
 
-
             // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
 
             //ここから二つのテーブルを参照して行う
             for (auto& group : community_groups[next_community]) {
                 if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
-                    // NGリストを参照
+                    // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
                     ng_list = community_ng_nodes[next_community][group.first];
-                    //参照したリストを出力
+                    //debug 参照したリストを出力
                     // std::cout << "NG nodes for Group " << group.first << ": ";
                     for (const int node : ng_list) {
                         std::cout << node << " ";
                     }
                     std::cout << std::endl;
+                    /// .debug
 
                     // 次のHop先がNGノードであるかを確認
                     if (ng_list.find(next_node) != ng_list.end()) {

@@ -1,11 +1,12 @@
 import random
 
-class Node():
+
+class Node:
     def __init__(self, id, manager=None):
         self.id = id
         self.adj = dict()
         self.degree = 0
-        self.manager = manager #IP e.g., 127.0.0.1
+        self.manager = manager  # IP e.g., 127.0.0.1
 
     def __repr__(self):
         return self.id
@@ -19,11 +20,12 @@ class Node():
     def add_edge(self, node):
         self.adj[node.id] = node
         self.degree = len(self.adj)
-        # print('Node {} add edge to {}'.format(self.id, node.id))
         return
 
     def get_random_adjacent(self):
+        # 隣接するノードがなかったとき
         if self.degree == 0:
             return self
         else:
+            # 　ランダムに選択
             return random.choice(list(self.adj.values()))

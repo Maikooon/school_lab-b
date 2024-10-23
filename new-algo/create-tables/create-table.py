@@ -38,30 +38,30 @@ def load_edges(file_path):
 
 
 # 異なるコミュニティの隣接ノードを調べる関数
-def find_external_neighbors(G, node_community):
-    external_neighbors = defaultdict(list)  # 外部隣接ノードを保持する辞書
+# def find_external_neighbors(G, node_community):
+#     external_neighbors = defaultdict(list)  # 外部隣接ノードを保持する辞書
 
-    for node in G.nodes():
-        current_community = node_community[node]
-        for neighbor in G.neighbors(node):
-            neighbor_community = node_community[neighbor]
-            if (
-                neighbor_community != current_community
-            ):  # 隣接ノードが異なるコミュニティに属するか確認
-                external_neighbors[node].append((neighbor, neighbor_community))
+#     for node in G.nodes():
+#         current_community = node_community[node]
+#         for neighbor in G.neighbors(node):
+#             neighbor_community = node_community[neighbor]
+#             if (
+#                 neighbor_community != current_community
+#             ):  # 隣接ノードが異なるコミュニティに属するか確認
+#                 external_neighbors[node].append((neighbor, neighbor_community))
 
-    return external_neighbors
+#     return external_neighbors
 
 
-# 結果をファイルに書き込む関数
-def write_external_neighbors_to_file(external_neighbors, output_file):
-    with open(output_file, "w") as file:
-        for node, neighbors in external_neighbors.items():
-            file.write(
-                f"Node {node} (Community {node_community[node]}) is connected to:\n"
-            )
-            for neighbor, community in neighbors:
-                file.write(f"  - Node {neighbor} (Community {community})\n")
+# # 結果をファイルに書き込む関数
+# def write_external_neighbors_to_file(external_neighbors, output_file):
+#     with open(output_file, "w") as file:
+#         for node, neighbors in external_neighbors.items():
+#             file.write(
+#                 f"Node {node} (Community {node_community[node]}) is connected to:\n"
+#             )
+#             for neighbor, community in neighbors:
+#                 file.write(f"  - Node {neighbor} (Community {community})\n")
 
 
 # ランダムに2〜3のグループにコミュニティを分ける関数
@@ -232,11 +232,11 @@ G = nx.Graph()
 G.add_nodes_from(node_community)
 G.add_edges_from(edges)
 
-# 異なるコミュニティの隣接ノードを検索
-external_neighbors = find_external_neighbors(G, node_community)
+# # 異なるコミュニティの隣接ノードを検索
+# external_neighbors = find_external_neighbors(G, node_community)
 
-# 結果をファイルに書き込み
-write_external_neighbors_to_file(external_neighbors, output_file)
+# # 結果をファイルに書き込み
+# write_external_neighbors_to_file(external_neighbors, output_file)
 
 # 各コミュニティに基づいてノードをグループに分ける
 community_group_mapping = dynamic_grouping_by_community(node_community)

@@ -7,7 +7,7 @@ import zmq
 import os
 import socket
 import sys
-import json
+import re
 
 
 class GraphManager:
@@ -19,12 +19,15 @@ class GraphManager:
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
+        self.start_node_id = None  # Initialize start_node_id
+        self.start_node_community = None  # Initialize start_node_community
         self.start()
 
     @classmethod
     def init_for_espresso(cls, dir_path):
         host_name = os.uname()[1]
         host_ip = socket.gethostbyname(host_name)
+        # 　読み込むファイル名をIPに基づいて変更
         graph_txt_file = dir_path + host_name + ".txt"
         print("Graph txt file: ", graph_txt_file)
         f = open(graph_txt_file)
@@ -48,10 +51,80 @@ class GraphManager:
                 nodes[edge[1]] = Node(edge[1], dest_ip)
             ADJ[edge[0]].append(edge[1])
 
-        graph = Graph(ADJ, nodes)
+        # 2. ノードのコミュニティマッピングファイルの読み込み
+        node_community_mapping = {}
+        node_community_mapping_file = os.path.join(
+            dir_path, f"server_{host_name}_edges_community.txt"
+        )
+        if not os.path.exists(node_community_mapping_file):
+            raise FileNotFoundError(
+                f"Node community mapping file for {host_name} not found."
+            )
+        with open(node_community_mapping_file, "r") as f:
+            for line in f:
+                node_id, community_id = map(int, line.strip().split())
+                node_community_mapping[node_id] = community_id
+
+        # 3. community_groups と ng_list の読み込み（全サーバ共通）
+        community_groups = {}
+        ng_list = {}
+
+        # Community groups の読み込み
+        community_groups_file = os.path.join(dir_path, "all_dynamic_groups.txt")
+        with open(community_groups_file, "r") as f:
+            current_community = None
+            for line in f:
+                line = line.strip()
+                if line.startswith("Community"):
+                    current_community = int(line.split()[1][:-1])
+                    community_groups[current_community] = {}
+                elif line.startswith("Group"):
+                    group_name = line.split(":")[0].strip()
+                    group_nodes = list(map(int, line.split(":")[1].strip().split(", ")))
+                    community_groups[current_community][group_name] = group_nodes
+
+        ng_list_file = os.path.join(dir_path, "ng_nodes.txt")
+        with open(ng_list_file, "r") as f:
+            for line in f:
+                line = line.strip()  # 行の前後の空白を削除
+
+                # コミュニティIDの行を見つける
+                if line.startswith("コミュニティ"):
+                    # コミュニティIDを抽出
+                    match = re.match(r"コミュニティ (\d+):", line)
+                    if match:
+                        current_community = int(match.group(1))
+                        ng_list[current_community] = {}  # 新しいコミュニティの初期化
+                    else:
+                        print(f"警告: 不正なフォーマットのコミュニティ行: {line}")
+
+                # NGリストの行を見つける
+                elif line.startswith("NG"):
+                    if current_community is None:
+                        print(
+                            "エラー: コミュニティが定義されていないのにNGリストが見つかりました"
+                        )
+                        continue
+
+                    # グループ番号を抽出
+                    group_match = re.match(r"NG for Group (\d+):", line)
+                    if group_match:
+                        group_number = int(group_match.group(1))
+                        # NGノードを抽出し、リストに変換
+                        ng_nodes = list(
+                            map(int, line.split(":")[1].strip().split(", "))
+                        )
+                        ng_list[current_community][group_number] = ng_nodes
+                    else:
+                        print(f"警告: 不正なフォーマットのNGリスト行: {line}")
+
+        # 4. GraphManagerのインスタンス作成
+        graph = Graph(ADJ, nodes, node_community_mapping, community_groups, ng_list)
         gm = GraphManager(host_name, graph, host_ip)
         gm.host_name = host_name
-
+        gm.node_community_mapping = node_community_mapping
+        gm.community_groups = community_groups
+        gm.ng_list = ng_list
         return gm
 
     def __repr__(self):
@@ -82,13 +155,37 @@ class GraphManager:
         )
 
     def random_walk(self):
+        # 本当の原点は、self.start_node_idに格納
         print("random_walk-self")
         while True:
             # キューからメッセージを取り出す、RWを実行するためのメッセージが得られる
             message = self.receive_queue.get()
-            print("ここにJWT入ってろ", message.jwt)
-            print("rw-count", message.count)  # ここが1回目以上ならいいのでは
+
+            # 原点を渡すための処理
+            print("受け取ったメッセ", message)
+            if message.start_node_id is None:
+                message.start_node_id = message.source_id  # 初期のstart_node_idを設定
+            else:
+                print(f"start_node_id は既に設定されています: {self.start_node_id}")
+            # 　ここでノード情報をコミュニティ情報に更新してしまう         -------------------------------------------------------------------------------------------------------
+            if message.start_node_community is None:
+                message.start_node_community = self.node_community_mapping[
+                    int(message.start_node_id)
+                ]
+                print(
+                    f"始点ノード {message.start_node_id} のコミュニティID: {message.start_node_community}"
+                )
+            self.start_node_id = message.start_node_id
+            self.start_node_community = message.start_node_community
+            print(
+                f"RWが一番初めにHopし始めたノード{self.start_node_id}、コミュニティ{self.start_node_community}"
+            )
+            print(message.start_node_community)
+            # ここまで
+
+            print("このJWTを検証する", message.jwt)
             jwt_result = verify_jwt(message.jwt)
+            ######ここでTokenを検証する############################################################################
             print("JWT検証結果", jwt_result)
 
             # 取り出したところで処理していいのかを査定する
@@ -96,14 +193,18 @@ class GraphManager:
 
             # RWを実行
             end_walk, escaped_walk, all_paths = self.graph.random_walk(
-                message.source_id, message.count, message.alpha, message.all_paths
+                message.source_id,
+                message.count,
+                message.alpha,
+                message.all_paths,
+                self.start_node_id,
+                self.start_node_community,
             )
 
             print("RWの実行終了")
             # 終了RWとして集計用箱に格納
             print("end_walk", end_walk)
             if len(end_walk) > 0:
-                # self.notify_queue.put([message.user, end_walk])
                 print("put", message.user, end_walk, all_paths)
                 self.notify_queue.put(
                     {"user": message.user, "end_walk": end_walk, "all_paths": all_paths}
@@ -124,6 +225,8 @@ class GraphManager:
                             message.alpha,
                             message.all_paths,
                             jwt,
+                            start_node_id=self.start_node_id,
+                            start_node_community=self.start_node_community,
                         )
                     )
 
@@ -146,8 +249,6 @@ class GraphManager:
             socket.send_string(str(message))  # 辞書を文字列に変換して送信
             socket.close()
             context.destroy()
-            # print("Notified to {}\n{} {}".format(user, end_walk, all_paths))
-
             print("Notified to {},{}".format(user, end_walk))
 
     def send_message(self):

@@ -6,6 +6,7 @@ python3 -i User.py 10.58.58.97
 from GraphManager import *
 from Graph import *
 import ast
+import time
 
 
 class User:
@@ -16,6 +17,7 @@ class User:
 
     def send_query(self, source_id, count, GM):
         print("send_query")
+        start_time = time.time()  # ここから時間を計測する
         self.response_queue = Queue()
         message = self.create_message(source_id, count, GM)
         context = zmq.Context()
@@ -24,7 +26,6 @@ class User:
         socket.send(bytes(message))
         socket.close()
         context.destroy()
-        # print('User{} sent to {}\n{}'.format(self.id, message.GM, message))
 
         count = 0
         end_count = dict()
@@ -62,6 +63,10 @@ class User:
         print("Query solved: ", end_count)
         socket.close()
         context.destroy()
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Execution time: {elapsed_time:.4f} seconds")  # 経過時間を表示
 
     def create_message(self, source_id, count, GM):
         print("create_message")
