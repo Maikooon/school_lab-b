@@ -6,7 +6,7 @@ class User:
     def __init__(self, ip_addr):
         self.response_queue = Queue()
         self.ip_addr = ip_addr
-        self.port = 10000
+        self.port = 10020
 
     def send_query(self, source_id, count, GM):
         start_time = time.time()  # 計測を開始

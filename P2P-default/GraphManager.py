@@ -13,7 +13,7 @@ class GraphManager():
         self.id = id
         self.graph = graph
         self.ip_addr = ip_addr
-        self.port = 10000
+        self.port = 10020
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
