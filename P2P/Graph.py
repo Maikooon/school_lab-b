@@ -80,7 +80,6 @@ class Graph:
         #         f"始点コミュニティ {start_node_community} が次のコミュニティ {next_community} のどのグループにも属していません"
         #         f"つまり、始点ち移動先が同じコミュニテdぃなので、先ほどのNGを参照します"
         #     )
-        #     # 通常は False を返すべきだが、今回はそのまま次の処理に進む
         #     return True
 
         # 　ここでNGリストを初期化する、コミュニティを移動したので参照すべきリストも変わる
@@ -117,7 +116,8 @@ class Graph:
             print(
                 f"次ノード {next_node_id} は次コミュニティ {next_community} のグループ {belong_role} でNGです"
             )
-            return False
+            # TODO: ここだけFalseなので少なくなるとしたらここ-----------------------------------------------------------------
+            # return False
         else:
             print(
                 f"次ノード {next_node_id} はNGリストに含まれていません。ホップ可能です。"
@@ -183,15 +183,16 @@ class Graph:
                 # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
                 # 次ノードが移動可能かチェック
 
-                # TODO:kここで認可を行う
-                # if not self.determine_next_hop(
-                #     source_community, int(current_node.id), start_node_community
-                # ):
-                #     print(
-                #         f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
-                #     )
-                #     continue  # NGの場合、次のノードに移動しないで再度選択
-                # TODO:ここまで
+                # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+                source_community = self.node_community_mapping.get(start_node_id)
+                if not self.determine_next_hop(
+                    source_community, int(current_node.id), start_node_community
+                ):
+                    print(
+                        f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
+                    )
+                    continue  # NGの場合、次のノードに移動しないで再度選択
+                # TODO:ここまで----------------------------------------------------------------------------------
 
                 # 通ったノードを追加する
                 self.all_paths.append(current_node.id)
