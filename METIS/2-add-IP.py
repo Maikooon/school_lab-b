@@ -8,13 +8,15 @@ abilene06.txt
 abilene11.txt
 """
 
-GRAPHNAME = "karate"
+# GRAPHNAME = "fb-caltech-connected"
+GRAPHNAME = "fb-pages-company"
 # community_file = "./../../Louvain/community/karate.tcm"
 community_file = "./" + GRAPHNAME + "/node_community.txt"
 edge_file = "./../Louvain/graph/" + GRAPHNAME + ".gr"
 
 # コミュニティごとのIPアドレスのマッピング
-ip_mapping = {0: "10.58.60.3", 1: "10.58.60.6", 2: "10.58.60.11", 3: "10.58.60.5"}
+ip_mapping = {0: "10.58.60.3", 1: "10.58.60.6", 2: "10.58.60.11"}
+# server_name = {"abilene03", "abilene06", "abilene11"}
 server_name = {"abilene03", "abilene06", "abilene11"}
 
 
@@ -60,14 +62,20 @@ def generate_and_save_ip_graph(communities, edges):
                     )
 
     # コミュニティ間の接続を追加
-    for node1, node2 in edges:
-        community1 = next(c for c, n in communities.items() if node1 in n)
-        community2 = next(c for c, n in communities.items() if node2 in n)
+    try:
+        for node1, node2 in edges:
+            community1 = next(c for c, n in communities.items() if node1 in n)
+            community2 = next(c for c, n in communities.items() if node2 in n)
 
-        # コミュニティが異なる場合
-        if community1 != community2:
-            ip_graph[community1].append(f"{node1},{node2},{ip_mapping[community2]}")
-            ip_graph[community2].append(f"{node2},{node1},{ip_mapping[community1]}")
+            # コミュニティが異なる場合
+
+            if community1 != community2:
+                ip_graph[community1].append(f"{node1},{node2},{ip_mapping[community2]}")
+                ip_graph[community2].append(f"{node2},{node1},{ip_mapping[community1]}")
+    except StopIteration:
+        print(
+            f"Warning: One of the nodes {node1} or {node2} does not belong to any community."
+        )
 
     # コミュニティごとにファイルを書き込む
     for community_id, edges in ip_graph.items():

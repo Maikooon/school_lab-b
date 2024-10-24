@@ -5,6 +5,10 @@
 all_dynamic
 ng_node
 
+ファイル名を変更する
+community_a->server_abilene03
+
+空行がないように気を付けること！！！
 ここでの出力をP2pのKarate/datasetに適用する
 """
 
@@ -14,7 +18,7 @@ from collections import defaultdict
 
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
-base_path = "./new-karate/"
+base_path = "./fb-caltech-connected/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数
@@ -139,14 +143,14 @@ def process_multiple_files(file_numbers, base_path):
     )
 
     # 出力ファイルに動的グループを書き込む
-    output_file_path = os.path.join(base_path, "group/all_dynamic_groups.txt")
+    output_file_path = os.path.join(base_path, "all_dynamic_groups.txt")
     write_dynamic_groups_to_file(community_group_mapping, output_file_path)
 
     # NGノードを選択して出力ファイルに書き込む
     ng_nodes_per_community = select_ng_nodes_per_group(
         community_group_mapping, all_node_community
     )
-    ng_output_file_path = os.path.join(base_path, "group/ng_nodes.txt")
+    ng_output_file_path = os.path.join(base_path, "ng_nodes.txt")
     write_ng_nodes_per_community_to_file(ng_nodes_per_community, ng_output_file_path)
 
 

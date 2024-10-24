@@ -18,6 +18,9 @@ import networkx as nx
 import metis
 
 
+GRAPH = "fb-caltech-connected"
+
+
 # エッジ情報をファイルから読み込む関数
 def read_edges(file_path):
     edges = []
@@ -63,17 +66,17 @@ def split_community(community_nodes, G):
 
 
 # ファイルからエッジとコミュニティ情報を読み込む
-edges = read_edges("./../Louvain/graph/karate.gr")
-node_communities = read_communities("./karate/node_community.txt")
+edges = read_edges("./../Louvain/graph/" + GRAPH + ".gr")
+node_communities = read_communities("./" + GRAPH + "/node_community.txt")
 
 # グラフの作成
 G = build_graph(edges)
 
 # コミュニティごとにファイルに保存するマッピング
 file_mapping = {
-    0: ("community_A.txt", "community_B.txt"),
-    1: ("community_C.txt", "community_D.txt"),
-    2: ("community_E.txt", "community_F.txt"),
+    0: (f"./{GRAPH}/community_A.txt", f"./{GRAPH}/community_B.txt"),
+    1: (f"./{GRAPH}/community_C.txt", f"./{GRAPH}/community_D.txt"),
+    2: (f"./{GRAPH}/community_E.txt", f"./{GRAPH}/community_F.txt"),
 }
 
 # 各コミュニティを2つに分割し、結果をファイルに保存
