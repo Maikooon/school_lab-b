@@ -1,7 +1,7 @@
 import glob
 import os
 
-GRAPH = "karate"
+GRAPH = "fb-caltech-connected"
 
 
 def read_community_file(filename):
@@ -43,18 +43,8 @@ def read_ng_info(filename):
                 # print("line:", line)
                 group_number = line.split()[3]  # "Group"の後の数字を取得
                 ng_value = int(line.split(":")[-1].strip())
-                # print("ng_value:", ng_value)
-                # print(type(ng_value))
-                # 各コミュニティのNG情報を辞書に追加
-                # if current_community not in ng_info:
-                #     ng_info[current_community] = {}
-                # print("current_community:", current_community)
 
                 group_number = group_number.split(":")[0]
-                # print("group_number:", group_number)  # 1:
-
-                # current_community = int(current_community)
-                # group_number = int(group_number)
 
                 ng_info[current_community][group_number] = ng_value
 
@@ -98,4 +88,4 @@ for community, groups in community_groups.items():
         print(f"  NG for Group {group_number}: {ng_value_2}, Result: {result}")
 
         with open(f"./{GRAPH}/non_group-ng_nodes.txt", "a") as file:
-            file.write(f"{ng_value_2},{result}\n")
+            file.write(f"{ng_value_2}:{result}\n")

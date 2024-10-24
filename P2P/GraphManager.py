@@ -218,7 +218,7 @@ class GraphManager:
             # 終了RWとして集計用箱に格納
             print("end_walk", end_walk)
             if len(end_walk) > 0:
-                print("put", message.user, end_walk, all_paths)
+                # print("put", message.user, end_walk, all_paths)
                 self.notify_queue.put(
                     {"user": message.user, "end_walk": end_walk, "all_paths": all_paths}
                 )

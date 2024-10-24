@@ -245,7 +245,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 // プログラムの実行
 int main() {
     // 時間計測を開始（ナノ秒）
-    auto start_time = chrono::high_resolution_clock::now();
+    // auto start_time = chrono::high_resolution_clock::now();
 
     srand(time(nullptr));  // ランダムシードの初期化
 
@@ -256,6 +256,7 @@ int main() {
     //その他テーブルの読み込み
     load_community_groups(GROUP_PER_COMMUNITY);
     load_community_ng_nodes(NG_NODES_PER_COMMUNITY);
+    auto start_time = chrono::high_resolution_clock::now();
 
     int total_move = 0;
     int total_length = 0;

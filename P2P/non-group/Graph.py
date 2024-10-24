@@ -5,14 +5,12 @@ import time
 
 
 class Graph:
-    def __init__(self, ADJ, nodes, node_community_mapping, community_groups, ng_list):
+    def __init__(self, ADJ, nodes, ng_list):
         print("初期化しました")
         self.nodes = dict()
         self.outside_nodes = dict()
         self.all_nodes = dict()
         self.all_paths = []
-        self.node_community_mapping = node_community_mapping
-        self.community_groups = community_groups
         self.ng_list = ng_list
         self.total_determinate_ng_nodes = 0
 
@@ -37,7 +35,7 @@ class Graph:
                 adj[str(node)].add(str(adj_node))
         return str(adj)
 
-    def determine_next_hop(self, source_community, next_node_id, start_node_community):
+    def determine_next_hop(self, next_node_id, start_node_id):
         """
         次ノードへのホップを許可するかどうかを判定する関数。
 
@@ -48,7 +46,19 @@ class Graph:
         Returns:
             bool: True ならホップ許可、False ならホップ不可。
         """
+        # next_node_IdがNGリストに含まれているかどうかを確認
+        ng_lists = self.ng_list
+        print(f"NGリスト: {ng_lists}")
 
+        # Check if the next_node_id is in the NG list (left side)
+        if next_node_id in ng_lists:
+            # Check if start_node_community is in the corresponding array (right side)
+            if start_node_id in ng_lists[next_node_id]:
+                # If both conditions are met, return False (hop not allowed)
+                # return False
+                print(f"次ノード {next_node_id} へのホップはNGです。")
+
+        # 　含まれていたら、その左の配列に、Start＿nodeが含まれているのか確認
         return True
 
     def random_walk(
@@ -92,21 +102,10 @@ class Graph:
                     print("RWが終了しました")
                     break
 
-                # 次に選択しているnodeが有効かを確認
-                # print("current_node.id", current_node.id)
-
-                # コミュニティとNGチェック
-                # print("start_node", start_node_id)
-                # コミュニティとNGチェック
-
-                # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
-                # 次ノードが移動可能かチェック
                 # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
                 start_time_determinate = time.time()  # 時間を計測
-                source_community = self.node_community_mapping.get(start_node_id)
-                if not self.determine_next_hop(
-                    source_community, int(current_node.id), start_node_community
-                ):
+                # source_community = self.node_community_mapping.get(start_node_id)
+                if not self.determine_next_hop(int(current_node.id), start_node_id):
                     print(
                         f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
                     )
