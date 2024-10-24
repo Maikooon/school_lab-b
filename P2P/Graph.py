@@ -179,17 +179,19 @@ class Graph:
                 # コミュニティとNGチェック
                 # print("start_node", start_node_id)
                 # コミュニティとNGチェック
-                source_community = self.node_community_mapping[int(current_node.id)]
 
                 # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
                 # 次ノードが移動可能かチェック
-                if not self.determine_next_hop(
-                    source_community, int(current_node.id), start_node_community
-                ):
-                    print(
-                        f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
-                    )
-                    continue  # NGの場合、次のノードに移動しないで再度選択
+
+                # TODO:kここで認可を行う
+                # if not self.determine_next_hop(
+                #     source_community, int(current_node.id), start_node_community
+                # ):
+                #     print(
+                #         f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
+                #     )
+                #     continue  # NGの場合、次のノードに移動しないで再度選択
+                # TODO:ここまで
 
                 # 通ったノードを追加する
                 self.all_paths.append(current_node.id)

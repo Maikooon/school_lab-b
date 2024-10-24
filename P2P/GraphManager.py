@@ -184,7 +184,8 @@ class GraphManager:
             # ここまで
 
             print("このJWTを検証する", message.jwt)
-            jwt_result = verify_jwt(message.jwt)
+            # TODO: JWTの検証を行う
+            # jwt_result = verify_jwt(message.jwt)
             ######ここでTokenを検証する############################################################################
             print("JWT検証結果", jwt_result)
 
