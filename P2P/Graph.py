@@ -1,6 +1,7 @@
 from Node import *
 import random
 from queue import Queue
+import time
 
 
 class Graph:
@@ -13,6 +14,7 @@ class Graph:
         self.node_community_mapping = node_community_mapping
         self.community_groups = community_groups
         self.ng_list = ng_list
+        self.total_determinate_ng_nodes = 0
 
         for node_id in ADJ.keys():
             self.nodes[node_id] = nodes[node_id]
@@ -59,14 +61,6 @@ class Graph:
                 f"始点コミュニティ {start_node_community} と次ノード {next_node_id} のコミュニティが同じです、そのためそのままホップします"
             )
             return True
-
-        # 次ノードがどのコミュニティにも属していない場合ーーそんなことない
-        # if next_community is None:
-        #     print(f"次ノード {next_node_id} のコミュニティが見つかりません")
-        #     return False
-
-        # 一つ前のコミュニティと同じなら同じNGリストを参照
-
         # 次のコミュニティで、始点コミュニティがどのグループに属しているかを調べる
         # 各コミュニティはいくつかのグループに分かれており、そのグループごとにNGリストがある。
         # 例: コミュニティ 2 には Group 1 と Group 2 があり、それぞれ別のNGリストを持つ
@@ -74,19 +68,11 @@ class Graph:
             if start_node_community in nodes:
                 belong_role = group  # 始点コミュニティが所属するグループを保存
                 break
-        # else:
-        #     # 始点コミュニティが次のコミュニティのどのグループにも属していない場合,　先ほどInitで定めたNGリストをそのまま使用したい
-        #     print(
-        #         f"始点コミュニティ {start_node_community} が次のコミュニティ {next_community} のどのグループにも属していません"
-        #         f"つまり、始点ち移動先が同じコミュニテdぃなので、先ほどのNGを参照します"
-        #     )
-        #     return True
 
         # 　ここでNGリストを初期化する、コミュニティを移動したので参照すべきリストも変わる
         self.previous_ng_list = []
 
         # 始点グループを表示
-        # print(f"始点グループ: {belong_role}")
         belong_role_number = int(belong_role.split()[1])  # "Group 2" から 2 を取り出す
         # print(f"始点グループの番号: {belong_role_number}")
 
@@ -128,7 +114,7 @@ class Graph:
         self,
         source_id,
         count,
-        alpha=0.15,
+        alpha=0.2,
         all_paths=None,
         start_node_id=None,
         start_node_community=None,
@@ -138,7 +124,6 @@ class Graph:
         executer = source_node.manager
         end_walk = dict()
         escaped_walk = dict()
-        # print("コミュニティが渡せていますように！", start_node_community)
 
         # Use passed all_paths if available
         if all_paths is None:
@@ -169,21 +154,14 @@ class Graph:
                 # 次に選択しているnodeが有効かを確認
                 # print("current_node.id", current_node.id)
 
-                # debug
-                # print(
-                #     "現在のnode_community_mappingのキー:",
-                #     list(self.node_community_mapping.keys()),
-                # )
-                # 　所属コミュニティをチェック
-
                 # コミュニティとNGチェック
                 # print("start_node", start_node_id)
                 # コミュニティとNGチェック
 
                 # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
                 # 次ノードが移動可能かチェック
-
                 # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+                start_time_determinate = time.time()  # 時間を計測
                 source_community = self.node_community_mapping.get(start_node_id)
                 if not self.determine_next_hop(
                     source_community, int(current_node.id), start_node_community
@@ -192,6 +170,9 @@ class Graph:
                         f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
                     )
                     continue  # NGの場合、次のノードに移動しないで再度選択
+                end_time_determinate = time.time()  # 時間を計測
+                elapsed_time_determinate = end_time_determinate - start_time_determinate
+                self.total_determinate_ng_nodes += elapsed_time_determinate
                 # TODO:ここまで----------------------------------------------------------------------------------
 
                 # 通ったノードを追加する
@@ -206,4 +187,7 @@ class Graph:
             print("end_walk", end_walk)
             print("escaped_walk", escaped_walk)
             print("all-paths", self.all_paths)
+            print("total_determinate_ng_nodes", self.total_determinate_ng_nodes)
+            # ファイルに書き込む
+
         return end_walk, escaped_walk, self.all_paths

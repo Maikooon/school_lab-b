@@ -21,6 +21,8 @@ class GraphManager:
         self.notify_queue = Queue()
         self.start_node_id = None  # Initialize start_node_id
         self.start_node_community = None  # Initialize start_node_community
+        self.total_jwt_verify_time = 0
+        self.total_jwt_generate = 0
         self.start()
 
     @classmethod
@@ -185,7 +187,11 @@ class GraphManager:
 
             print("このJWTを検証する", message.jwt)
             # TODO: JWTの検証を行う
+            start_time_jwt_verify = time.time()  # 　時間を計測
             jwt_result = verify_jwt(message.jwt)
+            end_time_jwt_verify = time.time()
+            elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
+            self.total_jwt_verify_time += elapsed_time_jwt_verify
             ######ここでTokenを検証する############################################################################
             print("JWT検証結果", jwt_result)
 
@@ -216,7 +222,13 @@ class GraphManager:
                 for node_id, val in escaped_walk.items():
                     # 続きのサーバにRW情報を送信するために、キューに格納される
                     # 何を認証すればいいのかわからないので、とりあえずnode_idを認証情報として使う
+                    start_time_jwt_generate = time.time()  # 　時間を計測
                     jwt = generate_jwt(node_id)
+                    end_time_jwt_generate = time.time()
+                    elapsed_time_jwt_generate = (
+                        end_time_jwt_generate - start_time_jwt_generate
+                    )
+                    self.total_jwt_generate += elapsed_time_jwt_generate
                     self.send_queue.put(
                         Message(
                             node_id,
@@ -251,6 +263,8 @@ class GraphManager:
             socket.close()
             context.destroy()
             print("Notified to {},{}".format(user, end_walk))
+            print("total_jwt_verify_time:", self.total_jwt_verify_time)
+            print("total_jwt_generate:", self.total_jwt_generate)
 
     def send_message(self):
         print("send_message-self")
@@ -263,6 +277,8 @@ class GraphManager:
             socket.close()
             context.destroy()
             print("Sent to {}\n{}".format(message.GM, message))
+            print("total_time_jwt_verify", self.total_jwt_verify_time)
+            print("total_time_jwt_generate", self.total_jwt_generate)
 
     # サーバが別のサーバからのRW情報を受け取る
     def receive_message(self):
