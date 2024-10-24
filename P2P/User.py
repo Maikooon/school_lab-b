@@ -57,8 +57,8 @@ class User:
             except Exception as e:
                 print("Error receiving data: ", e)
 
-        average_path_length = len(all_paths) / count
-        print("Average path length: ", average_path_length)
+        # average_path_length = len(all_paths) / count
+        # print("Average path length: ", average_path_length)
 
         print("Query solved: ", end_count)
         socket.close()

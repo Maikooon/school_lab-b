@@ -186,8 +186,7 @@ class Graph:
 
             print("end_walk", end_walk)
             print("escaped_walk", escaped_walk)
-            print("all-paths", self.all_paths)
+            # print("all-paths", self.all_paths)
             print("total_determinate_ng_nodes", self.total_determinate_ng_nodes)
-            # ファイルに書き込む
 
         return end_walk, escaped_walk, self.all_paths

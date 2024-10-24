@@ -9,7 +9,7 @@ class Message:
         count,
         GM,
         user,
-        alpha=0.15,
+        alpha=0.2,
         all_paths=None,
         jwt=None,
         start_node_id=None,

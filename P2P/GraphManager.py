@@ -27,6 +27,7 @@ class GraphManager:
 
     @classmethod
     def init_for_espresso(cls, dir_path):
+        total_time_read_file = 0
         host_name = os.uname()[1]
         host_ip = socket.gethostbyname(host_name)
         # 　読み込むファイル名をIPに基づいて変更
@@ -53,6 +54,7 @@ class GraphManager:
                 nodes[edge[1]] = Node(edge[1], dest_ip)
             ADJ[edge[0]].append(edge[1])
 
+        start_time_read_file = time.time()  # 　時間を計測
         # 2. ノードのコミュニティマッピングファイルの読み込み
         node_community_mapping = {}
         node_community_mapping_file = os.path.join(
@@ -119,6 +121,9 @@ class GraphManager:
                         ng_list[current_community][group_number] = ng_nodes
                     else:
                         print(f"警告: 不正なフォーマットのNGリスト行: {line}")
+        end_time_read_file = time.time()
+        elapsed_time_read_file = end_time_read_file - start_time_read_file
+        total_time_read_file += elapsed_time_read_file
 
         # 4. GraphManagerのインスタンス作成
         graph = Graph(ADJ, nodes, node_community_mapping, community_groups, ng_list)
@@ -127,6 +132,7 @@ class GraphManager:
         gm.node_community_mapping = node_community_mapping
         gm.community_groups = community_groups
         gm.ng_list = ng_list
+        print("データを読み込み終わりました")
         return gm
 
     def __repr__(self):
@@ -279,6 +285,7 @@ class GraphManager:
             print("Sent to {}\n{}".format(message.GM, message))
             print("total_time_jwt_verify", self.total_jwt_verify_time)
             print("total_time_jwt_generate", self.total_jwt_generate)
+            # print("total_time_read_file", self.total_time_read_file)
 
     # サーバが別のサーバからのRW情報を受け取る
     def receive_message(self):
