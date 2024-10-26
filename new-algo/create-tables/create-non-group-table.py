@@ -1,15 +1,16 @@
-'''
+"""
 コミュニティ 1:
   NG for Group 1:
   NG for Group 2:
   最低限グループ名だけはエラーになるので足すことll
 
 
-'''
+"""
+
 import glob
 import os
 
-GRAPH = "fb-pages-company"
+GRAPH = "METIS-karate"
 
 
 def read_community_file(filename):
@@ -29,6 +30,8 @@ def read_community_file(filename):
                 group_number = line.split(":")[0].split()[1]
                 numbers = line.split(":")[-1].strip()
                 # 数字をセットに追加
+                print(current_community)
+                print(group_number)
                 community_groups[current_community][group_number] = set(
                     map(int, numbers.split(","))
                 )
@@ -66,14 +69,14 @@ def read_ng_info(filename):
 
 
 # 読み込むデータファイルのパターンを指定（例：server_*.txt）
-data_file_pattern = f"./{GRAPH}/server_*.txt"
+data_file_pattern = f"./result/{GRAPH}/community.txt"
 data = []
-
 # コミュニティファイルからコミュニティとグループの情報を取得
-community_groups = read_community_file(f"./{GRAPH}/all_dynamic_groups.txt")
+community_groups = read_community_file(f"./result/{GRAPH}/dynamic_groups.txt")
 # NG情報を取得
-ng_info = read_ng_info(f"./{GRAPH}/ng_nodes.txt")
-# print("NG情報:", ng_info)
+ng_info = read_ng_info(f"./result/{GRAPH}/ng_nodes.txt")
+
+
 # 複数のデータファイルを読み込む
 for filename in glob.glob(data_file_pattern):
     with open(filename, "r") as file:
@@ -106,9 +109,9 @@ for community, groups in community_groups.items():
                 print(node)
                 print(result)
         else:
-        print("skip")
+            print("skip")
 
-        with open(f"./{GRAPH}/non_group-ng_nodes.txt", "a") as file:
+        with open(f"./result/{GRAPH}/non-group-ng-nodes.txt", "a") as file:
             for node in ng_value_2:
                 file.write(f"{node}:{result}\n")
             # file.write(f"{ng_value_2}:{result}\n")

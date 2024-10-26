@@ -18,7 +18,7 @@ import networkx as nx
 import metis
 
 
-GRAPH = "fb-caltech-connected"
+GRAPH = "fb-pages-company"
 
 
 # エッジ情報をファイルから読み込む関数
@@ -96,8 +96,8 @@ for community_id in set(node_communities.values()):
 
     # ファイルに出力
     file_A, file_B = file_mapping[community_id]
-    community_1 = ["A", "C", "E"]
-    community_2 = ["B", "D", "F"]
+    community_1 = ["0", "2", "4"]
+    community_2 = ["1", "3", "5"]
     with open(file_A, "w") as f_A, open(file_B, "w") as f_B:
         for node, part in new_assignments.items():
             if part == community_id * 2:

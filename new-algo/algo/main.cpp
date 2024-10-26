@@ -27,11 +27,11 @@ using namespace std;
 // const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
 // const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
 
-
-const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";
-const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/fb-caltech-connected/dynamic_groups.txt";
-const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/fb-caltech-connected/ng_nodes.txt";
+const std::string GRAPH = "METIS-fb-caltech";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
+const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
 
 
 const double ALPHA = 0.15;
@@ -239,6 +239,22 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
 
 
+void saveResultsToFile(const std::string& filePath, const std::string& results) {
+    // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
+    std::ofstream outputFile(filePath, std::ios::out | std::ios::trunc);
+
+    // ファイルが正常に開けたかを確認
+    if (!outputFile) {
+        std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
+        return;
+    }
+
+    // 結果をファイルに書き込む
+    outputFile << results;
+
+    // ファイルを閉じる
+    outputFile.close();
+}
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 
@@ -286,5 +302,21 @@ int main() {
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
 
+
+
+    //結果を出力する
+     // 保存したい結果
+    std::string results = "grouped-ng-list\n";
+    results += "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
+    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+
+    // ファイルパス
+    std::string filePath = "./../result/" + GRAPH + "/access.txt";
+
+    // 結果をファイルに保存
+    saveResultsToFile(filePath, results);
+
+    std::cout << "結果をファイルに保存しました。" << std::endl;
     return 0;
 }

@@ -17,7 +17,8 @@ g++ -std=c++11 rw.cpp -o rw
 using namespace std;
 
 // グローバル変数の定義
-const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
+const std::string GRAPH = "METIS-fb-caltech";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
@@ -100,10 +101,29 @@ vector<int> random_walk(int& total_move, int START_NODE) {
     return path;
 }
 
+
+void saveResultsToFile(const std::string& filePath, const std::string& results) {
+    // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
+    std::ofstream outputFile(filePath, std::ios::out | std::ios::trunc);
+
+    // ファイルが正常に開けたかを確認
+    if (!outputFile) {
+        std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
+        return;
+    }
+
+    // 結果をファイルに書き込む
+    outputFile << results;
+
+    // ファイルを閉じる
+    outputFile.close();
+}
+/*------------------------------------------------------------------------------------------------------------------------*/
+
 // プログラムの実行
 int main() {
     // 時間計測を開始（ナノ秒）
-    auto start_time = chrono::high_resolution_clock::now();
+
 
     srand(time(nullptr));  // ランダムシードの初期化
 
@@ -113,6 +133,7 @@ int main() {
 
     int total_move = 0;
     int total_length = 0;
+    auto start_time = chrono::high_resolution_clock::now();
 
     // ランダムウォークを複数回実行
     for (int i = 0; i < RW_COUNT; ++i) {
@@ -137,5 +158,20 @@ int main() {
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
 
+
+    //結果を出力する
+   // 保存したい結果
+    std::string results = "grouped-ng-list\n";
+    results += "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
+    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+
+    // ファイルパス
+    std::string filePath = "./../result/" + GRAPH + "/default.txt";
+
+    // 結果をファイルに保存
+    saveResultsToFile(filePath, results);
+
+    std::cout << "結果をファイルに保存しました。" << std::endl;
     return 0;
 }

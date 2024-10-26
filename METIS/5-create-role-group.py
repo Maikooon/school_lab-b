@@ -18,7 +18,7 @@ from collections import defaultdict
 
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
-base_path = "./fb-caltech-connected/"
+base_path = "./fb-pages-company/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数
