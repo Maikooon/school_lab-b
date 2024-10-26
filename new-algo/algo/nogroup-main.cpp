@@ -38,7 +38,7 @@ const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH 
 const std::string NGFILE = "./../create-tables/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 10;  // ランダムウォークの実行回数
+const int RW_COUNT = 1000;  // ランダムウォークの実行回数
 int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
@@ -92,18 +92,11 @@ void load_communities(const std::string& file_path) {
 /*------------------------------------------------------------------------------------------------------------------------*/
 // 読み込みの関数を定義
 // コミュニティごとのグループとNGノードを保持するためのデータ構造
-
 // データ構造の定義
 using NodeMap = std::unordered_map<int, std::vector<int>>;
-
-NodeMap community_data;
-
-// NGノードテーブルの読み込み関数
-using NodeMap = std::unordered_map<int, std::vector<int>>;
-
 NodeMap ng_table;
 
-// ファイルを読み込む関数
+// NGノードテーブルの読み込み関数
 void load_ng_table(const std::string& filepath) {
     std::ifstream file(filepath);
     std::string line;
@@ -126,9 +119,7 @@ void load_ng_table(const std::string& filepath) {
         }
     }
     file.close();
-
 }
-
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 // ランダムウォークを実行  1RWの誕生から死滅まですべて
@@ -141,11 +132,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     path.push_back(current_node);
     start_community = node_communities[START_NODE];
 
-    //遷移確立が終わるまで繰り返す
-    // printf("start_community: %d\n", start_community);
-    // std::cout << (double)rand() / RAND_MAX << std::endl;
-
-    // printf("ALPHA: %f\n", ALPHA);
     while ((double)rand() / RAND_MAX > ALPHA) {
         auto neighbors = graph[current_node];
         if (neighbors.empty()) {
@@ -154,7 +140,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         // 隣接ノードからランダムに次のノードを選択
         //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
-        //ここから
         int next_node;
         do {
             // 隣接ノードからランダムに次のノードを選択
@@ -175,21 +160,29 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
         //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
         if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
-            std::cout << "次に対してNGかチェック: " << ng_table.size() << std::endl;
+            std::string a;
+            auto it = ng_table.find(next_node);
+            if (it != ng_table.end()) {
+                std::cout << "NG nodes for node " << next_node << ": ";
+                for (int num : it->second) {
+                    std::cout << num << " ";
+                    a += std::to_string(num) + " "; // ノードを文字列に追加
+                }
+                std::cout << std::endl;
+            }
 
-            // if (ng_table.find(next_node) != ng_table.end()) {
-            const auto& nodes = ng_table.at(622);
-            std::cout << "次のHop先は、NGリストに含まれている: " << nodes.size() << std::endl;
-            // Check if start_node is in the ng list for this community
-            if (std::find(nodes.begin(), nodes.end(), START_NODE) != nodes.end()) {
-                std::cout << "次のHop先は、現在のノードからのアクセスを許可していない: " << next_node << std::endl;
-                next_node = current_node; // Stay at the current node
+            // START_NODEが文字列aに含まれているか確認
+            if (a.find(std::to_string(START_NODE)) != std::string::npos) {
+                std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
+                next_node = current_node;  // 現在のノードに戻す
                 continue;
             }
-            // }
-
-            move_count++;
+            else {
+                std::cout << "Node " << START_NODE << " is not in the NG nodes for community " << current_node << std::endl;
+            }
+            ////
         }
+        move_count++;
 
         path.push_back(next_node);
         current_node = next_node;

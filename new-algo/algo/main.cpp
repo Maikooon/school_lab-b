@@ -27,16 +27,16 @@ using namespace std;
 // const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
 // const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
 
-const std::string GRAPH = "METIS-fb-caltech";
+const std::string GRAPH = "karate";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
 
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 10;  // ランダムウォークの実行回数
-int START_NODE = 1;         // ランダムウォークの開始ノード
+const int RW_COUNT = 1000;  // ランダムウォークの実行回数
+int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
