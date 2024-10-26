@@ -1,10 +1,8 @@
-/*
-defailt のRWにテーブル参照を加えて時間を計測するもの
-まだ、構造体の必要性はないので、普通のRWでテストを行う
+/**
 
-実行コマンド
-g++ -std=c++11 main.cpp -o main
-*/
+ 実行コマンド
+ g++ -std=c++11 main.cpp -o main
+ */
 
 
 #include <iostream>
@@ -17,8 +15,13 @@ g++ -std=c++11 main.cpp -o main
 #include <ctime>
 #include <chrono>
 #include <set>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+#include <string>
 
 using namespace std;
+
 
 
 // グローバル変数の定義
@@ -32,7 +35,7 @@ const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/comm
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-
+const std::string NGFILE = "./../create-tables/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
@@ -134,6 +137,41 @@ void load_community_ng_nodes(const std::string& filepath) {
         }
     }
 }
+// データ構造の定義
+using NodeMap = std::unordered_map<int, std::vector<int>>;
+
+NodeMap community_data;
+
+// NGノードテーブルの読み込み関数
+using NodeMap = std::unordered_map<int, std::vector<int>>;
+
+NodeMap ng_table;
+
+// ファイルを読み込む関数
+void load_ng_table(const std::string& filepath) {
+    std::ifstream file(filepath);
+    std::string line;
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file." << std::endl;
+        return;
+    }
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        int community, node;
+
+        // ':' を使ってコミュニティIDを分割する
+        if (std::getline(iss, line, ':')) {
+            community = std::stoi(line); // コミュニティIDを整数に変換
+            while (iss >> node) {
+                ng_table[community].push_back(node); // ノードをベクターに追加
+            }
+        }
+    }
+    file.close();
+}
+
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 // ランダムウォークを実行  1RWの誕生から死滅まですべて
@@ -164,6 +202,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             // 隣接ノードからランダムに次のノードを選択
             next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
+            //TODO;同じコミュニティに対しては、NGに指定していないので、ような場合はないとできる
             // 自分のコミュニティ内を移動する時には、そのノードに対して移動していいのかを確かめる
             // NGリストに含まれている場合は、再度選び直す
             if (ng_list.find(next_node) != ng_list.end()) {
@@ -174,59 +213,22 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
         //ここまで
 
-        // int next_node = *next(neighbors.begin(), rand() % neighbors.size());
-
-        //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
-    //たぶんここは上のループとおあなじ処理をしているのでコメントアウト
-        // if (ng_list.find(next_node) != ng_list.end()) {
-        //     // std::cout << "NGなのでスキップ" << next_node << std::endl;
-        //     next_node = current_node;
-        //     continue; // NGノードの場合は次のHopを探す
-        // }
-
-        // printf("current_node: %d, next_node: %d\n", current_node, next_node);
-
         // 現在のノードとHop先のコミュニティが異なる場合
-        //NGノードは、自分と同じコミュニティに対してしか設定されていない
-        // 次のコミュニティにおいて、どのノードにアクセス可能なのかを知るためには、次のコミュニティのアクセスリストを改めて参照する必要がある
-        if (node_communities[current_node] != node_communities[next_node]) {
-            int current_community = node_communities[current_node];
-            int next_community = node_communities[next_node];
-
-            // printf("current_community: %d, next_community: %d\n", current_community, next_community);
-            //始点コミュニティと移動さきコミュニティが同じ時にはアクセス権の確認なし
-            if (next_community == start_community) {
-                move_count++;
-                // printf("skip access check\n");
-                continue;
-            }
-
-            // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
-
-            //ここから二つのテーブルを参照して行う
-            for (auto& group : community_groups[next_community]) {
-                if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
-                    // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
-                    ng_list = community_ng_nodes[next_community][group.first];
-                    //debug 参照したリストを出力
-                    // std::cout << "NG nodes for Group " << group.first << ": ";
-                    for (const int node : ng_list) {
-                        std::cout << node << " ";
-                    }
-                    std::cout << std::endl;
-                    /// .debug
-
-                    // 次のHop先がNGノードであるかを確認
-                    if (ng_list.find(next_node) != ng_list.end()) {
-                        // std::cout << "NG node found" << next_node << ::endl;
-                        //進まないようにやり直す
-                        next_node = current_node;
-                        // printf("やり直し！");
-                        continue; // NGノードの場合は次のHopを探す
-                    }
-                    break; // NGノードではない場合、次のHopを許可
+        if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
+            // リストから次にHopするノードを探す（縦）
+            const auto& nodes = ng_table[next_node];
+            for (const auto& node : nodes) {
+                if (node == current_node) {
+                    std::cout << "次のHop先は、現在のノードからのアクセスを許可していない" << next_node << std::endl;
+                    next_node = current_node;
+                    break;
                 }
             }
+
+            //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
+
+            //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
+
             move_count++;
         }
 
@@ -273,6 +275,7 @@ int main() {
     //その他テーブルの読み込み
     load_community_groups(GROUP_PER_COMMUNITY);
     load_community_ng_nodes(NG_NODES_PER_COMMUNITY);
+    load_ng_table(NGFILE); // データを読み込む
     auto start_time = chrono::high_resolution_clock::now();
 
     int total_move = 0;
@@ -304,10 +307,9 @@ int main() {
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
 
 
-
-    //結果を出力する
-     // 保存したい結果
-    std::string results = "grouped-ng-list\n";
+    // 結果を出力する
+    //  保存したい結果
+    std::string results = "non-grouped-ng-list\n";
     results += "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
@@ -321,3 +323,4 @@ int main() {
     std::cout << "結果をファイルに保存しました。" << std::endl;
     return 0;
 }
+

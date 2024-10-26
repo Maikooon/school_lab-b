@@ -161,8 +161,7 @@ int main() {
 
     //結果を出力する
    // 保存したい結果
-    std::string results = "grouped-ng-list\n";
-    results += "Average path length: " + std::to_string(average_length) + "\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
 
