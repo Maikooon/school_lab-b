@@ -27,9 +27,9 @@ using namespace std;
 // const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
 // const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
 
-const std::string GRAPH = "METIS-karate";
+const std::string GRAPH = "METIS-fb-caltech";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
 

@@ -30,12 +30,12 @@ using namespace std;
 // const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
 // const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
 
-const std::string GRAPH = "METIS-karate";
+const std::string GRAPH = "METIS-fb-caltech";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-const std::string NGFILE = "./../create-tables/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
+const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
@@ -159,8 +159,11 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // リストから次にHopするノードを探す（縦）
         //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
         //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
+        std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
+
         if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
             std::string a;
+
             auto it = ng_table.find(next_node);
             if (it != ng_table.end()) {
                 std::cout << "NG nodes for node " << next_node << ": ";
@@ -180,7 +183,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             else {
                 std::cout << "Node " << START_NODE << " is not in the NG nodes for community " << current_node << std::endl;
             }
-            ////
         }
         move_count++;
 
