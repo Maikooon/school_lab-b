@@ -1,0 +1,278 @@
+maiko@maikomacbook-air cache % ./main
+Community number: 7
+Output file name: a
+[maikomacbook-air.local:11372] shmem: mmap: an error occurred while determining whether or not /var/folders/c6/8q8hsz2s55qg611c5hl_btgm0000gn/T//ompi.maikomacbook-air.501/jf.0/49086464/sm_segment.maikomacbook-air.501.2ed0000.0 could be created.
+rwerが生成されました 
+始点 8
+経路: 8 
+コミュニティが異なるので認証を行います 2
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTc5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.IviEzvWKy7w7MmQYXDtLOP2r5zJaWglsyqsquYtzFs4
+Current time: 1725702058563 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038179
+next node: 2
+数字 8 はリストに存在します。
+Authentication success: Node 7 moved to Node 2
+経路: 8 2 
+Node 2 (Community 0) is in a different community from Node 7 (Community 2)
+total move: 0
+Process 0 Random walk path: 8 7 2
+rwerが生成されました 
+始点 6
+経路: 6 
+total move: 0
+Process 0 Random walk path: 6 5
+rwerが生成されました 
+始点 5
+経路: 5 
+コミュニティが異なるので認証を行います 1
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTgzIiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.P0eOkiJJe4puPwj49ZgyxI50YQKvPKQDTy5vKFwmWSE
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038183
+next node: 1
+数字 5 はリストに存在します。
+Authentication success: Node 3 moved to Node 1
+経路: 5 1 
+Node 1 (Community 0) is in a different community from Node 3 (Community 1)
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTgzIiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.P0eOkiJJe4puPwj49ZgyxI50YQKvPKQDTy5vKFwmWSE
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038183
+next node: 3
+数字 5 はリストに存在しません。
+Authentication failed: Node 1 attempted to move to Node 3
+Authentication success: Node 1 moved to Node 3
+経路: 5 1 3 
+Node 3 (Community 1) is in a different community from Node 1 (Community 0)
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+経路: 5 1 3 
+total move: 0
+Process 0 Random walk path: 5 3 1 3 5 3 4 6 5 6 5 6 5 6
+rwerが生成されました 
+始点 4
+経路: 4 
+コミュニティが異なるので認証を行います 2
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg0IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.9BhKMzu9GuZNjwAqq695ZWNE7JY268Q8avBSz__gZ0E
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038184
+next node: 2
+数字 4 はリストに存在します。
+Authentication success: Node 3 moved to Node 2
+経路: 4 2 
+Node 2 (Community 0) is in a different community from Node 3 (Community 1)
+コミュニティが異なるので認証を行います 7
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg0IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.9BhKMzu9GuZNjwAqq695ZWNE7JY268Q8avBSz__gZ0E
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038184
+next node: 7
+数字 4 はリストに存在します。
+Authentication success: Node 2 moved to Node 7
+経路: 4 2 7 
+Node 7 (Community 2) is in a different community from Node 2 (Community 0)
+total move: 0
+Process 0 Random walk path: 4 3 2 7
+rwerが生成されました 
+始点 3
+経路: 3 
+経路: 3 
+経路: 3 
+経路: 3 
+コミュニティが異なるので認証を行います 1
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg1IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.-7AZll73r-yeh_uifSpe5iAC9dpsC9kj3hOH4JfkcWA
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038185
+next node: 1
+数字 3 はリストに存在します。
+Authentication success: Node 3 moved to Node 1
+経路: 3 1 
+Node 1 (Community 0) is in a different community from Node 3 (Community 1)
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg1IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.-7AZll73r-yeh_uifSpe5iAC9dpsC9kj3hOH4JfkcWA
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038185
+next node: 3
+数字 3 はリストに存在しません。
+Authentication failed: Node 1 attempted to move to Node 3
+Authentication success: Node 1 moved to Node 3
+経路: 3 1 3 
+Node 3 (Community 1) is in a different community from Node 1 (Community 0)
+経路: 3 1 3 
+total move: 0
+Process 0 Random walk path: 3 4 6 4 3 1 3 4
+rwerが生成されました 
+始点 7
+total move: 0
+Process 0 Random walk path: 7
+rwerが生成されました 
+始点 2
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058564 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 3
+数字 2 はリストに存在します。
+Authentication success: Node 2 moved to Node 3
+経路: 2 3 
+Node 3 (Community 1) is in a different community from Node 2 (Community 0)
+コミュニティが異なるので認証を行います 2
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 2
+数字 2 はリストに存在しません。
+Authentication failed: Node 3 attempted to move to Node 2
+Authentication success: Node 3 moved to Node 2
+経路: 2 3 2 
+Node 2 (Community 0) is in a different community from Node 3 (Community 1)
+コミュニティが異なるので認証を行います 7
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 7
+数字 2 はリストに存在します。
+Authentication success: Node 2 moved to Node 7
+経路: 2 3 2 7 
+Node 7 (Community 2) is in a different community from Node 2 (Community 0)
+経路: 2 3 2 7 
+経路: 2 3 2 7 
+コミュニティが異なるので認証を行います 2
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 2
+数字 2 はリストに存在しません。
+Authentication failed: Node 7 attempted to move to Node 2
+Authentication success: Node 7 moved to Node 2
+経路: 2 3 2 7 2 
+Node 2 (Community 0) is in a different community from Node 7 (Community 2)
+経路: 2 3 2 7 2 
+経路: 2 3 2 7 2 
+コミュニティが異なるので認証を行います 7
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 7
+数字 2 はリストに存在します。
+Authentication success: Node 2 moved to Node 7
+経路: 2 3 2 7 2 7 
+Node 7 (Community 2) is in a different community from Node 2 (Community 0)
+経路: 2 3 2 7 2 7 
+経路: 2 3 2 7 2 7 
+コミュニティが異なるので認証を行います 2
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg4IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.s83YL3Cq7eGae6qPYc8TBU3AOG1PFQ9cE5lNVCbiRvQ
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038188
+next node: 2
+数字 2 はリストに存在しません。
+Authentication failed: Node 7 attempted to move to Node 2
+Authentication success: Node 7 moved to Node 2
+経路: 2 3 2 7 2 7 2 
+Node 2 (Community 0) is in a different community from Node 7 (Community 2)
+経路: 2 3 2 7 2 7 2 
+total move: 0
+Process 0 Random walk path: 2 3 2 7 8 7 2 1 2 7 8 7 2 0
+rwerが生成されました 
+始点 1
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.WYROxWUu-c2EzTCosMYcy_GTrdEvQnlsx9FFi300mVs
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038189
+next node: 3
+数字 1 はリストに存在します。
+Authentication success: Node 1 moved to Node 3
+経路: 1 3 
+Node 3 (Community 1) is in a different community from Node 1 (Community 0)
+コミュニティが異なるので認証を行います 1
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.WYROxWUu-c2EzTCosMYcy_GTrdEvQnlsx9FFi300mVs
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038189
+next node: 1
+数字 1 はリストに存在しません。
+Authentication failed: Node 3 attempted to move to Node 1
+Authentication success: Node 3 moved to Node 1
+経路: 1 3 1 
+Node 1 (Community 0) is in a different community from Node 3 (Community 1)
+経路: 1 3 1 
+経路: 1 3 1 
+経路: 1 3 1 
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.WYROxWUu-c2EzTCosMYcy_GTrdEvQnlsx9FFi300mVs
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038189
+next node: 3
+数字 1 はリストに存在します。
+Authentication success: Node 1 moved to Node 3
+経路: 1 3 1 3 
+Node 3 (Community 1) is in a different community from Node 1 (Community 0)
+経路: 1 3 1 3 
+経路: 1 3 1 3 
+経路: 1 3 1 3 
+経路: 1 3 1 3 
+コミュニティが異なるので認証を行います 1
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.WYROxWUu-c2EzTCosMYcy_GTrdEvQnlsx9FFi300mVs
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038189
+next node: 1
+数字 1 はリストに存在しません。
+Authentication failed: Node 3 attempted to move to Node 1
+Authentication success: Node 3 moved to Node 1
+経路: 1 3 1 3 1 
+Node 1 (Community 0) is in a different community from Node 3 (Community 1)
+経路: 1 3 1 3 1 
+経路: 1 3 1 3 1 
+コミュニティが異なるので認証を行います 3
+auth TokeneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSV2VyX2lkIjoiNTg3MDM4MTg5IiwiZXhwIjoxNzI1NzAyMDU5LCJpc3MiOiJhdXRoMCJ9.WYROxWUu-c2EzTCosMYcy_GTrdEvQnlsx9FFi300mVs
+Current time: 1725702058565 milliseconds since epoch
+Token expiration time: 1725702059000 milliseconds since epoch
+rwer_id: 587038189
+next node: 3
+数字 1 はリストに存在します。
+Authentication success: Node 2 moved to Node 3
+経路: 1 3 1 3 1 3 
+Node 3 (Community 1) is in a different community from Node 2 (Community 0)
+経路: 1 3 1 3 1 3 
+経路: 1 3 1 3 1 3 
+total move: 0
+Process 0 Random walk path: 1 3 1 0 2 1 3 4 3 4 3 1 0 2 3 4 3
+rwerが生成されました 
+始点 0
+total move: 0
+Process 0 Random walk path: 0
+Average length: 7.11111
+Total length: 64
+Total moves across communities: 18
+Program execution time: 74 milliseconds
+total token generate time; 1
+total token verification time: 0
+total difference time: -28132
+total construction time: 0
+Result has been written to ./result/simple_graph/a
+maiko@maikomacbook-air cache % 
+
+
+
+1 3 1 3 1 3 

@@ -1,0 +1,14 @@
+Folder: karate-graph
+Average length: 6.47794
+Total length: 220.25000
+Total moves across communities: 129
+Execution time: 103
+Nodes: 34, Edges: 78
+-----------------------------
+Folder: fb-caltech-connected
+Average length: 6.70823
+Total length: 5111.66667
+Total moves across communities: 2482
+Execution time: 646
+Nodes: 762, Edges: 16651
+-----------------------------

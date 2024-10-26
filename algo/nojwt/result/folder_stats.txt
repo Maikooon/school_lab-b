@@ -1,0 +1,96 @@
+Processing folder: ./nojwt/result/fb-pages-company/
+--- Stats for folder: ./nojwt/result/fb-pages-company/ ---
+Average Length Stats: {'min': 6.62276, 'q1': 6.659305, 'median': 6.67849, 'q3': 6.7037875, 'max': 6.73195}
+Total Length Stats: {'min': 93467, 'q1': 93982.75, 'median': 94253.5, 'q3': 94610.5, 'max': 95008}
+Total Moves Stats: {'min': 15691, 'q1': 15811.25, 'median': 15920.5, 'q3': 16097.5, 'max': 16163}
+Execution Time Stats: {'min': 738658000, 'q1': 773997927.25, 'median': 797226688.0, 'q3': 844148999.5, 'max': 865789708}
+Average Time Per Node Stats: {'min': 52338.83653369234, 'q1': 54842.90563664706, 'median': 56488.81796924821, 'q3': 59813.5761000496, 'max': 61346.96435910154}
+
+Processing folder: ./nojwt/result/karate/
+--- Stats for folder: ./nojwt/result/karate/ ---
+Average Length Stats: {'min': 5.08824, 'q1': 5.38235, 'median': 5.97059, 'q3': 6.70588, 'max': 6.79412}
+Total Length Stats: {'min': 173, 'q1': 183.0, 'median': 203.0, 'q3': 228.0, 'max': 231}
+Total Moves Stats: {'min': 34, 'q1': 35.0, 'median': 47.0, 'q3': 50.0, 'max': 51}
+Execution Time Stats: {'min': 778208, 'q1': 1028208.0, 'median': 1057625.0, 'q3': 1513334.0, 'max': 2140750}
+Average Time Per Node Stats: {'min': 22888.470588235294, 'q1': 30241.41176470588, 'median': 31106.617647058825, 'q3': 44509.82352941176, 'max': 62963.23529411765}
+
+Processing folder: ./nojwt/result/email-enron-connected/
+--- Stats for folder: ./nojwt/result/email-enron-connected/ ---
+Average Length Stats: {'min': 6.63177, 'q1': 6.6742775000000005, 'median': 6.685485, 'q3': 6.697345, 'max': 6.69937}
+Total Length Stats: {'min': 223464, 'q1': 224896.5, 'median': 225274.0, 'q3': 225673.75, 'max': 225742}
+Total Moves Stats: {'min': 39046, 'q1': 39421.0, 'median': 39508.5, 'q3': 39729.25, 'max': 39993}
+Execution Time Stats: {'min': 8984239375, 'q1': 9134079208.5, 'median': 9157250895.5, 'q3': 9177222614.25, 'max': 9482345167}
+Average Time Per Node Stats: {'min': 266626.28724477685, 'q1': 271073.1009170228, 'median': 271760.7696907645, 'q3': 272353.4726451211, 'max': 281408.6291251187}
+
+Processing folder: ./nojwt/result/soc-slashdot/
+--- Stats for folder: ./nojwt/result/soc-slashdot/ ---
+Average Length Stats: {'min': 6.65575, 'q1': 6.666645, 'median': 6.68375, 'q3': 6.69262, 'max': 6.69622}
+Total Length Stats: {'min': 466355, 'q1': 467118.5, 'median': 468317.0, 'q3': 468938.5, 'max': 469191}
+Total Moves Stats: {'min': 161591, 'q1': 162036.0, 'median': 162571.0, 'q3': 163274.0, 'max': 163359}
+Execution Time Stats: {'min': 16426566000, 'q1': 16713586042.0, 'median': 17100602542.0, 'q3': 17209534854.0, 'max': 18415114084}
+Average Time Per Node Stats: {'min': 234437.48929611236, 'q1': 238533.79634069762, 'median': 244057.23785465548, 'q3': 245611.90349374892, 'max': 262817.74967174744}
+
+Processing folder: ./nojwt/result/karate-graph/
+--- Stats for folder: ./nojwt/result/karate-graph/ ---
+Average Length Stats: {'min': 6.23529, 'q1': 6.4558824999999995, 'median': 6.57353, 'q3': 6.6323550000000004, 'max': 6.79412}
+Total Length Stats: {'min': 212, 'q1': 219.5, 'median': 223.5, 'q3': 225.5, 'max': 231}
+Total Moves Stats: {'min': 31, 'q1': 42.0, 'median': 44.5, 'q3': 48.0, 'max': 51}
+Execution Time Stats: {'min': 871292, 'q1': 978063.0, 'median': 1238916.5, 'q3': 1497302.75, 'max': 1600959}
+Average Time Per Node Stats: {'min': 25626.235294117647, 'q1': 28766.558823529413, 'median': 36438.720588235294, 'q3': 44038.31617647059, 'max': 47087.029411764706}
+
+Processing folder: ./nojwt/result/cmu/
+--- Stats for folder: ./nojwt/result/cmu/ ---
+Average Length Stats: {'min': 5.3, 'q1': 6.05, 'median': 7.0, 'q3': 8.05, 'max': 10.4}
+Total Length Stats: {'min': 53, 'q1': 60.5, 'median': 70.0, 'q3': 80.5, 'max': 104}
+Total Moves Stats: {'min': 7, 'q1': 10.0, 'median': 13.0, 'q3': 15.0, 'max': 19}
+Execution Time Stats: {'min': 213667, 'q1': 236854.0, 'median': 318042.0, 'q3': 352416.5, 'max': 433167}
+Average Time Per Node Stats: {'min': 21366.7, 'q1': 23685.4, 'median': 31804.2, 'q3': 35241.65, 'max': 43316.7}
+
+Processing folder: ./nojwt/result/ca-grqc-connected/
+--- Stats for folder: ./nojwt/result/ca-grqc-connected/ ---
+Average Length Stats: {'min': 6.43651, 'q1': 6.57191, 'median': 6.64911, 'q3': 6.68927, 'max': 6.77225}
+Total Length Stats: {'min': 26763, 'q1': 27326.0, 'median': 27647.0, 'q3': 27814.0, 'max': 28159}
+Total Moves Stats: {'min': 2512, 'q1': 2734.0, 'median': 2772.0, 'q3': 2823.0, 'max': 2906}
+Execution Time Stats: {'min': 134136917, 'q1': 137122833.0, 'median': 139971125.0, 'q3': 144417500.0, 'max': 202969834}
+Average Time Per Node Stats: {'min': 32259.960798460797, 'q1': 32978.07431457432, 'median': 33663.089225589225, 'q3': 34732.44348244348, 'max': 48814.29389129389}
+
+Processing folder: ./nojwt/result/com-amazon-connected/
+--- Stats for folder: ./nojwt/result/com-amazon-connected/ ---
+Average Length Stats: {'min': 6.65539, 'q1': 6.659745, 'median': 6.6641, 'q3': 6.669965, 'max': 6.67583}
+Total Length Stats: {'min': 2228643, 'q1': 2230101.0, 'median': 2231559.0, 'q3': 2233523.5, 'max': 2235488}
+Total Moves Stats: {'min': 110309, 'q1': 110778.5, 'median': 111248.0, 'q3': 111394.0, 'max': 111540}
+Execution Time Stats: {'min': 11573888083, 'q1': 11582412520.5, 'median': 11590936958.0, 'q3': 12323376541.5, 'max': 13055816125}
+Average Time Per Node Stats: {'min': 34563.05439239331, 'q1': 34588.51088504851, 'median': 34613.96737770372, 'q3': 36801.248694242124, 'max': 38988.53001078053}
+
+Processing folder: ./nojwt/result/rt-retweet/
+--- Stats for folder: ./nojwt/result/rt-retweet/ ---
+Average Length Stats: {'min': 6.0, 'q1': 6.30729, 'median': 6.5, 'q3': 6.666665, 'max': 6.94792}
+Total Length Stats: {'min': 576, 'q1': 605.5, 'median': 624.0, 'q3': 640.0, 'max': 667}
+Total Moves Stats: {'min': 64, 'q1': 74.5, 'median': 79.0, 'q3': 84.5, 'max': 90}
+Execution Time Stats: {'min': 1797084, 'q1': 2191396.0, 'median': 2880208.0, 'q3': 3419833.5, 'max': 7275750}
+Average Time Per Node Stats: {'min': 18719.625, 'q1': 22827.041666666664, 'median': 30002.166666666668, 'q3': 35623.265625, 'max': 75789.0625}
+
+Processing folder: ./nojwt/result/tmp/
+--- Stats for folder: ./nojwt/result/tmp/ ---
+Average Length Stats: {'min': 5.45455, 'q1': 6.25, 'median': 6.40909, 'q3': 6.886365, 'max': 8.95455}
+Total Length Stats: {'min': 120, 'q1': 137.5, 'median': 141.0, 'q3': 151.5, 'max': 197}
+Total Moves Stats: {'min': 0, 'q1': 2.0, 'median': 3.0, 'q3': 5.0, 'max': 7}
+Execution Time Stats: {'min': 514541, 'q1': 911104.0, 'median': 1173333.0, 'q3': 1264562.5, 'max': 10122125}
+Average Time Per Node Stats: {'min': 23388.227272727272, 'q1': 41413.81818181818, 'median': 53333.318181818184, 'q3': 57480.11363636363, 'max': 460096.5909090909}
+
+Processing folder: ./nojwt/result/fb-caltech-connected/
+--- Stats for folder: ./nojwt/result/fb-caltech-connected/ ---
+Average Length Stats: {'min': 6.38583, 'q1': 6.409445, 'median': 6.54068, 'q3': 6.61811, 'max': 6.88058}
+Total Length Stats: {'min': 4866, 'q1': 4884.0, 'median': 4984.0, 'q3': 5043.0, 'max': 5243}
+Total Moves Stats: {'min': 1777, 'q1': 1824.5, 'median': 1853.0, 'q3': 1915.0, 'max': 1971}
+Execution Time Stats: {'min': 108469791, 'q1': 112780416.5, 'median': 115327959.0, 'q3': 136613521.0, 'max': 177768208}
+Average Time Per Node Stats: {'min': 142348.80708661416, 'q1': 148005.79593175853, 'median': 151349.02755905513, 'q3': 179282.83595800525, 'max': 233291.61154855642}
+
+Processing folder: ./nojwt/result/simple_graph/
+--- Stats for folder: ./nojwt/result/simple_graph/ ---
+Average Length Stats: {'min': 3.11111, 'q1': 6.33333, 'median': 7.11111, 'q3': 8.77778, 'max': 9.55556}
+Total Length Stats: {'min': 28, 'q1': 57.0, 'median': 64.0, 'q3': 79.0, 'max': 86}
+Total Moves Stats: {'min': 7, 'q1': 14.0, 'median': 19.0, 'q3': 21.0, 'max': 24}
+Execution Time Stats: {'min': 86500, 'q1': 259500.0, 'median': 265459.0, 'q3': 294042.0, 'max': 452000}
+Average Time Per Node Stats: {'min': 9611.111111111111, 'q1': 28833.333333333332, 'median': 29495.444444444445, 'q3': 32671.333333333332, 'max': 50222.22222222222}
+

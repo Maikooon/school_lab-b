@@ -1,0 +1,12 @@
+ca-grqc-connected Modularity: 0.4306373012848554
+cmu Modularity: 0.08579881656804733
+
+
+fb-caltech-connected Modularity: 0.030738963690790294
+
+karate-graph Modularity: -0.08144312952005262
+karate Modularity: -0.08087367178276268
+rt-retweet Modularity: -0.028928336620644313
+simple_graph Modularity: -0.031249999999999986
+
+tmp Modularity: 0.470873786407767

@@ -1,0 +1,18 @@
+Community 0:
+  Group 1: 1
+  Group 2: 3
+  Group 3: 2
+
+Community 1:
+  Group 1: 0, 3
+  Group 2: 2
+
+Community 2:
+  Group 1: 3, 0
+  Group 2: 1
+
+Community 3:
+  Group 1: 2
+  Group 2: 1
+  Group 3: 0
+

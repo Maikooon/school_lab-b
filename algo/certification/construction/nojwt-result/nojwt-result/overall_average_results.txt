@@ -1,0 +1,84 @@
+Folder: fb-pages-company
+Average length: 1.17585
+Total length: 16594.75000
+Total moves across communities: 395
+Execution time: 331
+Nodes: 14113, Edges: 52310
+-----------------------------
+Folder: karate
+Average length: 1.17059
+Total length: 39.80000
+Total moves across communities: 3
+Execution time: 86
+Nodes: 34, Edges: 77
+-----------------------------
+Folder: email-enron-connected
+Average length: 1.17673
+Total length: 39651.25000
+Total moves across communities: 755
+Execution time: 1171
+Nodes: 33696, Edges: 361622
+-----------------------------
+Folder: soc-slashdot
+Average length: 1.17627
+Total length: 82418.80000
+Total moves across communities: 3325
+Execution time: 1763
+Nodes: 70068, Edges: 358647
+-----------------------------
+Folder: karate-graph
+Average length: 1.23529
+Total length: 42.00000
+Total moves across communities: 1
+Execution time: 88
+Nodes: 34, Edges: 78
+-----------------------------
+Folder: cmu
+Average length: 1.06000
+Total length: 10.60000
+Total moves across communities: 0
+Execution time: 78
+Nodes: 10, Edges: 13
+-----------------------------
+Folder: ca-grqc-connected
+Average length: 1.17725
+Total length: 4895.00000
+Total moves across communities: 62
+Execution time: 176
+Nodes: 4158, Edges: 26844
+-----------------------------
+Folder: com-amazon-connected
+Average length: 1.17665
+Total length: 394017.60000
+Total moves across communities: 3330
+Execution time: 6169
+Nodes: 334863, Edges: 925872
+-----------------------------
+Folder: rt-retweet
+Average length: 1.18958
+Total length: 114.20000
+Total moves across communities: 2
+Execution time: 80
+Nodes: 96, Edges: 117
+-----------------------------
+Folder: tmp
+Average length: 1.15455
+Total length: 25.40000
+Total moves across communities: 0
+Execution time: 84
+Nodes: 22, Edges: 103
+-----------------------------
+Folder: fb-caltech-connected
+Average length: 1.16326
+Total length: 886.40000
+Total moves across communities: 49
+Execution time: 114
+Nodes: 762, Edges: 16651
+-----------------------------
+Folder: simple_graph
+Average length: 1.78261
+Total length: 27.00000
+Total moves across communities: 0
+Execution time: 84
+Nodes: 9, Edges: 12
+-----------------------------

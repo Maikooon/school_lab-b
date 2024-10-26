@@ -104,7 +104,7 @@ vector<int> random_walk(int& total_move, int START_NODE) {
 
 void saveResultsToFile(const std::string& filePath, const std::string& results) {
     // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
-    std::ofstream outputFile(filePath, std::ios::out | std::ios::trunc);
+    std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
 
     // ファイルが正常に開けたかを確認
     if (!outputFile) {

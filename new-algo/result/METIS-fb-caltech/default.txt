@@ -1,0 +1,8 @@
+grouped-ng-list
+Average path length: 6.567000
+Total moves across communities: 3638
+Program execution time: 228445792 nanoseconds
+grouped-ng-list
+Average path length: 6.874000
+Total moves across communities: 3783
+Program execution time: 167541750 nanoseconds

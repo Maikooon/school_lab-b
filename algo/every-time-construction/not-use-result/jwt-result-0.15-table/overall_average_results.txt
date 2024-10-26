@@ -1,0 +1,63 @@
+Folder: fb-pages-company
+Average length: 6.72082
+Total length: 94851.00000
+Total moves across communities: 15956
+Execution time: 10515
+Nodes: 14113, Edges: 52310
+-----------------------------
+Folder: karate
+Average length: 5.64706
+Total length: 192.00000
+Total moves across communities: 47
+Execution time: 124
+Nodes: 34, Edges: 77
+-----------------------------
+Folder: karate-graph
+Average length: 6.00000
+Total length: 204.00000
+Total moves across communities: 42
+Execution time: 648
+Nodes: 34, Edges: 78
+-----------------------------
+Folder: cmu
+Average length: 7.16667
+Total length: 71.66667
+Total moves across communities: 7
+Execution time: 74
+Nodes: 10, Edges: 13
+-----------------------------
+Folder: ca-grqc-connected
+Average length: 6.27090
+Total length: 26074.40000
+Total moves across communities: 2266
+Execution time: 79544
+Nodes: 4158, Edges: 26844
+-----------------------------
+Folder: rt-retweet
+Average length: 7.17708
+Total length: 689.00000
+Total moves across communities: 96
+Execution time: 121
+Nodes: 96, Edges: 117
+-----------------------------
+Folder: tmp
+Average length: 7.71213
+Total length: 169.66667
+Total moves across communities: 2
+Execution time: 93
+Nodes: 22, Edges: 103
+-----------------------------
+Folder: fb-caltech-connected
+Average length: 6.68569
+Total length: 5094.50000
+Total moves across communities: 1890
+Execution time: 598
+Nodes: 762, Edges: 16651
+-----------------------------
+Folder: simple_graph
+Average length: 7.77778
+Total length: 70.00000
+Total moves across communities: 20
+Execution time: 194
+Nodes: 9, Edges: 12
+-----------------------------

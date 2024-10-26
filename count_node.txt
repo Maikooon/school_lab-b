@@ -1,0 +1,51 @@
+graph: ca-grqc-connected
+Nodes: 4158, Edges: 26844
+
+graph: cmu
+Nodes: 10, Edges: 13
+
+graph: com-amazon-connected
+Nodes: 334863, Edges: 925872
+
+graph: email-enron-connected
+Nodes: 33696, Edges: 361622
+
+graph: fb-caltech-connected
+Nodes: 762, Edges: 16651
+
+graph: fb-pages-company
+Nodes: 14113, Edges: 52310
+
+graph: fb-pages-food
+Nodes: 620, Edges: 2102
+
+graph: karate-graph
+Nodes: 34, Edges: 78
+
+graph: karate
+Nodes: 34, Edges: 77
+
+graph: modularity
+Nodes: 10, Edges: 12
+
+graph: ns
+Nodes: 9, Edges: 13
+
+graph: prefectures
+Nodes: 47, Edges: 93
+
+graph: rt-retweet
+Nodes: 96, Edges: 117
+
+graph: simple_graph
+Nodes: 9, Edges: 12
+
+graph: soc-slashdot
+Nodes: 70068, Edges: 358647
+
+graph: tmp
+Nodes: 22, Edges: 103
+
+graph: web-polblogs
+Nodes: 643, Edges: 2280
+

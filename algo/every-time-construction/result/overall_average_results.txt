@@ -1,0 +1,14 @@
+Folder: cmu
+Average length: 0.00000
+Total length: 0.00000
+Total moves across communities: 0
+Execution time: 5747839
+Nodes: 10, Edges: 13
+-----------------------------
+Folder: ca-grqc-connected
+Average length: 0.00000
+Total length: 0.00000
+Total moves across communities: 0
+Execution time: 684595333
+Nodes: 4158, Edges: 26844
+-----------------------------

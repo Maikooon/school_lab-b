@@ -1,4 +1,4 @@
-*.txt
+*result.txt
 /certification/constraction/result/*
 /karate-test/certification/constraction/result
 algo/certification/constraction/nojwt-result/*

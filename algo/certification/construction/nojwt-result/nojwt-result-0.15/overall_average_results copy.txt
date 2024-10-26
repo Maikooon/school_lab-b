@@ -1,0 +1,33 @@
+
+-----------------------------
+Folder: karate-graph
+Average length: 7.21177
+Total length: 245.20000
+Total moves across communities: 55
+Execution time: 77
+Nodes: 34, Edges: 78
+-----------------------------
+
+Folder: ca-grqc-connected
+Average length: 6.62492
+Total length: 27546.40000
+Total moves across communities: 2720
+Execution time: 443
+Nodes: 4158, Edges: 26844
+-----------------------------
+
+Folder: rt-retweet
+Average length: 6.36458
+Total length: 611.00000
+Total moves across communities: 83
+Execution time: 78
+Nodes: 96, Edges: 117
+-----------------------------
+
+Folder: fb-caltech-connected
+Average length: 6.67690
+Total length: 5087.80000
+Total moves across communities: 1924
+Execution time: 251
+Nodes: 762, Edges: 16651
+

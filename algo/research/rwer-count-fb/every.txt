@@ -1,0 +1,44 @@
+Folder: 5_communities
+Total moves across communities: 3472
+Execution time: 593718402
+
+Folder: 11_communities
+Total moves across communities: 4005
+Execution time: 698002458
+
+Folder: 9_communities
+Total moves across communities: 3923
+Execution time: 702878708
+
+Folder: 3_communities
+Total moves across communities: 2770
+Execution time: 509269264
+
+Folder: 12_communities
+Total moves across communities: 3988
+Execution time: 727186292
+
+Folder: 6_communities
+Total moves across communities: 3631
+Execution time: 684554486
+
+Folder: 8_communities
+Total moves across communities: 3730
+Execution time: 661847639
+
+Folder: 10_communities
+Total moves across communities: 3849
+Execution time: 674179097
+
+Folder: 4_communities
+Total moves across communities: 3297
+Execution time: 604496916
+
+Folder: 7_communities
+Total moves across communities: 3588
+Execution time: 660204514
+
+Folder: 2_communities
+Total moves across communities: 2211
+Execution time: 460170208
+
