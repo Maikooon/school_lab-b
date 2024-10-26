@@ -35,8 +35,8 @@ const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH 
 
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 12;         // ランダムウォークの開始ノード
+const int RW_COUNT = 10;  // ランダムウォークの実行回数
+int START_NODE = 1;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -144,12 +144,8 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     int current_node = START_NODE;
     std::set <int> ng_list;
     path.push_back(current_node);
+    start_community = node_communities[START_NODE];
 
-    //遷移確立が終わるまで繰り返す
-    // printf("start_community: %d\n", start_community);
-    // std::cout << (double)rand() / RAND_MAX << std::endl;
-
-    // printf("ALPHA: %f\n", ALPHA);
     while ((double)rand() / RAND_MAX > ALPHA) {
         auto neighbors = graph[current_node];
         if (neighbors.empty()) {
@@ -157,8 +153,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         }
 
         // 隣接ノードからランダムに次のノードを選択
-        //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
-        //ここから
         int next_node;
         do {
             // 隣接ノードからランダムに次のノードを選択
@@ -174,17 +168,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
         //ここまで
 
-        // int next_node = *next(neighbors.begin(), rand() % neighbors.size());
-
-        //NG-listに入っていないことを確認,nglistは”// 現在のノードとHop先のコミュニティが異なる場合”のIF文が実行されたときにのみ実行
-    //たぶんここは上のループとおあなじ処理をしているのでコメントアウト
-        // if (ng_list.find(next_node) != ng_list.end()) {
-        //     // std::cout << "NGなのでスキップ" << next_node << std::endl;
-        //     next_node = current_node;
-        //     continue; // NGノードの場合は次のHopを探す
-        // }
-
-        // printf("current_node: %d, next_node: %d\n", current_node, next_node);
 
         // 現在のノードとHop先のコミュニティが異なる場合
         //NGノードは、自分と同じコミュニティに対してしか設定されていない
@@ -192,8 +175,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         if (node_communities[current_node] != node_communities[next_node]) {
             int current_community = node_communities[current_node];
             int next_community = node_communities[next_node];
-
-            // printf("current_community: %d, next_community: %d\n", current_community, next_community);
             //始点コミュニティと移動さきコミュニティが同じ時にはアクセス権の確認なし
             if (next_community == start_community) {
                 move_count++;
@@ -204,12 +185,13 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
 
             //ここから二つのテーブルを参照して行う
+            printf("比較を開始");
             for (auto& group : community_groups[next_community]) {
                 if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
                     // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
                     ng_list = community_ng_nodes[next_community][group.first];
                     //debug 参照したリストを出力
-                    // std::cout << "NG nodes for Group " << group.first << ": ";
+                    std::cout << "NG nodes for Group " << group.first << ": ";
                     for (const int node : ng_list) {
                         std::cout << node << " ";
                     }
@@ -217,11 +199,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                     /// .debug
 
                     // 次のHop先がNGノードであるかを確認
+                    printf("次のHop先がNGノードであるかを確認");
                     if (ng_list.find(next_node) != ng_list.end()) {
                         // std::cout << "NG node found" << next_node << ::endl;
                         //進まないようにやり直す
                         next_node = current_node;
-                        // printf("やり直し！");
+                        printf("やり直し！");
                         continue; // NGノードの場合は次のHopを探す
                     }
                     break; // NGノードではない場合、次のHopを許可

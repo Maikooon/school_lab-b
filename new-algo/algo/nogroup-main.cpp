@@ -38,7 +38,7 @@ const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH 
 const std::string NGFILE = "./../create-tables/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 1000;  // ランダムウォークの実行回数
+const int RW_COUNT = 10;  // ランダムウォークの実行回数
 int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
@@ -93,50 +93,6 @@ void load_communities(const std::string& file_path) {
 // 読み込みの関数を定義
 // コミュニティごとのグループとNGノードを保持するためのデータ構造
 
-using CommunityGroups = std::unordered_map<int, std::unordered_map<int, std::vector<int>>>;
-using CommunityNGNodes = std::unordered_map<int, std::unordered_map<int, std::set<int>>>;
-
-// グローバル変数
-CommunityGroups community_groups;
-CommunityNGNodes community_ng_nodes;
-
-// グループテーブルの読み込み関数
-void load_community_groups(const std::string& filepath) {
-    std::ifstream file(filepath);
-    std::string line;
-    int community, group;
-    std::vector<int> nodes;
-
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        if (iss >> community) {
-            while (iss >> group) {
-                int node;
-                while (iss >> node) {
-                    community_groups[community][group].push_back(node);
-                }
-            }
-        }
-    }
-}
-
-// NGノードテーブルの読み込み関数
-void load_community_ng_nodes(const std::string& filepath) {
-    std::ifstream file(filepath);
-    std::string line;
-    int community, group, node;
-
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        if (iss >> community) {
-            while (iss >> group) {
-                while (iss >> node) {
-                    community_ng_nodes[community][group].insert(node);
-                }
-            }
-        }
-    }
-}
 // データ構造の定義
 using NodeMap = std::unordered_map<int, std::vector<int>>;
 
@@ -170,6 +126,7 @@ void load_ng_table(const std::string& filepath) {
         }
     }
     file.close();
+
 }
 
 /*------------------------------------------------------------------------------------------------------------------------*/
@@ -182,6 +139,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     int current_node = START_NODE;
     std::set <int> ng_list;
     path.push_back(current_node);
+    start_community = node_communities[START_NODE];
 
     //遷移確立が終わるまで繰り返す
     // printf("start_community: %d\n", start_community);
@@ -203,8 +161,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
             //TODO;同じコミュニティに対しては、NGに指定していないので、ような場合はないとできる
-            // 自分のコミュニティ内を移動する時には、そのノードに対して移動していいのかを確かめる
-            // NGリストに含まれている場合は、再度選び直す
             if (ng_list.find(next_node) != ng_list.end()) {
                 std::cout << "NGなのでスキップ" << next_node << std::endl;
                 next_node = current_node;  // 現在のノードに戻す
@@ -214,20 +170,23 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         //ここまで
 
         // 現在のノードとHop先のコミュニティが異なる場合
+
+        // リストから次にHopするノードを探す（縦）
+        //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
+        //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
         if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
-            // リストから次にHopするノードを探す（縦）
-            const auto& nodes = ng_table[next_node];
-            for (const auto& node : nodes) {
-                if (node == current_node) {
-                    std::cout << "次のHop先は、現在のノードからのアクセスを許可していない" << next_node << std::endl;
-                    next_node = current_node;
-                    break;
-                }
+            std::cout << "次に対してNGかチェック: " << ng_table.size() << std::endl;
+
+            // if (ng_table.find(next_node) != ng_table.end()) {
+            const auto& nodes = ng_table.at(622);
+            std::cout << "次のHop先は、NGリストに含まれている: " << nodes.size() << std::endl;
+            // Check if start_node is in the ng list for this community
+            if (std::find(nodes.begin(), nodes.end(), START_NODE) != nodes.end()) {
+                std::cout << "次のHop先は、現在のノードからのアクセスを許可していない: " << next_node << std::endl;
+                next_node = current_node; // Stay at the current node
+                continue;
             }
-
-            //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
-
-            //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
+            // }
 
             move_count++;
         }
@@ -273,9 +232,8 @@ int main() {
     load_communities(COMMUNITY_FILE);
 
     //その他テーブルの読み込み
-    load_community_groups(GROUP_PER_COMMUNITY);
-    load_community_ng_nodes(NG_NODES_PER_COMMUNITY);
     load_ng_table(NGFILE); // データを読み込む
+
     auto start_time = chrono::high_resolution_clock::now();
 
     int total_move = 0;
@@ -321,6 +279,7 @@ int main() {
     saveResultsToFile(filePath, results);
 
     std::cout << "結果をファイルに保存しました。" << std::endl;
+
     return 0;
 }
 
