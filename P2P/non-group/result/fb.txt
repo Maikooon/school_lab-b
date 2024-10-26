@@ -1,31 +1,54 @@
+Execution time: 26.5260
+total_determinate_ng_nodes 0.016943693161010742                                                                                                                     
+total_jwt_verify_time: 0.015249013900756836                                                             
+total_jwt_generate: 0.003640890121459961 
 
-148.6449
-total_jwt_verify_time: 0.010134220123291016                                                             │>>> exit()
-total_jwt_generate: 0.002028942108154297                                                                │kate@giji-4:~/P2P/non-group$ 
-                                          
+total_determinate_ng_nodes 0.021096467971801758                                                                        
+ total_time_jwt_verify 0.009710550308227539
+ total_time_jwt_generate 0.015953540802001953
 
- │Execution time: 141.6662 seconds
- total_jwt_verify_time: 0.012375354766845703                                                             │669': 1, '756': 2, '373': 4, '689': 2, '589': 2, '556': 1, '141': 1, '152': 1, '341': 2, '338': 1, '451
-total_jwt_generate: 0.0013861656188964844  
+total_determinate_ng_nodes 0.02369403839111328
+total_jwt_verify_time: 0.018076658248901367
+total_jwt_generate: 0.004175662994384766
+---------------------------------------------
+Execution time: 26.9818 seconds
+total_determinate_ng_nodes 0.042366981506347656
+total_jwt_verify_time: 0.030854463577270508
+total_jwt_generate: 0.007952213287353516
 
-│total_time_jwt_verify 0.007613658905029297
-total_jwt_generate: 0.007336854934692383                                                                │total_time_jwt_generate 0.014782428741455078
+total_determinate_ng_nodes 0.0298154354095459                                                          
+total_jwt_verify_time: 0.020600318908691406                                                             
+total_jwt_generate: 0.0053789615631103516 
 
+total_determinate_ng_nodes 0.0298154354095459  
+total_time_jwt_generate 0.03226923942565918
+total_jwt_generate: 0.0053789615631103516 
 
-total_jwt_verify_time: 0.01376199722290039                                                              │total_time_jwt_verify 0.007613658905029297
-total_jwt_generate: 0.007336854934692383  
+---------------------------------------------
+Execution time: 25.3541 seconds
+total_determinate_ng_nodes 0.043721914291381836                                                                                                                        
+total_jwt_verify_time: 0.028851032257080078                                                             
+total_jwt_generate: 0.0073778629302978516  
 
-│total_determinate_ng_nodes 90.05085158348083
+total_determinate_ng_nodes 0.043721914291381836   
+total_time_jwt_verify 0.024292707443237305                                                                      
+total_time_jwt_generate 0.04901885986328125
 
+total_determinate_ng_nodes 0.06309103965759277
+total_jwt_verify_time: 0.044306039810180664
+total_jwt_generate: 0.012281656265258789
 
+---------------------------------------------
 
-Execution time: 129.5548 seconds
-total_jwt_verify_time: 0.022084474563598633                                                             │, '54': 1, '373': 1, '18': 1, '367': 2, '591': 1, '12': 2, '366': 1, '103': 2, '324': 1, '346': 2, '385
-total_jwt_generate: 0.0035643577575683594  
+Execution time: 26.8201 seconds
+total_determinate_ng_nodes 0.08215498924255371
+total_jwt_verify_time: 0.03577470779418945                                                             
+total_jwt_generate: 0.010147571563720703
 
-otal_jwt_verify_time: 0.028789758682250977                                                             │total_time_jwt_verify 0.016366243362426758
-total_jwt_generate: 0.012572050094604492   
+total_determinate_ng_nodes 0.08215498924255371
+total_time_jwt_verify 0.031557321548461914
+total_time_jwt_generate 0.06349372863769531
 
-
-│total_time_jwt_verify 0.016366243362426758
-total_jwt_generate: 0.012572050094604492                                                                │total_time_jwt_generate 0.030300378799438477
+total_determinate_ng_nodes 0.08215498924255371
+total_jwt_verify_time: 0.057450056076049805
+total_jwt_generate: 0.014862060546875

@@ -46,16 +46,19 @@ class Graph:
         Returns:
             bool: True ならホップ許可、False ならホップ不可。
         """
-        # next_node_IdがNGリストに含まれているかどうかを確認
-        ng_lists = self.ng_list
-        print(f"NGリスト: {ng_lists}")
-        # TODO;ここが含まれていると莫大に時間が増えてしまう
 
-        # Check if the next_node_id is in the NG list (left side)
+        ng_lists = self.ng_list
+        # print(f"NGリスト: {ng_lists}")
+        # TODO;ここが含まれていると莫大に時間が増えてしまう
+        print(type(next_node_id))  # int
+        # next_node_id = 199
+        # next_node_IdがNGリストに含まれているかどうかを確認
         if next_node_id in ng_lists:
-            next_node_id = 1
             print(f"次ノード {next_node_id} は出発先によってはNGです")
-            # Check if start_node_community is in the corresponding array (right side)
+            print(f"出発ノード {start_node_id} が含まれているか確認")  # int
+            start_node_id = int(start_node_id)
+            print(type(start_node_id))  # int
+            # print(f"199のNGリスト: {ng_lists[next_node_id]}")
             if start_node_id in ng_lists[next_node_id]:
                 # If both conditions are met, return False (hop not allowed)
                 # return False

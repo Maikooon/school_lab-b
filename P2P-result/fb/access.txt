@@ -1,0 +1,15 @@
+Elapsed time 24.1341
+ total_determinate_ng_nodes: 0.180902
+total_jwt_verify_time: 0.104864
+total_jwt_generate: 0.027019
+
+Elapsed time 25.4224
+ total_determinate_ng_nodes: 0.248548
+total_jwt_verify_time: 0.032317
+total_jwt_generate: 0.021507
+
+
+Elapsed time 25.9097
+ total_determinate_ng_nodes: 0.180902
+total_total_jwt_verify_time: 0.066233
+total_jwt_generate: 0.026841

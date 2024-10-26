@@ -1,8 +1,5 @@
-start_node 1
-rw_time 1000
-
-Elapsed time: 22.90226912498474
-Elapsed time: 24
-Elapsed time: 26.335333824157715
-Elapsed time: 24.56685185432434
-Elapsed time: 25.453712224960327
+Elapsed time 22.90226912498474
+Elapsed time 24
+Elapsed time 25.335333824157715
+Elapsed time 24.56685185432434
+Elapsed time 25.453712224960327
