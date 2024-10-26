@@ -25,17 +25,20 @@ using namespace std;
 
 
 // グローバル変数の定義
-// const std::string COMMUNITY_FILE = "./../../Louvain/community/karate.tcm";
-// const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";
-// const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/karate/dynamic_groups.txt";
-// const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/karate/ng_nodes.txt";
-
-const std::string GRAPH = "METIS-fb-caltech";
+const std::string GRAPH = "METIS-karate";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
+
+
+// const std::string GRAPH = "METIS-fb-caltech";
+// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+// const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+// const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
+// const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
+// const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
@@ -266,6 +269,7 @@ int main() {
     results += "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    results += "\n";
 
     // ファイルパス
     std::string filePath = "./../result/" + GRAPH + "/access.txt";

@@ -47,7 +47,7 @@ class User:
                 all_paths = received_message["all_paths"]
 
                 print("End Walk: ", end_walk)
-                print("All Paths: ", all_paths)
+                # print("All Paths: ", all_paths)
 
                 for node_id, val in end_walk.items():
                     end_count[node_id] = end_count.get(node_id, 0) + val

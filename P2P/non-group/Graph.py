@@ -49,9 +49,12 @@ class Graph:
         # next_node_IdがNGリストに含まれているかどうかを確認
         ng_lists = self.ng_list
         print(f"NGリスト: {ng_lists}")
+        # TODO;ここが含まれていると莫大に時間が増えてしまう
 
         # Check if the next_node_id is in the NG list (left side)
         if next_node_id in ng_lists:
+            next_node_id = 1
+            print(f"次ノード {next_node_id} は出発先によってはNGです")
             # Check if start_node_community is in the corresponding array (right side)
             if start_node_id in ng_lists[next_node_id]:
                 # If both conditions are met, return False (hop not allowed)
@@ -70,7 +73,7 @@ class Graph:
         start_node_id=None,
         start_node_community=None,
     ):
-        print("random_walkの関数が開始")
+        # print("random_walkの関数が開始")
         source_node = self.nodes[source_id]
         executer = source_node.manager
         end_walk = dict()
@@ -99,7 +102,7 @@ class Graph:
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     self.all_paths.append(current_node.id)
-                    print("RWが終了しました")
+                    # print("RWが終了しました")
                     break
 
                 # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
