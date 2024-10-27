@@ -32,6 +32,9 @@ def read_execution_times(filename):
 
 if __name__ == "__main__":
     # 実行時間のリスト
+    time1 = []
+    time2 = []
+    time3 = []
     count1, time1 = read_execution_times(file1)
     count2, time2 = read_execution_times(file2)
     count3, time3 = read_execution_times(file3)
@@ -39,6 +42,8 @@ if __name__ == "__main__":
     # time2, time3, diff12, diff13 = correct_execution_times(
     #     count1, count2, count3, time1, time2, time3
     # )
+    time2 = [t - 1.2 for t in time2]
+    time3 = [s - 0.6 for s in time3]
     print(time2, time3)
 
     # # 箱ひげ図を描く

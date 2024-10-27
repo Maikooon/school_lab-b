@@ -17,12 +17,13 @@ g++ -std=c++11 rw.cpp -o rw
 using namespace std;
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-fb-caltech";
+//コミュニティファイルはMETISのフォルダからコピーしてくる
+const std::string GRAPH = "METIS-fb-caltech";    ///☺︎したのグラフも変更する
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 12;         // ランダムウォークの開始ノード
+int START_NODE = 1;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;

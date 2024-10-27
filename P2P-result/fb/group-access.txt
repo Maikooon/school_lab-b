@@ -1,20 +1,17 @@
 
-Elapsed time 25.3541 
-total_determinate_ng_nodes: 0.150535
-total_jwt_verify_time: 0.097450
-total_jwt_generate: 0.068678
+Elapsed time 24.1341
+ total_determinate_ng_nodes: 0.180902
+total_jwt_verify_time: 0.104864
+total_jwt_generate: 0.027019
 
-Elapsed time 26.5260 
-total_determinate_ng_nodes: 0.061734
-total_jwt_verify_time: 0.043036
-total_jwt_generate: 0.023770
+Elapsed time 25.4224
+ total_determinate_ng_nodes: 0.248548
+total_jwt_verify_time: 0.032317
+total_jwt_generate: 0.021507
 
-Elapsed time 26.8201 
-total_determinate_ng_nodes: 0.246465
-total_jwt_verify_time: 0.124782
-total_jwt_generate: 0.06503
 
-Elapsed time 26.9818 
-total_determinate_ng_nodes: 0.101998
-total_jwt_verify_time: 0.083724
-total_jwt_generate: 0.018710
+Elapsed time 25.9097
+ total_determinate_ng_nodes: 0.180902
+total_total_jwt_verify_time: 0.066233
+total_jwt_generate: 0.026841
+
