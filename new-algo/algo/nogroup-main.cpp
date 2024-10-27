@@ -3,7 +3,7 @@
     なお、その表は丁寧に書いているNGノード表からのみ作成できるので注意
 
     実行コマンド
-    g++ -std=c++11 main.cpp -o main
+    g++ -std=c++11 nogroup-main.cpp -o nogroup
 */
 
 
@@ -27,9 +27,9 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-fb-caltech";
+const std::string GRAPH = "METIS-fb-pages";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 
@@ -42,7 +42,7 @@ const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 12;         // ランダムウォークの開始ノード
+int START_NODE = 1;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;

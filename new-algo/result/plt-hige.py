@@ -25,17 +25,26 @@ def read_execution_times(filename):
     average_count = count / len(execution_times)
     print(average_count)
     print(execution_times)
-    return count, execution_times
+    return average_count, execution_times
 
 
 # 補正を行う
 def correct_execution_times(count1, count2, count3, time1, time2, time3):
     # どのぐらい補正を行うのかを決める
-    alpha2 = count1 / count2
+    print(count1)
+    print(count2)
+    print(count3)
+    alpha2 = 1
     alpha3 = count1 / count3
+
+    print(f"alpha2: {alpha2}")
+    print(f"alpha3: {alpha3}")
 
     time2 = [t * alpha2 for t in time2]
     time3 = [t * alpha3 for t in time3]
+
+    print(time2)
+    print(time3)
 
     # 増加分が元に対して何％なのかを調べる
     average1 = sum(time1) / len(time1)
@@ -61,26 +70,26 @@ if __name__ == "__main__":
     time2, time3, diff12, diff13 = correct_execution_times(
         count1, count2, count3, time1, time2, time3
     )
-    # print(time2, time3)
+    print(time2, time3)
 
-    # # 箱ひげ図を描く
-    # plt.figure(figsize=(10, 6))
-    # plt.boxplot(
-    #     [time1, time2, time3],
-    #     labels=["non-access-limit", "access", "grouped access"],
-    # )
+    # 箱ひげ図を描く
+    plt.figure(figsize=(10, 6))
+    plt.boxplot(
+        [time1, time2, time3],
+        labels=["non-access-limit", "access", "grouped access"],
+    )
 
-    # # グラフのタイトルやラベル
-    # plt.title(f"Comparison of RW Execution Times {GRAPH}")
-    # plt.ylabel("Execution Time (ms)")
-    # plt.grid(True)
-    # plt.text(
-    #     0.9,
-    #     0.9,
-    #     f"access:{diff12}%up, grouped-access:{diff13}%up",
-    #     ha="center",
-    #     transform=plt.gca().transAxes,
-    # )
-    # plt.savefig(f"./{GRAPH}/hige.png")
-    # # グラフを表示
-    # plt.show()
+    # グラフのタイトルやラベル
+    plt.title(f"Comparison of RW Execution Times {GRAPH}")
+    plt.ylabel("Execution Time (ms)")
+    plt.grid(True)
+    plt.text(
+        0.9,
+        0.9,
+        f"access:{diff12}%up, grouped-access:{diff13}%up",
+        ha="center",
+        transform=plt.gca().transAxes,
+    )
+    plt.savefig(f"./{GRAPH}/hige.png")
+    # グラフを表示
+    plt.show()
