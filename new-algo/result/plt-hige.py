@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 # ファイル名
 # file1 = "./karate/default.txt"  # 最初のファイル
 # file2 = "./karate/access.txt"  # 2番目のファイル
-GRAPH = "METIS-fb-caltech"
+GRAPH = "METIS-fb-pages"
 file1 = f"./{GRAPH}/default.txt"
 file2 = f"./{GRAPH}/access.txt"
 file3 = f"./{GRAPH}/group-access.txt"
+
 
 # ファイルからデータを読み込む
 def read_execution_times(filename):
@@ -22,8 +23,8 @@ def read_execution_times(filename):
                 time_in_ms = time_in_ns / 1e6  # ミリ秒に変換
                 execution_times.append(time_in_ms)
     average_count = count / len(execution_times)
-    # print(average_count)
-    # print(execution_times)
+    print(average_count)
+    print(execution_times)
     return count, execution_times
 
 
@@ -60,26 +61,26 @@ if __name__ == "__main__":
     time2, time3, diff12, diff13 = correct_execution_times(
         count1, count2, count3, time1, time2, time3
     )
-    print(time2, time3)
+    # print(time2, time3)
 
     # # 箱ひげ図を描く
-    plt.figure(figsize=(10, 6))
-    plt.boxplot(
-        [time1, time2, time3],
-        labels=["non-access-limit", "grouped access", "access"],
-    )
+    # plt.figure(figsize=(10, 6))
+    # plt.boxplot(
+    #     [time1, time2, time3],
+    #     labels=["non-access-limit", "access", "grouped access"],
+    # )
 
-    # グラフのタイトルやラベル
-    plt.title(f"Comparison of RW Execution Times {GRAPH}")
-    plt.ylabel("Execution Time (ms)")
-    plt.grid(True)
-    plt.text(
-        0.9,
-        0.9,
-        f"access:{diff12}%up, grouped-access:{diff13}%up",
-        ha="center",
-        transform=plt.gca().transAxes,
-    )
-    plt.savefig(f"./{GRAPH}/hige.png")
-    # グラフを表示
-    plt.show()
+    # # グラフのタイトルやラベル
+    # plt.title(f"Comparison of RW Execution Times {GRAPH}")
+    # plt.ylabel("Execution Time (ms)")
+    # plt.grid(True)
+    # plt.text(
+    #     0.9,
+    #     0.9,
+    #     f"access:{diff12}%up, grouped-access:{diff13}%up",
+    #     ha="center",
+    #     transform=plt.gca().transAxes,
+    # )
+    # plt.savefig(f"./{GRAPH}/hige.png")
+    # # グラフを表示
+    # plt.show()

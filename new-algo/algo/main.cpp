@@ -2,6 +2,9 @@
 defailt のRWにテーブル参照を加えて時間を計測するもの
 まだ、構造体の必要性はないので、普通のRWでテストを行う
 
+
+create-talbe でNGノード用のテーブルを作ってから行う
+なお、テーブルは文字がないものを作った方がいいかも
 実行コマンド
 g++ -std=c++11 main.cpp -o main
 */
@@ -22,9 +25,9 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-karate";
+const std::string GRAPH = "METIS-fb-pages";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
 
@@ -187,9 +190,15 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
             //ここから二つのテーブルを参照して行う
             printf("比較を開始");
+            // printf("次のコミュニティは%d", next_community);
             for (auto& group : community_groups[next_community]) {
+                // printf("ここまではきている");
+                //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
                 if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
                     // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
+
+                    //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
+                    //次に移動するコミュニティ固有のNGリストを取得
                     ng_list = community_ng_nodes[next_community][group.first];
                     //debug 参照したリストを出力
                     std::cout << "NG nodes for Group " << group.first << ": ";
@@ -197,9 +206,8 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                         std::cout << node << " ";
                     }
                     std::cout << std::endl;
-                    /// .debug
 
-                    // 次のHop先がNGノードであるかを確認
+                    // 次のHop先に、出発もとのノードがアクセスできるのかを確認
                     if (ng_list.find(next_node) != ng_list.end()) {
                         // std::cout << "NG node found" << next_node << ::endl;
                         //進まないようにやり直す
@@ -290,14 +298,13 @@ int main() {
 
     //結果を出力する
      // 保存したい結果
-    std::string results = "grouped-ng-list\n";
-    results += "Average path length: " + std::to_string(average_length) + "\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
     results += "\n";
 
     // ファイルパス
-    std::string filePath = "./../result/" + GRAPH + "/access.txt";
+    std::string filePath = "./../result/" + GRAPH + "/group-access.txt";
 
     // 結果をファイルに保存
     saveResultsToFile(filePath, results);

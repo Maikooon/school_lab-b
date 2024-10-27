@@ -1,12 +1,16 @@
+"""
+コミュニティからNGグループを作成する
+"""
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
 from collections import defaultdict
 
 
-GRAPH = "METIS-karate"
+GRAPH = "METIS-fb-pages"  # ニコしたも修正する
 node_community_file = f"./result/{GRAPH}/community.txt"
-edges_file = "./../../Louvain/graph/karate.gr"
+edges_file = "./../../Louvain/graph/fb-pages-company.gr"
 
 # node_community_file = "./../divide-community/3_communities.txt"
 # edges_file = "./../../Louvain/graph/ns.gr"

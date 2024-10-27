@@ -1,8 +1,10 @@
 /**
+    こちらの票を作ってから実行する
+    なお、その表は丁寧に書いているNGノード表からのみ作成できるので注意
 
- 実行コマンド
- g++ -std=c++11 main.cpp -o main
- */
+    実行コマンド
+    g++ -std=c++11 main.cpp -o main
+*/
 
 
 #include <iostream>
@@ -25,11 +27,9 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-karate";
+const std::string GRAPH = "METIS-fb-caltech";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/karate.gr";         /// ここを変更
-const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
-const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 
@@ -265,8 +265,7 @@ int main() {
 
     // 結果を出力する
     //  保存したい結果
-    std::string results = "non-grouped-ng-list\n";
-    results += "Average path length: " + std::to_string(average_length) + "\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
     results += "\n";

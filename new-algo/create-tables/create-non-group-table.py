@@ -1,16 +1,16 @@
 """
+グループになっていないNGリストを作成するプログラム
+
 コミュニティ 1:
-  NG for Group 1:
-  NG for Group 2:
-  最低限グループ名だけはエラーになるので足すことll
-
-
+    NG for Group 1:
+    NG for Group 2:
+    最低限グループ名だけはエラーになるので足すこと
 """
 
 import glob
 import os
 
-GRAPH = "METIS-karate"
+GRAPH = "METIS-fb-pages"
 
 
 def read_community_file(filename):
