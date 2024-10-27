@@ -143,50 +143,57 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         // 隣接ノードからランダムに次のノードを選択
         //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
-        int next_node;
-        do {
-            // 隣接ノードからランダムに次のノードを選択
-            next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        // int next_node;
+        // do {
+        //     // 隣接ノードからランダムに次のノードを選択
+        //     next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
-            //TODO;同じコミュニティに対しては、NGに指定していないので、ような場合はないとできる
-            if (ng_list.find(next_node) != ng_list.end()) {
-                std::cout << "NGなのでスキップ" << next_node << std::endl;
-                next_node = current_node;  // 現在のノードに戻す
-            }
+        //     //TODO;同じコミュニティに対しては、NGに指定していないので、ような場合はないとできる
+        //     // if (ng_list.find(next_node) != ng_list.end()) {
+        //     //     std::cout << "NGなのでスキップ" << next_node << std::endl;
+        //     //     next_node = current_node;  // 現在のノードに戻す
+        //     // }
 
-        } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
-        //ここまで
+        // } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
+        // //ここまで
 
-        // 現在のノードとHop先のコミュニティが異なる場合
+
 
         // リストから次にHopするノードを探す（縦）
         //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
         //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
+        // 隣接ノードからランダムに次のノードを選択
+        int next_node;
+        next_node = *next(neighbors.begin(), rand() % neighbors.size());
         std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
 
-        if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
-            std::string a;
+        // if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
 
-            auto it = ng_table.find(next_node);
-            if (it != ng_table.end()) {
-                std::cout << "NG nodes for node " << next_node << ": ";
-                for (int num : it->second) {
-                    std::cout << num << " ";
-                    a += std::to_string(num) + " "; // ノードを文字列に追加
-                }
-                std::cout << std::endl;
-            }
 
-            // START_NODEが文字列aに含まれているか確認
-            if (a.find(std::to_string(START_NODE)) != std::string::npos) {
-                std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
-                next_node = current_node;  // 現在のノードに戻す
-                continue;
+        std::string a;
+
+        auto it = ng_table.find(next_node);
+        printf("ここには全部到達l");
+        //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+        if (it != ng_table.end()) {
+            std::cout << "NG nodes for node " << next_node << ": ";
+            for (int num : it->second) {
+                std::cout << num << " ";
+                a += std::to_string(num) + " "; // ノードを文字列に追加
             }
-            else {
-                std::cout << "Node " << START_NODE << " is not in the NG nodes for community " << current_node << std::endl;
-            }
+            std::cout << std::endl;
         }
+
+        // START_NODEが文字列aに含まれているか確認
+        if (a.find(std::to_string(START_NODE)) != std::string::npos) {
+            std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
+            next_node = current_node;  // 現在のノードに戻す
+            continue;
+        }
+        else {
+            std::cout << "Node " << START_NODE << " is not in the NG nodes for community " << current_node << std::endl;
+        }
+        // }
         move_count++;
 
         path.push_back(next_node);

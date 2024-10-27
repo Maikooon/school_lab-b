@@ -34,7 +34,7 @@ def correct_execution_times(count1, count2, count3, time1, time2, time3):
     print(count1)
     print(count2)
     print(count3)
-    alpha2 = 1
+    alpha2 = count1 / count2
     alpha3 = count1 / count3
 
     print(f"alpha2: {alpha2}")
