@@ -90,10 +90,6 @@ void load_communities(const std::string& file_path) {
     communities_file.close();
 }
 
-/*------------------------------------------------------------------------------------------------------------------------*/
-// 読み込みの関数を定義
-// コミュニティごとのグループとNGノードを保持するためのデータ構造
-
 using CommunityGroups = std::unordered_map<int, std::unordered_map<int, std::vector<int>>>;
 using CommunityNGNodes = std::unordered_map<int, std::unordered_map<int, std::set<int>>>;
 
@@ -158,65 +154,59 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         // 隣接ノードからランダムに次のノードを選択
         int next_node;
-        do {
-            // 隣接ノードからランダムに次のノードを選択
-            next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        next_node = *next(neighbors.begin(), rand() % neighbors.size());
 
-            // 自分のコミュニティ内を移動する時には、そのノードに対して移動していいのかを確かめる
-            // NGリストに含まれている場合は、再度選び直す
+        int next_node;
+        int current_community = node_communities[current_node];
+        int next_community = node_communities[next_node];
+
+        //コミュニテイが同じ場合は、すでに読み込んであるリストを参照することで認可を行う
+        if (current_community == next_community) {
             if (ng_list.find(next_node) != ng_list.end()) {
                 std::cout << "NGなのでスキップ" << next_node << std::endl;
                 next_node = current_node;  // 現在のノードに戻す
+
             }
-
-        } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
-        //ここまで
-
-
+        }
         // 現在のノードとHop先のコミュニティが異なる場合
         //NGノードは、自分と同じコミュニティに対してしか設定されていない
         // 次のコミュニティにおいて、どのノードにアクセス可能なのかを知るためには、次のコミュニティのアクセスリストを改めて参照する必要がある
-        if (node_communities[current_node] != node_communities[next_node]) {
-            int current_community = node_communities[current_node];
-            int next_community = node_communities[next_node];
-            //始点コミュニティと移動さきコミュニティが同じ時にはアクセス権の確認なし
+        else {
+            //始点コミュニティと移動先コミュニティが同じ時にはアクセス権の確認なし
             if (next_community == start_community) {
-                move_count++;
                 // printf("skip access check\n");
                 continue;
             }
+            else {
+                // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
+                //ここから二つのテーブルを参照して行う
+                printf("比較を開始");
+                // printf("次のコミュニティは%d", next_community);
+                for (auto& group : community_groups[next_community]) {
+                    //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
+                    if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
+                        // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
+                        //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
+                        //次に移動するコミュニティ固有のNGリストを取得
+                        ng_list = community_ng_nodes[next_community][group.first];
+                        // std::cout << "NG nodes for Group " << group.first << ": ";
+                        // for (const int node : ng_list) {
+                        //     std::cout << node << " ";
+                        // }
+                        std::cout << std::endl;
 
-            // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
-
-            //ここから二つのテーブルを参照して行う
-            printf("比較を開始");
-            // printf("次のコミュニティは%d", next_community);
-            for (auto& group : community_groups[next_community]) {
-                // printf("ここまではきている");
-                //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
-                if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
-                    // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
-
-                    //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
-                    //次に移動するコミュニティ固有のNGリストを取得
-                    ng_list = community_ng_nodes[next_community][group.first];
-                    //debug 参照したリストを出力
-                    std::cout << "NG nodes for Group " << group.first << ": ";
-                    for (const int node : ng_list) {
-                        std::cout << node << " ";
+                        // 次のHop先に、出発もとのノードがアクセスできるのかを確認
+                        if (ng_list.find(next_node) != ng_list.end()) {
+                            // std::cout << "NG node found" << next_node << ::endl;
+                            //進まないようにやり直す
+                            next_node = current_node;
+                            printf("やり直し！");
+                            continue; // NGノードの場合は次のHopを探す
+                        }
+                        // break; // NGノードではない場合、次のHopを許可
                     }
-                    std::cout << std::endl;
-
-                    // 次のHop先に、出発もとのノードがアクセスできるのかを確認
-                    if (ng_list.find(next_node) != ng_list.end()) {
-                        // std::cout << "NG node found" << next_node << ::endl;
-                        //進まないようにやり直す
-                        next_node = current_node;
-                        printf("やり直し！");
-                        continue; // NGノードの場合は次のHopを探す
-                    }
-                    break; // NGノードではない場合、次のHopを許可
                 }
+
             }
             move_count++;
         }
@@ -231,20 +221,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
 
 void saveResultsToFile(const std::string& filePath, const std::string& results) {
-    // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
-
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
-
-    // ファイルが正常に開けたかを確認
     if (!outputFile) {
         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
         return;
     }
-
-    // 結果をファイルに書き込む
     outputFile << results;
-
-    // ファイルを閉じる
     outputFile.close();
 }
 /*------------------------------------------------------------------------------------------------------------------------*/
@@ -252,12 +234,7 @@ void saveResultsToFile(const std::string& filePath, const std::string& results) 
 
 // プログラムの実行
 int main() {
-    // 時間計測を開始（ナノ秒）
-    // auto start_time = chrono::high_resolution_clock::now();
-
     srand(time(nullptr));  // ランダムシードの初期化
-
-    // グラフとコミュニティのロード
     load_graph(GRAPH_FILE);
     load_communities(COMMUNITY_FILE);
 
@@ -276,39 +253,33 @@ int main() {
         vector<int> path = random_walk(total_move, START_NODE, start_community);
         total_length += path.size();
 
-        // パスを出力
-        cout << "Random walk " << i + 1 << " path:";
-        for (int node : path) {
-            cout << " " << node;
-        }
-        cout << endl;
+        // // パスを出力
+        // cout << "Random walk " << i + 1 << " path:";
+        // for (int node : path) {
+        //     cout << " " << node;
+        // }
+        // cout << endl;
     }
 
-    // 平均経路長を計算して出力
-    double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length << endl;
-    cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
 
+    // 平均経路長を計算して出力
+    double average_length = static_cast<double>(total_length) / RW_COUNT;
+    cout << "Average path length: " << average_length << endl;
+    cout << "Total moves across communities: " << total_move << endl;
 
-
-    //結果を出力する
-     // 保存したい結果
     std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
     results += "\n";
 
-    // ファイルパス
     std::string filePath = "./../result/" + GRAPH + "/group-access.txt";
 
-    // 結果をファイルに保存
     saveResultsToFile(filePath, results);
-
     std::cout << "結果をファイルに保存しました。" << std::endl;
     return 0;
 }

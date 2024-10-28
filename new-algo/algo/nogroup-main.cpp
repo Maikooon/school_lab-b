@@ -92,10 +92,7 @@ void load_communities(const std::string& file_path) {
     communities_file.close();
 }
 
-/*------------------------------------------------------------------------------------------------------------------------*/
-// 読み込みの関数を定義
 // コミュニティごとのグループとNGノードを保持するためのデータ構造
-// データ構造の定義
 using NodeMap = std::unordered_map<int, std::vector<int>>;
 NodeMap ng_table;
 
@@ -123,11 +120,15 @@ void load_ng_table(const std::string& filepath) {
     }
     file.close();
 }
-/*------------------------------------------------------------------------------------------------------------------------*/
 
-// ランダムウォークを実行  1RWの誕生から死滅まですべて
+// ランダムウォークを実行  
+/*
+    リストから次にHopするノードを探す（縦）
+    あった場合は、その配列の中から、自分のさっきまでいたノードを探す
+    配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
+    隣接ノードからランダムに次のノードを選択
+*/
 vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
-
     int move_count = 0;
     vector<int> path;
     int current_node = START_NODE;
@@ -141,38 +142,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             break;
         }
 
-        // 隣接ノードからランダムに次のノードを選択
-        //ここで一回のコミュニティの移動後は、ng_list以外を参照できるようにしたい
-        // int next_node;
-        // do {
-        //     // 隣接ノードからランダムに次のノードを選択
-        //     next_node = *next(neighbors.begin(), rand() % neighbors.size());
-
-        //     //TODO;同じコミュニティに対しては、NGに指定していないので、ような場合はないとできる
-        //     // if (ng_list.find(next_node) != ng_list.end()) {
-        //     //     std::cout << "NGなのでスキップ" << next_node << std::endl;
-        //     //     next_node = current_node;  // 現在のノードに戻す
-        //     // }
-
-        // } while (ng_list.find(next_node) != ng_list.end());  // NGノードの場合、繰り返す
-        // //ここまで
-
-
-
-        // リストから次にHopするノードを探す（縦）
-        //あった場合は、その配列の中から、自分のさっきまでいたノードを探す
-        //配列の中に現在のノードがあった場合には、移動を止める、なかった場合には、次のノードに進む
-        // 隣接ノードからランダムに次のノードを選択
         int next_node;
         next_node = *next(neighbors.begin(), rand() % neighbors.size());
         std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
 
-        // if (node_communities[current_node] != node_communities[next_node]) {    // 次のコミュニティと現在のコミュニティが異なっていたら
-
-
         std::string a;
-
-        auto it = ng_table.find(next_node);
+        auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
         printf("ここには全部到達l");
         //次にHopするノードがNGノードの候補として上がっているのか(左一列)
         if (it != ng_table.end()) {
@@ -184,7 +159,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             std::cout << std::endl;
         }
 
-        // START_NODEが文字列aに含まれているか確認
+        // START_NODEが文字列a(２列目以降)に含まれているか確認
         if (a.find(std::to_string(START_NODE)) != std::string::npos) {
             std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
             next_node = current_node;  // 現在のノードに戻す
@@ -206,39 +181,27 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
 
 void saveResultsToFile(const std::string& filePath, const std::string& results) {
-    // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
-
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
-
-    // ファイルが正常に開けたかを確認
     if (!outputFile) {
         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
         return;
     }
-
-    // 結果をファイルに書き込む
     outputFile << results;
-
-    // ファイルを閉じる
     outputFile.close();
 }
-/*------------------------------------------------------------------------------------------------------------------------*/
-
 
 // プログラムの実行
 int main() {
-    // 時間計測を開始（ナノ秒）
-    // auto start_time = chrono::high_resolution_clock::now();
-
-    srand(time(nullptr));  // ランダムシードの初期化
+    srand(time(nullptr));
 
     // グラフとコミュニティのロード
     load_graph(GRAPH_FILE);
     load_communities(COMMUNITY_FILE);
 
     //その他テーブルの読み込み
-    load_ng_table(NGFILE); // データを読み込む
+    load_ng_table(NGFILE);
 
+    //時間の計測開始
     auto start_time = chrono::high_resolution_clock::now();
 
     int total_move = 0;
@@ -259,19 +222,20 @@ int main() {
         cout << endl;
     }
 
+    //計測終了
+    auto end_time = chrono::high_resolution_clock::now();
+
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
     cout << "Average path length: " << average_length << endl;
     cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
-    auto end_time = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
 
 
-    // 結果を出力する
-    //  保存したい結果
+    // 結果を出力
     std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
