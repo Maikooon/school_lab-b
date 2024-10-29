@@ -8,9 +8,9 @@ import random
 from collections import defaultdict
 
 
-GRAPH = "METIS-fb-pages"  # ニコしたも修正する
+GRAPH = "METIS-ca"  # ニコしたも修正する
 node_community_file = f"./result/{GRAPH}/community.txt"
-edges_file = "./../../Louvain/graph/fb-pages-company.gr"
+edges_file = "./../../Louvain/graph/ca-grqc-connected.gr"
 
 # node_community_file = "./../divide-community/3_communities.txt"
 # edges_file = "./../../Louvain/graph/ns.gr"

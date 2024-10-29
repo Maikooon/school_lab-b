@@ -23,7 +23,9 @@ const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/comm
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 12;         // ランダムウォークの開始ノード
+// int START_NODE = 12;         // ランダムウォークの開始ノード
+
+int const ALLNODE = 14113;
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -136,35 +138,48 @@ int main() {
     int total_length = 0;
     auto start_time = chrono::high_resolution_clock::now();
 
-    // ランダムウォークを複数回実行
-    for (int i = 0; i < RW_COUNT; ++i) {
-        vector<int> path = random_walk(total_move, START_NODE);
-        total_length += path.size();
 
-        // パスを出力
-        cout << "Random walk " << i + 1 << " path:";
-        for (int node : path) {
-            cout << " " << node;
+    vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
+
+    // 1〜32までのノードを start_nodes に代入
+    for (int i = 0; i < ALLNODE; ++i) {
+        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    }
+
+    // 複数のスタートノードに対してランダムウォークを実行
+    for (int start_node : start_nodes) {
+        int start_community = node_communities[start_node];
+
+        // ランダムウォークを複数回実行
+        for (int i = 0; i < RW_COUNT; ++i) {
+            vector<int> path = random_walk(total_move, start_node);
+            total_length += path.size();
+
+            // パスを出力
+            // cout << "Random walk " << i + 1 << " path:";
+            // for (int node : path) {
+            //     cout << " " << node;
+            // }
+            // cout << endl;
         }
-        cout << endl;
     }
 
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length << endl;
-    cout << "Total moves across communities: " << total_move << endl;
+    cout << "Average path length: " << average_length / ALLNODE << endl;
+    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration << " nanoseconds" << endl;
+    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
 
 
     //結果を出力する
    // 保存したい結果
-    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
-    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
+    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
 
     // ファイルパス
     std::string filePath = "./../result/" + GRAPH + "/default.txt";

@@ -34,8 +34,10 @@ def correct_execution_times(count1, count2, count3, time1, time2, time3):
     print(count1)
     print(count2)
     print(count3)
-    alpha2 = count1 / count2
-    alpha3 = count1 / count3
+    # alpha2 = count1 / count2
+    # alpha3 = count1 / count3
+    alpha2 = 1  # 現時点では、補正は行わないーーーーーーーーーーーーーーーーーー
+    alpha3 = 1
 
     print(f"alpha2: {alpha2}")
     print(f"alpha3: {alpha3}")
@@ -90,6 +92,6 @@ if __name__ == "__main__":
         ha="center",
         transform=plt.gca().transAxes,
     )
-    plt.savefig(f"./{GRAPH}/hige.png")
+    plt.savefig(f"./{GRAPH}/hige-allnode.png")
     # グラフを表示
     plt.show()

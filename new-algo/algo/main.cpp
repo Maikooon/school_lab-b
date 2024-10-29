@@ -30,6 +30,7 @@ const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/comm
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
+const int ALLNODE = 14113;
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
@@ -40,7 +41,7 @@ const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH 
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 1;         // ランダムウォークの開始ノード
+// int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -155,8 +156,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // 隣接ノードからランダムに次のノードを選択
         int next_node;
         next_node = *next(neighbors.begin(), rand() % neighbors.size());
-
-        int next_node;
         int current_community = node_communities[current_node];
         int next_community = node_communities[next_node];
 
@@ -173,15 +172,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // 次のコミュニティにおいて、どのノードにアクセス可能なのかを知るためには、次のコミュニティのアクセスリストを改めて参照する必要がある
         else {
             //始点コミュニティと移動先コミュニティが同じ時にはアクセス権の確認なし
-            if (next_community == start_community) {
-                // printf("skip access check\n");
+            if (next_community == start_community) {     //ここはおk
                 continue;
             }
             else {
                 // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
                 //ここから二つのテーブルを参照して行う
-                printf("比較を開始");
-                // printf("次のコミュニティは%d", next_community);
                 for (auto& group : community_groups[next_community]) {
                     //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
                     if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
@@ -189,11 +185,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                         //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
                         //次に移動するコミュニティ固有のNGリストを取得
                         ng_list = community_ng_nodes[next_community][group.first];
-                        // std::cout << "NG nodes for Group " << group.first << ": ";
+                        // std::cout << "NG nodes for Group " << group.first << ": ";  //ここまでもOK
                         // for (const int node : ng_list) {
                         //     std::cout << node << " ";
                         // }
-                        std::cout << std::endl;
+                        // std::cout << std::endl;
+                        printf("検査の結果大丈夫だと判断\n");
 
                         // 次のHop先に、出発もとのノードがアクセスできるのかを確認
                         if (ng_list.find(next_node) != ng_list.end()) {
@@ -245,36 +242,37 @@ int main() {
 
     int total_move = 0;
     int total_length = 0;
-    int start_community = node_communities[START_NODE];
+    // int start_community = node_communities[START_NODE];
+    vector<int> start_nodes(ALLNODE);  // スタートノードをリストで定義
 
-    // ランダムウォークを複数回実行
-    for (int i = 0; i < RW_COUNT; ++i) {
-        //RWの実行
-        vector<int> path = random_walk(total_move, START_NODE, start_community);
-        total_length += path.size();
+    for (int i = 0; i < ALLNODE; ++i) {
+        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    }
 
-        // // パスを出力
-        // cout << "Random walk " << i + 1 << " path:";
-        // for (int node : path) {
-        //     cout << " " << node;
-        // }
-        // cout << endl;
+    for (int start_node : start_nodes) {
+        int start_community = node_communities[start_node];
+        // ランダムウォークを複数回実行
+        for (int i = 0; i < RW_COUNT; ++i) {
+            //RWの実行
+            vector<int> path = random_walk(total_move, start_node, start_community);
+            total_length += path.size();
+        }
     }
 
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration << " nanoseconds" << endl;
+    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
 
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length << endl;
-    cout << "Total moves across communities: " << total_move << endl;
+    cout << "Average path length: " << average_length / ALLNODE << endl;
+    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
 
-    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
-    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
+    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
     results += "\n";
 
     std::string filePath = "./../result/" + GRAPH + "/group-access.txt";

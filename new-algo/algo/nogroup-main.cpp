@@ -31,7 +31,7 @@ const std::string GRAPH = "METIS-fb-pages";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
-
+const int ALLNODE = 14113;         // ランダムウォークの開始ノード
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
@@ -42,7 +42,7 @@ const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
-int START_NODE = 1;         // ランダムウォークの開始ノード
+// int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -206,20 +206,28 @@ int main() {
 
     int total_move = 0;
     int total_length = 0;
-    int start_community = node_communities[START_NODE];
+    // int start_community = node_communities[START_NODE];
+    vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
+    for (int i = 0; i < ALLNODE; ++i) {
+        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    }
 
-    // ランダムウォークを複数回実行
-    for (int i = 0; i < RW_COUNT; ++i) {
-        //RWの実行
-        vector<int> path = random_walk(total_move, START_NODE, start_community);
-        total_length += path.size();
+    // 複数のスタートノードに対してランダムウォークを実行
+    for (int start_node : start_nodes) {
+        int start_community = node_communities[start_node];
+        // ランダムウォークを複数回実行
+        for (int i = 0; i < RW_COUNT; ++i) {
+            //RWの実行
+            vector<int> path = random_walk(total_move, start_node, start_community);
+            total_length += path.size();
 
-        // パスを出力
-        cout << "Random walk " << i + 1 << " path:";
-        for (int node : path) {
-            cout << " " << node;
+            // パスを出力
+            cout << "Random walk " << i + 1 << " path:";
+            for (int node : path) {
+                cout << " " << node;
+            }
+            cout << endl;
         }
-        cout << endl;
     }
 
     //計測終了
@@ -227,18 +235,18 @@ int main() {
 
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length << endl;
-    cout << "Total moves across communities: " << total_move << endl;
+    cout << "Average path length: " << average_length / ALLNODE << endl;
+    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration << " nanoseconds" << endl;
+    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
 
 
     // 結果を出力
-    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
-    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
+    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
     results += "\n";
 
     // ファイルパス
