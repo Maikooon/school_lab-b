@@ -1,6 +1,0 @@
-Total Moves Stats for karate:
-  min: 586.5
-  q1: 595.15625
-  median: 601.875
-  q3: 611.0
-  max: 625.125

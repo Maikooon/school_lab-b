@@ -10,7 +10,7 @@
 import glob
 import os
 
-GRAPH = "METIS-fb-pages"
+GRAPH = "METIS-ca"
 
 
 def read_community_file(filename):
@@ -69,7 +69,7 @@ def read_ng_info(filename):
 
 
 # 読み込むデータファイルのパターンを指定（例：server_*.txt）
-data_file_pattern = f"./result/{GRAPH}/community.txt"
+data_file_pattern = f"./result/{GRAPH}/node_community.txt"
 data = []
 # コミュニティファイルからコミュニティとグループの情報を取得
 community_groups = read_community_file(f"./result/{GRAPH}/dynamic_groups.txt")

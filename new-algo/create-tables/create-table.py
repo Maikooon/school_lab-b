@@ -9,7 +9,7 @@ from collections import defaultdict
 
 
 GRAPH = "METIS-ca"  # ニコしたも修正する
-node_community_file = f"./result/{GRAPH}/community.txt"
+node_community_file = f"./result/{GRAPH}/node_community.txt"
 edges_file = "./../../Louvain/graph/ca-grqc-connected.gr"
 
 # node_community_file = "./../divide-community/3_communities.txt"

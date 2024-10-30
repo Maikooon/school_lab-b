@@ -18,14 +18,14 @@ using namespace std;
 
 // グローバル変数の定義
 //コミュニティファイルはMETISのフォルダからコピーしてくる
-const std::string GRAPH = "METIS-fb-pages";    ///☺︎したのグラフも変更する
+const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";
+const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
 const double ALPHA = 0.15;
 const int RW_COUNT = 1000;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
 
-int const ALLNODE = 14113;
+int const ALLNODE = 4158;
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;

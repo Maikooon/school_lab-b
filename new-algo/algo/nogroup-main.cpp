@@ -27,11 +27,11 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-fb-pages";
+const std::string GRAPH = "METIS-ca";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-pages-company.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
-const int ALLNODE = 14113;         // ランダムウォークの開始ノード
+const int ALLNODE = 4158;         // ランダムウォークの開始ノード
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
