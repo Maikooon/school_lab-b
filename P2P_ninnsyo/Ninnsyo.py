@@ -15,7 +15,7 @@ def generate_jwt(data):
 def start_auth_server():
     context = zmq.Context()
     socket = context.socket(zmq.REP)  # REPソケットでクライアントの要求を待つ
-    socket.bind("tcp://*:10006")  # ポート10006で接続を待機
+    socket.bind("tcp://10.58.60.5:10006")  # ポート10006で接続を待機
 
     print("認証サーバが起動しました。")
 
@@ -25,9 +25,16 @@ def start_auth_server():
             message = socket.recv_string()
             print("Received authentication request:", message)
 
-            # JWTを生成して応答として返す
-            jwt_token = generate_jwt(message)
+            # # JWTを生成して応答として返す
+            # jwt_token = generate_jwt(message)
+            jwt_token = (
+                str(jwt_token, "utf-8") if isinstance(jwt_token, bytes) else jwt_token
+            )
+            print("Generated JWT:", jwt_token)
             socket.send_string(jwt_token)  # 生成したJWTをクライアントに返送
+
+            # 文字列になった jwt_token を送信
+            socket.send_string(jwt_token)
 
     finally:
         socket.close()

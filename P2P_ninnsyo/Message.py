@@ -57,7 +57,7 @@ class Message:
             dic["GM"],
             dic["user"],
             dic["alpha"],
-            # dic.get("all_paths", []),
+            dic.get("all_paths", []),
             dic.get("jwt", None),
             dic.get("start_node_id", None),
             dic.get("start_node_community", None),

@@ -23,7 +23,7 @@ class GraphManager:
         self.start_node_community = None  # Initialize start_node_community
         self.total_jwt_verify_time = 0
         self.total_jwt_generate = 0
-        self.isFirst = False
+        self.isFirst = True  # 　初めの一回のみ認証が行われるようにするための工夫
         self.start()
 
     @classmethod
@@ -224,41 +224,77 @@ class GraphManager:
                     {"user": message.user, "end_walk": end_walk, "all_paths": all_paths}
                 )
             print("escaped_walk", escaped_walk)
-            # 他サーバへ向かうRW_>他サーバにRW情報を送信
-            context = zmq.Context()
-            socket = context.socket(zmq.REQ)
-            print("接続先", "tcp://abline05:10006")
-            # socket.connect("tcp://{}:{}".format(message.GM, self.port))
-            socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
-            if len(escaped_walk) > 0:
-                for node_id, val in escaped_walk.items():
-                    # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
-                    # 認証リクエストを送信
-                    message_for_ninsyo = (
-                        f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
-                    )
-                    socket.send_string(message_for_ninsyo)  # 認証要求を送信
 
-                    # サーバからの応答を受け取る
-                    response = socket.recv_string()
-                    print("Received JWT from server:", response)  # 受け取ったJWTを表示
-                    jwt = response  # 受け取ったJWTを変数に格納
-
-                    self.send_queue.put(
-                        Message(
-                            node_id,
-                            val,
-                            self.graph.outside_nodes[node_id].manager,
-                            message.user,
-                            message.alpha,
-                            message.all_paths,
-                            jwt,
-                            start_node_id=self.start_node_id,
-                            start_node_community=self.start_node_community,
+            if self.isFirst == True:
+                self.isFirst = False
+                # 各パケットがそれぞれ送信される一回目にのみ認証を行う
+                # 他サーバへ向かうRW_>他サーバにRW情報を送信
+                context = zmq.Context()
+                socket = context.socket(zmq.REQ)
+                print("接続先", "tcp://abline05:10006")
+                # socket.connect("tcp://{}:{}".format(message.GM, self.port))
+                socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+                if len(escaped_walk) > 0:
+                    for node_id, val in escaped_walk.items():
+                        # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
+                        # 認証リクエストを送信
+                        message_for_ninsyo = (
+                            f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
                         )
-                    )
-            socket.close()  # 通信を終
-            context.destroy()
+                        socket.send_string(message_for_ninsyo)  # 認証要求を送信
+
+                        # サーバからの応答を受け取る
+                        response = socket.recv_string()
+                        print(
+                            "Received JWT from server:", response
+                        )  # 受け取ったJWTを表示
+                        jwt = response  # 受け取ったJWTを変数に格納
+
+                        self.send_queue.put(
+                            Message(
+                                node_id,
+                                val,
+                                self.graph.outside_nodes[node_id].manager,
+                                message.user,
+                                message.alpha,
+                                message.all_paths,
+                                jwt,
+                                start_node_id=self.start_node_id,
+                                start_node_community=self.start_node_community,
+                            )
+                        )
+                socket.close()  # 通信を終
+                context.destroy()
+            else:  # わたるのが複数回めの時には初めのTokenwo使い回す
+                if len(escaped_walk) > 0:
+                    for node_id, val in escaped_walk.items():
+                        # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
+                        # 認証リクエストを送信
+                        message_for_ninsyo = (
+                            f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
+                        )
+                        socket.send_string(message_for_ninsyo)  # 認証要求を送信
+
+                        # サーバからの応答を受け取る
+                        response = socket.recv_string()
+                        print(
+                            "Received JWT from server:", response
+                        )  # 受け取ったJWTを表示
+                        jwt = response  # 受け取ったJWTを変数に格納
+
+                        self.send_queue.put(
+                            Message(
+                                node_id,
+                                val,
+                                self.graph.outside_nodes[node_id].manager,
+                                message.user,
+                                message.alpha,
+                                message.all_paths,
+                                jwt,
+                                start_node_id=self.start_node_id,
+                                start_node_community=self.start_node_community,
+                            )
+                        )
 
     def notify_result(self):
         print("notify_result")
