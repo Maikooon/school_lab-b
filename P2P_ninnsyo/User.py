@@ -7,6 +7,23 @@ from GraphManager import *
 from Graph import *
 import ast
 import time
+import os
+
+
+def save_to_file(self, end_count, elapsed_time):
+    # 保存先ディレクトリとファイルパス
+    directory = "./results"
+    file_path = os.path.join(directory, "message.txt")
+
+    # ディレクトリが存在しない場合は作成
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # ファイルに追記
+    with open(file_path, "a") as file:
+        file.write(f"Query solved: {end_count}\n")
+        file.write(f"Execution time: {elapsed_time:.4f} seconds\n")
+        file.write("\n")
 
 
 class User:
@@ -57,8 +74,7 @@ class User:
             except Exception as e:
                 print("Error receiving data: ", e)
 
-        # average_path_length = len(all_paths) / count
-        # print("Average path length: ", average_path_length)
+        # average_path_length = len(all_paths) / ath_length)
 
         print("Query solved: ", end_count)
         socket.close()
@@ -67,6 +83,7 @@ class User:
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Execution time: {elapsed_time:.4f} seconds")  # 経過時間を表示
+        save_to_file(self, end_count, elapsed_time)
 
     def create_message(self, source_id, count, GM):
         print("create_message")

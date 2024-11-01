@@ -1,5 +1,23 @@
 from GraphManager import *
 import ast
+import os
+import time
+
+
+def save_to_file(self, end_count, elapsed_time):
+    # 保存先ディレクトリとファイルパス
+    directory = "./results"
+    file_path = os.path.join(directory, "message.txt")
+
+    # ディレクトリが存在しない場合は作成
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # ファイルに追記
+    with open(file_path, "a") as file:
+        file.write(f"Query solved: {end_count}\n")
+        file.write(f"Execution time: {elapsed_time:.4f} seconds\n")
+        file.write("\n")
 
 
 class User:
@@ -41,7 +59,7 @@ class User:
         end_time = time.time()  # 計測を終了
         elapsed_time = end_time - start_time
         print("Elapsed time: ", elapsed_time)
-
+        save_to_file(self, end_count, elapsed_time)
         return end_count
 
     def create_message(self, source_id, count, GM):

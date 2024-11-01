@@ -10,6 +10,18 @@ import sys
 import re
 
 
+LOG_FILE_PATH = "./local_server_logs.txt"  # 保存先のログファイルパス
+
+
+def save_notify_log(user, end_walk, all_paths, total_verify_time, total_connected):
+    with open(LOG_FILE_PATH, "a") as log_file:
+        log_file.write(f"Notified to {user}, End Walk: {end_walk}\n")
+        log_file.write(f"All Paths: {all_paths}\n")
+        log_file.write(f"Total JWT Verify Time: {total_verify_time}\n")
+        log_file.write(f"Total JWT Connected: {total_connected}\n")
+        log_file.write("-" * 40 + "\n")
+
+
 class GraphManager:
     def __init__(self, id, graph, ip_addr):
         self.id = id
@@ -22,7 +34,7 @@ class GraphManager:
         self.start_node_id = None  # Initialize start_node_id
         self.start_node_community = None  # Initialize start_node_community
         self.total_jwt_verify_time = 0
-        self.total_jwt_generate = 0
+        self.total_jwt_connected = 0
         self.isFirst = False
         self.start()
 
@@ -225,6 +237,7 @@ class GraphManager:
                 )
             print("escaped_walk", escaped_walk)
             # 他サーバへ向かうRW_>他サーバにRW情報を送信
+            # 他サーバへの送信の前に認証サーバにアクセスするーーここから時間を計測
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
             print("接続先", "tcp://abline05:10006")
@@ -234,6 +247,7 @@ class GraphManager:
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                     # 認証リクエストを送信
+                    start_time_jwt_connected = time.time()  # 　時間を計測
                     message_for_ninsyo = (
                         f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
                     )
@@ -243,6 +257,9 @@ class GraphManager:
                     response = socket.recv_string()
                     print("Received JWT from server:", response)  # 受け取ったJWTを表示
                     jwt = response  # 受け取ったJWTを変数に格納
+                    end_time_jwt_connect = (
+                        time.time()
+                    )  # 　---------------------ここまでの時間
 
                     self.send_queue.put(
                         Message(
@@ -257,6 +274,10 @@ class GraphManager:
                             start_node_community=self.start_node_community,
                         )
                     )
+                elapsed_time_jwt_connected = (
+                    end_time_jwt_connect - start_time_jwt_connected
+                )
+                self.total_jwt_connected += elapsed_time_jwt_connected
             socket.close()  # 通信を終
             context.destroy()
 
@@ -281,7 +302,15 @@ class GraphManager:
             context.destroy()
             print("Notified to {},{}".format(user, end_walk))
             print("total_jwt_verify_time:", self.total_jwt_verify_time)
-            print("total_jwt_generate:", self.total_jwt_generate)
+            print("total_jwt_connected:", self.total_jwt_connected)
+            # ローカルファイルにログを保存
+            save_notify_log(
+                user,
+                end_walk,
+                all_paths,
+                self.total_jwt_verify_time,
+                self.total_jwt_connected,
+            )
 
     def send_message(self):
         print("send_message-self")
@@ -295,7 +324,7 @@ class GraphManager:
             context.destroy()
             print("Sent to {}\n{}".format(message.GM, message))
             print("total_time_jwt_verify", self.total_jwt_verify_time)
-            print("total_time_jwt_generate", self.total_jwt_generate)
+            print("total_time_jwt_connected", self.total_jwt_connected)
             # print("total_time_read_file", self.total_time_read_file)
 
     # サーバが別のサーバからのRW情報を受け取る
@@ -317,4 +346,6 @@ class GraphManager:
 
 
 if __name__ == "__main__":
+    if not os.path.exists(LOG_FILE_PATH):
+        open(LOG_FILE_PATH, "w").close()
     gm = GraphManager.init_for_espresso(sys.argv[1])

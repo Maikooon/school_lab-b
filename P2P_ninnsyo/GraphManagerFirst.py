@@ -1,3 +1,6 @@
+"""
+初めだけ認証を行うことにより、通信回数を最小にしたもの"""
+
 from Graph import *
 from Message import *
 from Jwt import *
@@ -8,6 +11,18 @@ import os
 import socket
 import sys
 import re
+import os
+
+LOG_FILE_PATH = "./local_server_logs.txt"  # 保存先のログファイルパス
+
+
+def save_notify_log(user, end_walk, all_paths, total_verify_time, total_connected):
+    with open(LOG_FILE_PATH, "a") as log_file:
+        log_file.write(f"Notified to {user}, End Walk: {end_walk}\n")
+        log_file.write(f"All Paths: {all_paths}\n")
+        log_file.write(f"Total JWT Verify Time: {total_verify_time}\n")
+        log_file.write(f"Total JWT Connected: {total_connected}\n")
+        log_file.write("-" * 40 + "\n")
 
 
 class GraphManager:
@@ -23,6 +38,7 @@ class GraphManager:
         self.start_node_community = None  # Initialize start_node_community
         self.total_jwt_verify_time = 0
         self.total_jwt_generate = 0
+        self.total_jwt_connected = 0
         self.isFirst = True  # 　初めの一回のみ認証が行われるようにするための工夫
         self.start()
 
@@ -234,6 +250,7 @@ class GraphManager:
                 print("接続先", "tcp://abline05:10006")
                 # socket.connect("tcp://{}:{}".format(message.GM, self.port))
                 socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+                start_time_jwt_connected = time.time()  # 　時間を計測
                 if len(escaped_walk) > 0:
                     for node_id, val in escaped_walk.items():
                         # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
@@ -245,6 +262,7 @@ class GraphManager:
 
                         # サーバからの応答を受け取る
                         response = socket.recv_string()
+                        end_time_jwt_connect = time.time()
                         print(
                             "Received JWT from server:", response
                         )  # 受け取ったJWTを表示
@@ -263,25 +281,19 @@ class GraphManager:
                                 start_node_community=self.start_node_community,
                             )
                         )
-                socket.close()  # 通信を終
+                    elapsed_time_jwt_connected = (
+                        end_time_jwt_connect - start_time_jwt_connected
+                    )
+                    self.total_jwt_connected += elapsed_time_jwt_connected
+                socket.close()  # 通信を終了する
                 context.destroy()
+
             else:  # わたるのが複数回めの時には初めのTokenwo使い回す
                 if len(escaped_walk) > 0:
                     for node_id, val in escaped_walk.items():
                         # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                         # 認証リクエストを送信
-                        message_for_ninsyo = (
-                            f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
-                        )
-                        socket.send_string(message_for_ninsyo)  # 認証要求を送信
-
-                        # サーバからの応答を受け取る
-                        response = socket.recv_string()
-                        print(
-                            "Received JWT from server:", response
-                        )  # 受け取ったJWTを表示
-                        jwt = response  # 受け取ったJWTを変数に格納
-
+                        print("JWTを使い回す")
                         self.send_queue.put(
                             Message(
                                 node_id,
@@ -318,6 +330,13 @@ class GraphManager:
             print("Notified to {},{}".format(user, end_walk))
             print("total_jwt_verify_time:", self.total_jwt_verify_time)
             print("total_jwt_generate:", self.total_jwt_generate)
+            save_notify_log(
+                user,
+                end_walk,
+                all_paths,
+                self.total_jwt_verify_time,
+                self.total_jwt_connected,
+            )
 
     def send_message(self):
         print("send_message-self")
@@ -353,4 +372,6 @@ class GraphManager:
 
 
 if __name__ == "__main__":
+    if not os.path.exists(LOG_FILE_PATH):
+        open(LOG_FILE_PATH, "w").close()
     gm = GraphManager.init_for_espresso(sys.argv[1])

@@ -2,6 +2,16 @@ from Node import *
 import random
 from queue import Queue
 import time
+import os
+
+LOG_FILE_PATH = "./access_limit_time.txt"  # 保存先のログファイルパス
+
+
+def save_notify_log(user, end_walk, total_determinate_ng_node):
+    with open(LOG_FILE_PATH, "a") as log_file:
+        log_file.write(f"Notified to {user}, End Walk: {end_walk}\n")
+        log_file.write(f"total_determinate_ng_nodes: {total_determinate_ng_node}\n")
+        log_file.write("-" * 40 + "\n")
 
 
 class Graph:
@@ -188,5 +198,6 @@ class Graph:
             print("escaped_walk", escaped_walk)
             # print("all-paths", self.all_paths)
             print("total_determinate_ng_nodes", self.total_determinate_ng_nodes)
+            save_notify_log(source_id, end_walk, self.total_determinate_ng_nodes)
 
         return end_walk, escaped_walk, self.all_paths
