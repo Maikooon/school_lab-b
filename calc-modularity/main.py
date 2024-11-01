@@ -1,9 +1,9 @@
+'''
+コミュニティファイルからモジュラリティを計算するファイル
+'''
+
 import networkx as nx
 import os
-
-
-# EDGE_FILE = "./../Louvain/graph/karate.gr"
-# COMMUNITY_FILE = "./../Louvain/community/karate.tcm"
 
 edge_file_list = [
     "ca-grqc-connected.gr",
