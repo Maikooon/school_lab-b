@@ -27,19 +27,6 @@ ssh kate@ab11 "rm ./P2P_ninnsyo/access_limit_time.txt"  # リモートのファ�
 
 # 2. ファイルを1つにまとめる
 cat ./message.txt ./auth_server_logs.txt ./local_server_logs_ab03.txt ./access_limit_time_ab03.txt ./local_server_logs_ab06.txt ./access_limit_time_ab06.txt ./local_server_logs_ab11.txt ./access_limit_time_ab11.txt > ./combined_logs.txt
-
-# 3. ジャンルごとにファイルをまとめる
-# (例: auth_server_logs, local_server_logs, access_limit_timeのカテゴリで分ける)
-
-# auth_server_logsをまとめる
-cat ./auth_server_logs.txt > ./logs/auth_server_logs_combined.txt
-
-# local_server_logsをまとめる
-cat ./local_server_logs_ab03.txt ./local_server_logs_ab06.txt ./local_server_logs_ab11.txt > ./logs/local_server_logs_combined.txt
-
-# access_limit_timeをまとめる
-cat ./access_limit_time_ab03.txt ./access_limit_time_ab06.txt ./access_limit_time_ab11.txt > ./logs/access_limit_time_combined.txt
-
 #  それぞれのジャンル別の合計を求める
 #TODO:
 python ./summarize.py >> ./logs/summarized_logs.txt
