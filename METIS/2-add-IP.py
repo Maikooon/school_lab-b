@@ -9,9 +9,12 @@ abilene11.txt
 """
 
 # GRAPHNAME = "fb-caltech-connected"
-GRAPHNAME = "fb-pages-company"
+GRAPHNAME = "cmu"
 # community_file = "./../../Louvain/community/karate.tcm"
-community_file = "./" + GRAPHNAME + "/node_community.txt"
+# METISの時
+# community_file = "./" + GRAPHNAME + "/node_community.txt"
+# そのたのとき
+community_file = "./by-my-own-division/" + GRAPHNAME + "/node_community.txt"
 edge_file = "./../Louvain/graph/" + GRAPHNAME + ".gr"
 
 # コミュニティごとのIPアドレスのマッピング
@@ -80,7 +83,7 @@ def generate_and_save_ip_graph(communities, edges):
     # コミュニティごとにファイルを書き込む
     for community_id, edges in ip_graph.items():
         file_name = (
-            "./" + GRAPHNAME + f"/community_{community_id}.txt"
+            "./by-my-own-division/" + GRAPHNAME + f"/community_{community_id}.txt"
         )  # コミュニティごとのファイル名
         with open(file_name, "w") as f:
             for edge in edges:

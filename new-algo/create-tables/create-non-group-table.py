@@ -5,12 +5,15 @@
     NG for Group 1:
     NG for Group 2:
     最低限グループ名だけはエラーになるので足すこと
+これ終わったら数字の羅列にすること
+
+また、できたファイルにおいて、[]を取り除くこと
 """
 
 import glob
 import os
 
-GRAPH = "ca"
+GRAPH = "fb-pages-company"
 
 
 def read_community_file(filename):
@@ -71,7 +74,7 @@ def read_ng_info(filename):
 # 読み込むデータファイルのパターンを指定（例：server_*.txt）
 # data_file_pattern = f"./result/{GRAPH}/node_community.txt"
 # TODO: Loucainのときはここを変更
-data_file_pattern = "./../../Louvain/community/ca-grqc-connected.cm"
+data_file_pattern = f"./../../Louvain/community/{GRAPH}.cm"
 data = []
 # コミュニティファイルからコミュニティとグループの情報を取得
 community_groups = read_community_file(f"./result/{GRAPH}/dynamic_groups.txt")

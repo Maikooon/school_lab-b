@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const string GRAPHNAME = "fb-pages-company";
+const string GRAPHNAME = "cmu";
 // コミュニティごとのIPアドレスのマッピング
 const unordered_map<int, string> ip_mapping = {
     {0, "10.58.60.3"},

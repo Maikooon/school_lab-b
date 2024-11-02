@@ -25,12 +25,14 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-ca";
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";         /// ここを変更
+const std::string GRAPH = "fb-caltech-connected";
+//Louvainのときはこちらを使用
+const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
+// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-const int ALLNODE = 4158;
+const int ALLNODE = 762;
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
@@ -190,7 +192,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                         //     std::cout << node << " ";
                         // }
                         // std::cout << std::endl;
-                        printf("検査の結果大丈夫だと判断\n");
+                        // printf("検査の結果大丈夫だと判断\n");
 
                         // 次のHop先に、出発もとのノードがアクセスできるのかを確認
                         if (ng_list.find(next_node) != ng_list.end()) {
