@@ -21,7 +21,7 @@ class Message:
         self.user = user  # IP e.g., 127.0.0.1
         self.alpha = alpha
         self.all_paths = all_paths if all_paths is not None else []
-        self.jwt = generate_jwt(source_id) if jwt is None else jwt
+        self.jwt = jwt
         self.start_node_id = start_node_id
         self.start_node_community = start_node_community
 

@@ -192,6 +192,7 @@ class GraphManager:
                 message.start_node_id = message.source_id  # 初期のstart_node_idを設定
             else:
                 print(f"start_node_id は既に設定されています: {self.start_node_id}")
+                print(message.jwt)
             # 　ここでノード情報をコミュニティ情報に更新してしまう         -------------------------------------------------------------------------------------------------------
             if message.start_node_community is None:
                 message.start_node_community = self.node_community_mapping[
@@ -241,20 +242,18 @@ class GraphManager:
                 )
             print("escaped_walk", escaped_walk)
 
-            if self.isFirst == True:
-                self.isFirst = False
-                # 各パケットがそれぞれ送信される一回目にのみ認証を行う
-                # 他サーバへ向かうRW_>他サーバにRW情報を送信
-                context = zmq.Context()
-                socket = context.socket(zmq.REQ)
-                print("接続先", "tcp://abline05:10006")
-                # socket.connect("tcp://{}:{}".format(message.GM, self.port))
-                socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
-                start_time_jwt_connected = time.time()  # 　時間を計測
-                if len(escaped_walk) > 0:
-                    for node_id, val in escaped_walk.items():
-                        # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
-                        # 認証リクエストを送信
+            if len(escaped_walk) > 0:
+                for node_id, val in escaped_walk.items():
+                    # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
+                    # tokenを持っていない時は作成する
+                    print("これが現在のJEWTの状況です", message.jwt)
+                    if message.jwt is None:
+                        print("接続先", "tcp://abline05:10006")
+                        # 接続準備を行う
+                        context = zmq.Context()
+                        socket = context.socket(zmq.REQ)
+                        socket.connect("tcp://10.58.60.5:10006")
+                        start_time_jwt_connected = time.time()  # 　時間を計測
                         message_for_ninsyo = (
                             f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
                         )
@@ -262,51 +261,30 @@ class GraphManager:
 
                         # サーバからの応答を受け取る
                         response = socket.recv_string()
-                        end_time_jwt_connect = time.time()
                         print(
                             "Received JWT from server:", response
                         )  # 受け取ったJWTを表示
                         jwt = response  # 受け取ったJWTを変数に格納
-
-                        self.send_queue.put(
-                            Message(
-                                node_id,
-                                val,
-                                self.graph.outside_nodes[node_id].manager,
-                                message.user,
-                                message.alpha,
-                                message.all_paths,
-                                jwt,
-                                start_node_id=self.start_node_id,
-                                start_node_community=self.start_node_community,
-                            )
+                        end_time_jwt_connect = time.time()  # 　------------------
+                        elapsed_time_jwt_connected = (
+                            end_time_jwt_connect - start_time_jwt_connected
                         )
-                    elapsed_time_jwt_connected = (
-                        end_time_jwt_connect - start_time_jwt_connected
+                        self.total_jwt_connected += elapsed_time_jwt_connected
+                    else:
+                        jwt = message.jwt
+                    self.send_queue.put(
+                        Message(
+                            node_id,
+                            val,
+                            self.graph.outside_nodes[node_id].manager,
+                            message.user,
+                            message.alpha,
+                            message.all_paths,
+                            jwt,
+                            start_node_id=self.start_node_id,
+                            start_node_community=self.start_node_community,
+                        )
                     )
-                    self.total_jwt_connected += elapsed_time_jwt_connected
-                socket.close()  # 通信を終了する
-                context.destroy()
-
-            else:  # わたるのが複数回めの時には初めのTokenwo使い回す
-                if len(escaped_walk) > 0:
-                    for node_id, val in escaped_walk.items():
-                        # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
-                        # 認証リクエストを送信
-                        print("JWTを使い回す")
-                        self.send_queue.put(
-                            Message(
-                                node_id,
-                                val,
-                                self.graph.outside_nodes[node_id].manager,
-                                message.user,
-                                message.alpha,
-                                message.all_paths,
-                                jwt,
-                                start_node_id=self.start_node_id,
-                                start_node_community=self.start_node_community,
-                            )
-                        )
 
     def notify_result(self):
         print("notify_result")

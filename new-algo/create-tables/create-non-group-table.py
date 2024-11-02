@@ -10,7 +10,7 @@
 import glob
 import os
 
-GRAPH = "METIS-ca"
+GRAPH = "ca"
 
 
 def read_community_file(filename):
@@ -69,7 +69,9 @@ def read_ng_info(filename):
 
 
 # 読み込むデータファイルのパターンを指定（例：server_*.txt）
-data_file_pattern = f"./result/{GRAPH}/node_community.txt"
+# data_file_pattern = f"./result/{GRAPH}/node_community.txt"
+# TODO: Loucainのときはここを変更
+data_file_pattern = "./../../Louvain/community/ca-grqc-connected.cm"
 data = []
 # コミュニティファイルからコミュニティとグループの情報を取得
 community_groups = read_community_file(f"./result/{GRAPH}/dynamic_groups.txt")

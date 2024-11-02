@@ -1,5 +1,9 @@
 """
 コミュニティからNGグループを作成する
+
+入力
+エッジグラフ
+コミュニティグラフ
 """
 
 import networkx as nx
@@ -8,8 +12,15 @@ import random
 from collections import defaultdict
 
 
-GRAPH = "METIS-ca"  # ニコしたも修正する
-node_community_file = f"./result/{GRAPH}/node_community.txt"
+GRAPH = "ca"  # ニコしたも修正する
+
+# Louvainでやる時
+node_community_file = "./../../Louvain/community/ca-grqc-connected.cm"
+
+# METISでやる時
+# node_community_file = f"./result/{GRAPH}/node_community.txt"
+
+# エッジファイルを読み込む
 edges_file = "./../../Louvain/graph/ca-grqc-connected.gr"
 
 # node_community_file = "./../divide-community/3_communities.txt"
