@@ -62,8 +62,8 @@ class Graph:
         # 次ノードのコミュニティIDを取得
         next_community = self.node_community_mapping.get(next_node_id)
         # start_noce_communityがNoneの場合は、初めのノードとして扱う
-        # print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
-        # print(f"始点コミュニティID: {start_node_community}")
+        print(f"次ノード {next_node_id} のコミュニティID: {next_community}")
+        print(f"始点コミュニティID: {start_node_community}")
 
         # 始点コミュニティとHopする先が同じであるとき,始点コミュニティには許可なくアクセス可能
         if start_node_community == next_community:
@@ -74,6 +74,18 @@ class Graph:
         # 次のコミュニティで、始点コミュニティがどのグループに属しているかを調べる
         # 各コミュニティはいくつかのグループに分かれており、そのグループごとにNGリストがある。
         # 例: コミュニティ 2 には Group 1 と Group 2 があり、それぞれ別のNGリストを持つ
+        # deubug
+        print(f"ここからデバック next_community: {next_community}")
+        print("community_groups:")
+        for comm, groups in self.community_groups.items():
+            print(f"  Community {comm}:")
+            for group, nodes in groups.items():
+                print(f"    Group {group}: Nodes {nodes}")
+
+        # 始点コミュニティ (start_node_community) も出力
+        print(f"start_node_community: {start_node_community}")
+
+        # 始点グループを取得
         for group, nodes in self.community_groups[next_community].items():
             if start_node_community in nodes:
                 belong_role = group  # 始点コミュニティが所属するグループを保存
@@ -83,6 +95,7 @@ class Graph:
         self.previous_ng_list = []
 
         # 始点グループを表示
+        print(f"belong role: {belong_role}")
         belong_role_number = int(belong_role.split()[1])  # "Group 2" から 2 を取り出す
         # print(f"始点グループの番号: {belong_role_number}")
 
@@ -173,6 +186,7 @@ class Graph:
                 # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
                 start_time_determinate = time.time()  # 時間を計測
                 source_community = self.node_community_mapping.get(start_node_id)
+                print(f"source_community: {source_community}")
                 if not self.determine_next_hop(
                     source_community, int(current_node.id), start_node_community
                 ):
