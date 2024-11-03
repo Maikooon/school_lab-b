@@ -1,0 +1,21 @@
+
+Total Execution Time: 29.4794 seconds
+Token Generation Time: 0.041799999999999865 seconds
+Token Verification Time: 8.653799772262573 seconds
+Server Connection Time: 547.6562581062317 seconds
+Determinate Node Access Time: 0.039026727199554447 seconds
+Move Server Count: 66 times
+
+Total Execution Time: 29.3545 seconds
+Token Generation Time: 0.036999999999999894 seconds
+Token Verification Time: 1.577819585800171 seconds
+Server Connection Time: 1335.375277042389 seconds
+Determinate Node Access Time: 0.003927066564559937 seconds
+Move Server Count: 58 times
+
+Total Execution Time: 21.5642 seconds
+Token Generation Time: 0.02899999999999994 seconds
+Token Verification Time: 2.2468206882476807 seconds
+Server Connection Time: 1940.5935220718384 seconds
+Determinate Node Access Time: 0.005214359283447266 seconds
+Move Server Count: 53 times

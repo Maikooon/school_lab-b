@@ -12,16 +12,17 @@ import random
 from collections import defaultdict
 
 
-GRAPH = "fb-pages-company"  # ニコしたも修正する
+GRAPH = "my-fb-caltech"  # ニコしたも修正する
 
 # Louvainでやる時
-node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
+# node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
 
 # METISでやる時
-# node_community_file = f"./result/{GRAPH}/node_community.txt"
+node_community_file = f"./result/{GRAPH}/node_community.txt"
 
-# エッジファイルを読み込む
-edges_file = f"./../../Louvain/graph/{GRAPH}.gr"
+# エッジファイルを読み込む   TODO: ここも変更する
+edges_file = f"./../../Louvain/graph/fb-caltech-connected.gr"
+
 
 # node_community_file = "./../divide-community/3_communities.txt"
 # edges_file = "./../../Louvain/graph/ns.gr"

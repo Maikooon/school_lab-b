@@ -25,10 +25,12 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "fb-caltech-connected";
+
+const std::string GRAPH = "my-fb-caltech";
 //Louvainのときはこちらを使用
-const std::string COMMUNITY_FILE = "./../../Louvain/community/fb-caltech-connected.cm";
-// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+// const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
+// const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
 const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
