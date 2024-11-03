@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 # ファイル名
 # file1 = "./fb-caltech-connected/default.txt"  # 最初のファイル
 # file2 = "./fb-caltech-connected/access.txt"  # 2番目のファイル
-GRAPH = "fb-caltech-connected"
+GRAPH = "my-karate"
 file1 = f"./{GRAPH}/default.txt"
 file2 = f"./{GRAPH}/access.txt"
 file3 = f"./{GRAPH}/group-access.txt"

@@ -82,9 +82,9 @@ class Graph:
         # print(f"始点グループ {belong_role} のNGリスト: {group_ng_list}")  # あとで消す
 
         # NGリストの全体を表示
-        # print(
-        #     f"次のコミュニティ {next_community} のNGリスト: {self.ng_list.get(next_community, {})}"
-        # )
+        print(
+            f"次のコミュニティ {next_community} のNGリスト: {self.ng_list.get(next_community, {})}"
+        )
         # 指定したコミュニティのNGリストから、特定のグループのノードリストを取得
         group_ng_list = self.ng_list.get(next_community, {}).get(belong_role_number, [])
 
