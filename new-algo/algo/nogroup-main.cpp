@@ -27,12 +27,15 @@ using namespace std;
 
 
 // グローバル変数の定義
-const std::string GRAPH = "METIS-ca";
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "METIS-ca";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
+
+// const std::string GRAPH = "METIS-ca";
 // const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";         /// ここを変更
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
+const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + "ca-grqc-connected.gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
-const int ALLNODE = 4158;
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";

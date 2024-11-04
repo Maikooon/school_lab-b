@@ -18,15 +18,19 @@ using namespace std;
 
 // グローバル変数の定義
 //コミュニティファイルはMETISのフォルダからコピーしてくる
-const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
+// const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
+// const std::string GRAPH_NAME = "ca-grqc-connected";
+
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "METIS-ca";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
+
 // const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
-const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const double ALPHA = 0.15;
 const int RW_COUNT = 10;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
-
-int const ALLNODE = 4158;
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -142,7 +146,7 @@ int main() {
 
     vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
 
-    // 1〜32までのノードを start_nodes に代入
+    // 1〜32までのノードを start_nodes 配列に代入
     for (int i = 0; i < ALLNODE; ++i) {
         start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
     }
