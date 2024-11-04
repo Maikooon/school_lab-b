@@ -4,10 +4,8 @@
 グラフのエッジファイル(Louvanから撮ってくる)
 出力
 コミュニティ情報のファイル
-
-
-
-に種類のファイルがあるので試す
+node_communityが./分割方法/グラフ名/
+のフォルダ下に格納される
 
 """
 
@@ -19,7 +17,7 @@ from sklearn.cluster import KMeans
 
 # ca-grqc-connected.gr
 # 今回分割するグラフのエッジファイルを入れる
-GRAPH = "ca-grqc-connected"  # ca, fb-calだけやれば実行できる
+GRAPH = "ca-grqc-connected"
 edge_file = f"./../Louvain/graph/{GRAPH}.gr"
 n_clusters = 3  # コミュニティ数を指定
 OUTPUT_FILE = f"./by-my-own-division/{GRAPH}/node_community.txt"

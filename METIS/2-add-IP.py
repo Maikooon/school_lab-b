@@ -10,9 +10,13 @@ abilene11.txt
 
 # GRAPHNAME = "fb-caltech-connected"
 GRAPHNAME = "cmu"
+
+# Louvainのとき　　　これはまだ使用していない(それだけのサーバを用意できていないため)
 # community_file = "./../../Louvain/community/karate.tcm"
+
 # METISの時
 # community_file = "./" + GRAPHNAME + "/node_community.txt"
+
 # そのたのとき
 community_file = "./by-my-own-division/" + GRAPHNAME + "/node_community.txt"
 edge_file = "./../Louvain/graph/" + GRAPHNAME + ".gr"

@@ -34,7 +34,7 @@ def save_node_community(parts, graph_name):
             f.write(f"{i} {p}\n")
 
 
-# メイン処理
+# TODO:グラフの名前を定義するーメイン処理
 if __name__ == "__main__":
     GRAPHNAME = "ca-grqc-connected"  # グラフの名前
     npart = 3  # 分割数を指定
