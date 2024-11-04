@@ -12,7 +12,7 @@ import random
 from collections import defaultdict
 
 
-GRAPH = "my-fb-caltech"  # ニコしたも修正する
+GRAPH = "my-fb"  # ニコしたも修正する
 
 # Louvainでやる時
 # node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
@@ -21,7 +21,7 @@ GRAPH = "my-fb-caltech"  # ニコしたも修正する
 node_community_file = f"./result/{GRAPH}/node_community.txt"
 
 # エッジファイルを読み込む   TODO: ここも変更する
-edges_file = f"./../../Louvain/graph/fb-caltech-connected.gr"
+edges_file = f"./../../Louvain/graph/fb-pages-company.gr"
 
 
 # node_community_file = "./../divide-community/3_communities.txt"

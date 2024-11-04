@@ -4,10 +4,10 @@
 EXECUTABLES=("./../algo/main" "./../algo/nogroup" "./../default-algo/rw")
 
 
-EXECUTABLES=("./../algo/main")
+# EXECUTABLES=( "./../algo/nogroup")
 
 # 実行回数
-NUM_RUNS=5
+NUM_RUNS=1
 
 # 各実行ファイルについてループ
 for executable in "${EXECUTABLES[@]}"

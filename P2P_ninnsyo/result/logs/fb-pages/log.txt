@@ -1,12 +1,14 @@
+---
+default
+Execution time: 10.9575 seconds
+ │Execution time: 16.2715 seconds
+ │Execution time: 12.9417 seconds
+ Execution time: 20.0206 seconds
+ │Execution time: 15.9891 seconds
 
+---
+everyTime
 
-FB=pages
-Elapsed time:  20.89999747276306
-│Elapsed time:  23.965035915374756
-Elapsed time:  20.831160306930542
-Elapsed time:  25.066298961639404
-
-毎回
 Total Execution Time: 34.6142 seconds
 Token Generation Time: 0.07420000000000007 seconds
 Token Verification Time: 4.280515909194946 seconds
@@ -35,8 +37,9 @@ Server Connection Time: 4525.370930671692 seconds
 Determinate Node Access Time: 0.04810195326805115 seconds
 Move Server Count: 51 times
 
+---
+oneTime
 
-一回
 Total Execution Time: 20.7166 seconds
 Token Generation Time: 0.003300000000000001 seconds
 Token Verification Time: 10.29137635231018 seconds
@@ -64,6 +67,3 @@ Token Verification Time: 3.1544477939605713 seconds
 Server Connection Time: 292.00580286979675 seconds
 Determinate Node Access Time: 0.028196516275405883 seconds
 Move Server Count: 50 times
-
-コメントアウトしたときのデフォルト
-Execution time: 10.9575 seconds

@@ -1,44 +1,28 @@
 import networkx as nx
 import os
-
-
-# EDGE_FILE = "./../Louvain/graph/karate.gr"
-# COMMUNITY_FILE = "./../Louvain/community/karate.tcm"
+from collections import Counter
 
 edge_file_list = [
-    "ca-grqc-connected.gr",
-    "cmu.gr",
-    "com-amazon-connected.gr",
-    "email-enron-connected.gr",
+    # "ca-grqc-connected.gr",
     "fb-caltech-connected.gr",
-    "fb-pages-company.gr",
-    "karate-graph.gr",
-    "karate.gr",
-    "rt-retweet.gr",
-    "simple_graph.gr",
-    "soc-slashdot.gr",
-    "tmp.gr",
+    # "fb-pages-company.gr",
+    # "karate.gr",
 ]
 
-
 community_file_list = [
-    "ca-grqc-connected.cm",
-    "cmu.cm",
-    "com-amazon-connected.cm",
-    "email-enron-connected.cm",
-    "fb-caltech-connected.cm",
-    "fb-pages-company.cm",
-    "karate-graph.cm",
-    "karate.tcm",
-    "rt-retweet.cm",
-    "simple_graph.cm",
-    "soc-slashdot.cm",
-    "tmp.cm",
+    # "METIS-ca",
+    "METIS-fb-caltech",
+    # "METIS-fb-pages",
+    # "METIS-karate",
+    # "my-ca",
+    # "my-fb",
+    # "my-fb-caltech",
+    # "my-karate",
 ]
 
 
 def calc(edge_file, community_file, filename):
-    # 隣接行列の読み込み
+    # グラフの読み込み
     G = nx.read_edgelist(edge_file, nodetype=int)
 
     # コミュニティ情報の読み込み
@@ -49,25 +33,60 @@ def calc(edge_file, community_file, filename):
             node, community = map(int, row)
             community_map[node] = community
 
-    # コミュニティごとのノードのリストを作成
+    # コミュニティごとのノードリスト作成
     communities = {}
     for node, community in community_map.items():
         communities.setdefault(community, set()).add(node)
 
-    # モジュラリティの計算
-    modularity = nx.community.modularity(G, list(communities.values()))
+    # グラフ内のすべてのノードがコミュニティに含まれているか確認
+    all_nodes_in_communities = set(
+        node for community in communities.values() for node in community
+    )
+    missing_nodes = set(G.nodes()) - all_nodes_in_communities
 
-    print(filename, ":", modularity)
+    # 含まれていないノードを新しいコミュニティに追加
+    if missing_nodes:
+        new_community_id = max(communities.keys()) + 1
+        communities[new_community_id] = missing_nodes
+        print(f"{filename}: Added missing nodes to new community {new_community_id}")
+
+    # 重複ノードの解消
+    node_counts = Counter(
+        node for community in communities.values() for node in community
+    )
+    duplicate_nodes = [node for node, count in node_counts.items() if count > 1]
+
+    for node in duplicate_nodes:
+        first_community = next(
+            community for community, nodes in communities.items() if node in nodes
+        )
+        for community, nodes in communities.items():
+            if community != first_community and node in nodes:
+                nodes.remove(node)
+        print(
+            f"{filename}: Resolved duplicates, kept node {node} in community {first_community}"
+        )
+
+    # モジュラリティ計算を試行
+    try:
+        modularity = nx.community.modularity(G, list(communities.values()))
+        print(filename, ":", modularity)
+    except nx.NetworkXError as e:
+        print(f"{filename}: Error calculating modularity - {e}")
+        # 必要に応じてエラー処理を追加可能
+        print("Skipping modularity calculation for this graph due to partition issue.")
 
 
 def main():
     for i in range(len(edge_file_list)):
+        community_file = (
+            "./new-algo/create-tables/result/"
+            + community_file_list[i]
+            + "/community.txt"
+        )
         edge_file = "./Louvain/graph/" + edge_file_list[i]
-        community_file = "./Louvain/community/" + community_file_list[i]
-        filename_with_ext = os.path.basename(
-            edge_file
-        )  # ファイル名（拡張子付き）を取得
-        filename = os.path.splitext(filename_with_ext)[0]  # 拡張子を除去
+        filename_with_ext = os.path.basename(edge_file)
+        filename = os.path.splitext(filename_with_ext)[0]
         calc(edge_file, community_file, filename)
 
 

@@ -1,5 +1,12 @@
 
-毎回
+default
+Elapsed time: 10.068042278289795 seconds
+Elapsed time: 11.068042278289795 seconds
+Elapsed time: 11.019007205963135 seconds
+Elapsed time: 10.111562967300415 seconds
+
+---
+everyTime
 Total Execution Time: 14.1257 seconds
 Token Generation Time: 0.007099999999999996 seconds
 Token Verification Time: 7.510732889175415 seconds
@@ -35,8 +42,9 @@ Server Connection Time: 175.03070044517517 seconds
 Determinate Node Access Time: 0.018919975757598878 seconds
 Move Server Count: 49 times
 
+---
+oneTime
 
-一回
 Total Execution Time: 14.7423 seconds
 Token Generation Time: 0.006899999999999996 seconds
 Token Verification Time: 7.414122581481934 seconds
@@ -65,9 +73,3 @@ Server Connection Time: 128.25535082817078 seconds
 Determinate Node Access Time: 0.00898470664024353 seconds
 Move Server Count: 38 times
 
-
-default
-Elapsed time:  10.068042278289795
-Elapsed time:  11.068042278289795
-Elapsed time:  11.019007205963135
-Elapsed time:  10.111562967300415

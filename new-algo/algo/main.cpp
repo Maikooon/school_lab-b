@@ -26,15 +26,15 @@ using namespace std;
 
 // グローバル変数の定義
 
-const std::string GRAPH = "my-fb-caltech";
+const std::string GRAPH = "METIS-ca";
 //Louvainのときはこちらを使用
 // const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
 const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
 // const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
-const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
+const std::string GRAPH_FILE = "./../../Louvain/graph/fca-grqc-connected.gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-const int ALLNODE = 762;
+const int ALLNODE = 4158;
 
 // const std::string GRAPH = "METIS-fb-caltech";
 // const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
@@ -44,7 +44,7 @@ const int ALLNODE = 762;
 
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 1000;  // ランダムウォークの実行回数
+const int RW_COUNT = 10;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;

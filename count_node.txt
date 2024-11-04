@@ -50,7 +50,7 @@ graph: web-polblogs
 Nodes: 643, Edges: 2280
 
 
-
+Louvain
 ca-grqc-connected : 0.8456052537838395
 cmu : 0.4319526627218936
 com-amazon-connected : 0.9262060325166941
@@ -63,3 +63,14 @@ rt-retweet : 0.6794506538096282
 simple_graph : 0.2881944444444444
 soc-slashdot : 0.3483903043204483
 tmp : 0.470873786407767
+
+METIS
+karate : 0.03179288244223309
+fb-pages-company : 0.0023635069902414457
+
+
+my-division
+ca-grqc-connected : 0.11326818754078403
+fb-caltech-connected : 0.17093732873780348
+fb-pages-company : 0.00020103360109890889
+karate : 0.269185360094451

@@ -18,12 +18,12 @@ using namespace std;
 
 // グローバル変数の定義
 //コミュニティファイルはMETISのフォルダからコピーしてくる
-const std::string GRAPH = "ca-grqc-connected";    ///☺︎したのグラフも変更する
-const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
-// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
+// const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
 const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
 const double ALPHA = 0.15;
-const int RW_COUNT = 1000;  // ランダムウォークの実行回数
+const int RW_COUNT = 10;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
 
 int const ALLNODE = 4158;
@@ -172,6 +172,7 @@ int main() {
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
+    printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
 

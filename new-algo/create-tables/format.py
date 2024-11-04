@@ -11,7 +11,7 @@ dynamic.community
 # そこのCommunity番号を取得
 # その次の行からGroupという文字列があるので、Groupを削除したのちに、Comumuinity番号：Group番号　その後；；；という形にする
 
-GRAPH = "my-fb-caltech"
+GRAPH = "my-fb"
 
 
 def process_community_file(filename):

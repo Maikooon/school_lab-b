@@ -13,7 +13,7 @@
 import glob
 import os
 
-GRAPH = "my-fb-caltech"
+GRAPH = "my-fb"
 
 
 def read_community_file(filename):
