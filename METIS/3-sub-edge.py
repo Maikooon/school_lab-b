@@ -9,16 +9,23 @@ METISで分割されたものを再びMETISで分割
 変更前：サーバ内で一意
 変更後：サーバ間で一意一度しか生成されない乱数にすることで実現
 
+
+入力
+- グラフのエッジファイル
+- ノードのコミュニティ情報ファイル
+
 出力
-コミュニティごとに分割されるので、サーバごとのファイルにまとめる
-- community_A.txt, community_B.txt _>server_abilene03
+コミュニティごとに分割されるので、サーバごとのファイルにまとめる(合計６つのファイルが生成される)
+- community_A.txt, community_B.txt _>server_abilene03_edges_community.txt
+
+
 """
 
 import networkx as nx
 import metis
+import os
 
-
-GRAPH = "fb-pages-company"
+GRAPH = os.getenv("GRAPH", "cmu")
 
 
 # エッジ情報をファイルから読み込む関数
@@ -67,16 +74,27 @@ def split_community(community_nodes, G):
 
 # ファイルからエッジとコミュニティ情報を読み込む
 edges = read_edges("./../Louvain/graph/" + GRAPH + ".gr")
-node_communities = read_communities("./" + GRAPH + "/node_community.txt")
+node_communities = read_communities(
+    "./by-my-own-division/" + GRAPH + "/node_community.txt"
+)
 
 # グラフの作成
 G = build_graph(edges)
 
 # コミュニティごとにファイルに保存するマッピング
 file_mapping = {
-    0: (f"./{GRAPH}/community_A.txt", f"./{GRAPH}/community_B.txt"),
-    1: (f"./{GRAPH}/community_C.txt", f"./{GRAPH}/community_D.txt"),
-    2: (f"./{GRAPH}/community_E.txt", f"./{GRAPH}/community_F.txt"),
+    0: (
+        f"./by-my-own-division/{GRAPH}/community_A.txt",
+        f"./by-my-own-division/{GRAPH}/community_B.txt",
+    ),
+    1: (
+        f"./by-my-own-division/{GRAPH}/community_C.txt",
+        f"./by-my-own-division/{GRAPH}/community_D.txt",
+    ),
+    2: (
+        f"./by-my-own-division/{GRAPH}/community_E.txt",
+        f"./by-my-own-division/{GRAPH}/community_F.txt",
+    ),
 }
 
 # 各コミュニティを2つに分割し、結果をファイルに保存

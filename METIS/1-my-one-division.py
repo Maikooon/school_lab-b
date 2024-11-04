@@ -13,13 +13,14 @@ node_communityが./分割方法/グラフ名/
 import networkx as nx
 import numpy as np
 from sklearn.cluster import KMeans
-
+import os
 
 # ca-grqc-connected.gr
 # 今回分割するグラフのエッジファイルを入れる
-GRAPH = "ca-grqc-connected"
-edge_file = f"./../Louvain/graph/{GRAPH}.gr"
+GRAPH = os.getenv("GRAPH", "cmu")
 n_clusters = 3  # コミュニティ数を指定
+
+edge_file = f"./../Louvain/graph/{GRAPH}.gr"
 OUTPUT_FILE = f"./by-my-own-division/{GRAPH}/node_community.txt"
 
 

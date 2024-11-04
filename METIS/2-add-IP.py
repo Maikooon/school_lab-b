@@ -2,24 +2,31 @@
 Louvainで与えられたグラフとMETISで分割したグラフに対してIPを振り当てる
 abileneサーバごとにエッジにIPを振り当てる
 
+
+INPUT_FILE = f"./by-my-own-division/{GRAPH}/node_community.txt"
+OUTPUT_FILE = f"./by-my-own-division/{GRAPH}/community_{community_id}.txt"
+
 出力
-abilene03.txt
-abilene06.txt
-abilene11.txt
+以下に出力されるので、名前を変更する
+community_0.txt ->abilene03.txt
+community_1.txt ->abilene06.txt
+community_2.txt ->abilene11.txt
 """
 
-# GRAPHNAME = "fb-caltech-connected"
-GRAPHNAME = "cmu"
+import os
+
+# GRAPH = "fb-caltech-connected"
+GRAPH = os.getenv("GRAPH", "cmu")
 
 # Louvainのとき　　　これはまだ使用していない(それだけのサーバを用意できていないため)
 # community_file = "./../../Louvain/community/karate.tcm"
 
 # METISの時
-# community_file = "./" + GRAPHNAME + "/node_community.txt"
+# community_file = "./" + GRAPH + "/node_community.txt"
 
 # そのたのとき
-community_file = "./by-my-own-division/" + GRAPHNAME + "/node_community.txt"
-edge_file = "./../Louvain/graph/" + GRAPHNAME + ".gr"
+community_file = "./by-my-own-division/" + GRAPH + "/node_community.txt"
+edge_file = "./../Louvain/graph/" + GRAPH + ".gr"
 
 # コミュニティごとのIPアドレスのマッピング
 ip_mapping = {0: "10.58.60.3", 1: "10.58.60.6", 2: "10.58.60.11"}
@@ -87,7 +94,7 @@ def generate_and_save_ip_graph(communities, edges):
     # コミュニティごとにファイルを書き込む
     for community_id, edges in ip_graph.items():
         file_name = (
-            "./by-my-own-division/" + GRAPHNAME + f"/community_{community_id}.txt"
+            "./by-my-own-division/" + GRAPH + f"/community_{community_id}.txt"
         )  # コミュニティごとのファイル名
         with open(file_name, "w") as f:
             for edge in edges:

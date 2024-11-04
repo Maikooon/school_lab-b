@@ -1,0 +1,14 @@
+cmu
+モジュラリティ: -0.038461538461538436
+
+fb-caltech-connected/node_community.txt
+モジュラリティ: 0.17093732873780348
+
+karate
+モジュラリティ: 0.269185360094451
+
+fb-pages-company
+
+
+ca-caltech-connected
+モジュラリティ: 0.11326818754078403

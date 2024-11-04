@@ -16,9 +16,11 @@ import os
 import random
 from collections import defaultdict
 
+GRAPH = os.getenv("GRAPH", "cmu")
+
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
-base_path = "./fb-pages-company/"
+base_path = f"./by-my-own-division/{GRAPH}/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数
