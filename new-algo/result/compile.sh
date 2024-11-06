@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # グローバル変数を環境変数として設定
-export GRAPH="METIS-ca"
-export GRAPH_NAME="ca-grqc-connected"
-export ALLNODE=14113
+# export GRAPH="METIS-fb-pages"
+# export GRAPH_NAME="fb-pages-company"
+# export ALLNODE=14113
+# 4158
 
 # C++ソースファイルと出力ファイルの対応をリストで定義（key:source_fileの形式）
 cpp_files=("main:./../algo/main.cpp" "nogroup:./../algo/nogroup-main.cpp" "rw:./../default-algo/rw.cpp")

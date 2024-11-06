@@ -25,7 +25,7 @@ import networkx as nx
 import metis
 import os
 
-GRAPH = os.getenv("GRAPH", "cmu")
+GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
 
 
 # エッジ情報をファイルから読み込む関数

@@ -17,7 +17,7 @@ import os
 
 # ca-grqc-connected.gr
 # 今回分割するグラフのエッジファイルを入れる
-GRAPH = os.getenv("GRAPH", "cmu")
+GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
 n_clusters = 3  # コミュニティ数を指定
 
 edge_file = f"./../Louvain/graph/{GRAPH}.gr"

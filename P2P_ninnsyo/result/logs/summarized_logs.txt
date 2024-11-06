@@ -139,4 +139,9 @@ Determinate Node Access Time: 0.028196516275405883 seconds
 Move Server Count: 50 times
 
 コメントアウトしたときのデフォルト
-Execution time: 10.9575 seconds
+Execution time: 10.9575 secondsTotal Execution Time: 150.6958 seconds
+Token Generation Time: 0.01569999999999996 seconds
+Token Verification Time: 165.30810546875 seconds
+Server Connection Time: 789.945573091507 seconds
+Determinate Node Access Time: 0.09700965571403504 seconds
+Move Server Count: 624 times

@@ -16,7 +16,7 @@ import os
 import random
 from collections import defaultdict
 
-GRAPH = os.getenv("GRAPH", "cmu")
+GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
 
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト

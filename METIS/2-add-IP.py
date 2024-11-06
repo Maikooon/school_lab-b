@@ -16,7 +16,7 @@ community_2.txt ->abilene11.txt
 import os
 
 # GRAPH = "fb-caltech-connected"
-GRAPH = os.getenv("GRAPH", "cmu")
+GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
 
 # Louvainのとき　　　これはまだ使用していない(それだけのサーバを用意できていないため)
 # community_file = "./../../Louvain/community/karate.tcm"

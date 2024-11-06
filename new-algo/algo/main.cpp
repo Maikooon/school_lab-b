@@ -25,17 +25,15 @@ using namespace std;
 
 
 // グローバル変数の定義
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "fb-pages-company";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
 
-// グローバル変数の初期化
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "METIS-ca";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
-
-// const std::string GRAPH = "METIS-ca";
 //Louvainのときはこちらを使用
-// const std::string COMMUNITY_FILE = "./../../Louvain/community/ca-grqc-connected.cm";
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-// const std::string GRAPH_FILE = "./../../Louvain/graph/ca-grqc-connected.gr";
+const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
+
+// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
+
 const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
 const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";

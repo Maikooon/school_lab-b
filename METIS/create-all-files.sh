@@ -10,8 +10,8 @@ GRAPH="ca-grqc-connected"
 export GRAPH=$GRAPH
 
 # Step 1: Execute the Python scripts in sequence
-python 1-my-one-division.py
-python 2-add-IP.py
+python3 1-my-one-division.py
+python3 2-add-IP.py
 
 # Step 1-2: Rename the output files
 mv ./by-my-own-division/$GRAPH/community_0.txt ./by-my-own-division/$GRAPH/abilene03.txt
@@ -19,7 +19,7 @@ mv ./by-my-own-division/$GRAPH/community_1.txt ./by-my-own-division/$GRAPH/abile
 mv ./by-my-own-division/$GRAPH/community_2.txt ./by-my-own-division/$GRAPH/abilene11.txt
 
 # Step 2: Run the third Python script
-python 3-sub-edge.py 
+python3 3-sub-edge.py 
 
 # Step 2-1: Consolidate community files into server-specific files
 cat ./by-my-own-division/$GRAPH/community_A.txt ./by-my-own-division/$GRAPH/community_B.txt > ./by-my-own-division/$GRAPH/server_abilene03_edges_community.txt
@@ -35,6 +35,6 @@ rm ./by-my-own-division/$GRAPH/community_E.txt
 rm ./by-my-own-division/$GRAPH/community_F.txt
 
 # Step 3: Run the third Python script
-python 5-create-role-group.py 
+python3 5-create-role-group.py 
 
 echo "Scripts executed, files renamed, and server-specific files created successfully."
