@@ -74,9 +74,10 @@ def split_community(community_nodes, G):
 
 # ファイルからエッジとコミュニティ情報を読み込む
 edges = read_edges("./../Louvain/graph/" + GRAPH + ".gr")
-node_communities = read_communities(
-    "./by-my-own-division/" + GRAPH + "/node_community.txt"
-)
+# node_communities = read_communities(
+#     "./by-my-own-division/" + GRAPH + "/node_community.txt"
+# )
+node_communities = read_communities("./by-METIS/" + GRAPH + "/node_community.txt")
 
 # グラフの作成
 G = build_graph(edges)
@@ -84,16 +85,16 @@ G = build_graph(edges)
 # コミュニティごとにファイルに保存するマッピング
 file_mapping = {
     0: (
-        f"./by-my-own-division/{GRAPH}/community_A.txt",
-        f"./by-my-own-division/{GRAPH}/community_B.txt",
+        f"./by-METIS/{GRAPH}/community_A.txt",
+        f"./by-METIS/{GRAPH}/community_B.txt",
     ),
     1: (
-        f"./by-my-own-division/{GRAPH}/community_C.txt",
-        f"./by-my-own-division/{GRAPH}/community_D.txt",
+        f"./by-METIS/{GRAPH}/community_C.txt",
+        f"./by-METIS/{GRAPH}/community_D.txt",
     ),
     2: (
-        f"./by-my-own-division/{GRAPH}/community_E.txt",
-        f"./by-my-own-division/{GRAPH}/community_F.txt",
+        f"./by-METIS/{GRAPH}/community_E.txt",
+        f"./by-METIS/{GRAPH}/community_F.txt",
     ),
 }
 

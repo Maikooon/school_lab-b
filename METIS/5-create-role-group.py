@@ -20,7 +20,7 @@ GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
 
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
-base_path = f"./by-my-own-division/{GRAPH}/"
+base_path = f"./by-METIS/{GRAPH}/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数

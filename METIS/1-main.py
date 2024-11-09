@@ -36,6 +36,6 @@ def save_node_community(parts, graph_name):
 
 # TODO:グラフの名前を定義するーメイン処理
 if __name__ == "__main__":
-    GRAPH = os.getenv("GRAPH", "cmu")
+    GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
     npart = 3  # 分割数を指定
     load_and_partition_graph(GRAPH, npart)

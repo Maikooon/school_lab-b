@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # ファイル名
-GRAPH = "fb-pages"
+GRAPH = "fb-cal"
 file1 = f"./logs/{GRAPH}/log.txt"
 
 
@@ -69,20 +69,50 @@ if __name__ == "__main__":
     ave_move_server_count = move_server_count / 100
     print("Average Move Server Count:", ave_move_server_count)
 
+    # ここで平均増加率を計算する
+    ave_default = sum(default) / len(default)
+    ave_every_time = sum(every_time) / len(every_time)
+    ave_one_time = sum(one_time) / len(one_time)
+    diff12 = (ave_every_time - ave_default) / ave_default
+    diff13 = (ave_one_time - ave_default) / ave_default
+    # 割合になるように変換しておく
+    diff12 = round(diff12 * 100, 2)
+    diff13 = round(diff13 * 100, 2)
+
     # 箱ひげ図を描く
     plt.figure(figsize=(10, 6))
     plt.boxplot(
         [default, every_time, one_time],
         labels=["default", "every_time", "one_time"],
     )
+    plt.text(
+        0.9,
+        0.9,
+        f"every time:{diff12}%up, one time:{diff13}%up",
+        ha="center",
+        transform=plt.gca().transAxes,
+    )
 
     # グラフのタイトルやラベル
     plt.title(
         f"Comparison of RW Execution Times {GRAPH} --Move server count:{ave_move_server_count}"
     )
-    plt.ylabel("Execution Time (ms)")
+    plt.ylabel("Execution Time (s)")
     plt.grid(True)
 
     # グラフを保存
     plt.savefig(f"./logs/{GRAPH}/all.png")
     plt.show()
+
+
+# ここの数字を追加したい
+#     diff12 = (average2 - average1) / average1
+#     diff13 = (average3 - average1) / average1
+#     plt.text(
+#         0.9,
+#         0.9,
+#         f"access:{diff12}%up, grouped-access:{diff13}%up",
+#         ha="center",
+#         transform=plt.gca().transAxes,
+#     )
+# #

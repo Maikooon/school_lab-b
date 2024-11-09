@@ -1,11 +1,4 @@
-
-my-karate----------------------------------------------------------------------------
-
-
-my-fb-caltech---------------------------------------------------------------------------------
-
-ここからmyCa
-デフォ
+default
 Total Execution Time: 3.5434 seconds
 Token Generation Time: 0.0 seconds
 Token Verification Time: 0.0 seconds
@@ -27,26 +20,31 @@ Server Connection Time: 0.0 seconds
 Determinate Node Access Time: 0.024797176122665406 seconds
 Move Server Count: 14 times
 
-毎回
+
+everyTime
 Total Execution Time: 4.8683 seconds
 Token Generation Time: 0.0016000000000000005 seconds
 Token Verification Time: 3.7006223201751713 seconds
 Server Connection Time: 11.3249032497406 seconds
 Determinate Node Access Time: 0.004134598970413208 seconds
 Move Server Count: 11 times
+
 Total Execution Time: 6.0762 seconds
 Token Generation Time: 0.0020000000000000005 seconds
 Token Verification Time: 0.017797470092773438 seconds
 Server Connection Time: 46.30166172981262 seconds
 Determinate Node Access Time: 0.004234254837036133 seconds
-Move Server Count: 15 times　　　19
+Move Server Count: 15 times　　　
+19
 
 Total Execution Time: 4.3496 seconds
 Token Generation Time: 0.0016000000000000005 seconds
 Token Verification Time: 0.02634286880493164 seconds
 Server Connection Time: 64.84098744392395 seconds
 Determinate Node Access Time: 0.006615066766738892 seconds
-Move Server Count: 12 times  19
+Move Server Count: 12 times  
+19
+
 Total Execution Time: 4.9139 seconds
 Token Generation Time: 0.0019000000000000006 seconds
 Token Verification Time: 0.045618295669555664 seconds
@@ -54,8 +52,8 @@ Server Connection Time: 110.04199314117432 seconds
 Determinate Node Access Time: 0.009450915336608887 seconds
 Move Server Count: 15 times
 
-初めの一回のみの時
 
+oneTime
 Total Execution Time: 5.6811 seconds
 Token Generation Time: 0.0011000000000000003 seconds
 Token Verification Time: 2.8536581993103027 seconds
@@ -69,13 +67,6 @@ Token Verification Time: 0.020073652267456055 seconds
 Server Connection Time: 44.373138189315796 seconds
 Determinate Node Access Time: 0.006236414670944214 seconds
 Move Server Count: 10 times
-
-Total Execution Time: 0.0 seconds
-Token Generation Time: 0.0 seconds
-Token Verification Time: 0.0 seconds
-Server Connection Time: 0.0 seconds
-Determinate Node Access Time: 0.0 seconds
-Move Server Count: 0 times
 
 Total Execution Time: 4.3538 seconds
 Token Generation Time: 0.0014000000000000004 seconds

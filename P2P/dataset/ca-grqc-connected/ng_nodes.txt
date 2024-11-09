@@ -1,0 +1,24 @@
+コミュニティ 0:
+  NG for Group 1: 3633
+  NG for Group 2: 3633
+
+コミュニティ 1:
+  NG for Group 1: 3633, 3431, 4141, 4015, 2341
+  NG for Group 2: 1662, 3292, 2348, 3032, 2883
+
+コミュニティ 2:
+  NG for Group 1: 24 
+  NG for Group 2: 24
+
+コミュニティ 3:
+  NG for Group 1: 1941, 141, 3204, 2770, 3231
+  NG for Group 2: 547, 1321, 2420, 22, 3006
+
+コミュニティ 4:
+  NG for Group 1: 2851
+  NG for Group 2: 2851
+
+コミュニティ 5:
+  NG for Group 1: 2851, 3754, 1386, 1910, 2912
+  NG for Group 2: 3716, 1430, 24, 3387, 1078
+

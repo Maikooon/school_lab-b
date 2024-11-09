@@ -4,18 +4,18 @@ from collections import Counter
 
 edge_file_list = [
     # "ca-grqc-connected.gr",
-    "fb-caltech-connected.gr",
-    # "fb-pages-company.gr",
+    # "fb-caltech-connected.gr",
+    "fb-pages-company.gr",
     # "karate.gr",
 ]
 
 community_file_list = [
     # "METIS-ca",
-    "METIS-fb-caltech",
+    # "METIS-fb-caltech",
     # "METIS-fb-pages",
     # "METIS-karate",
     # "my-ca",
-    # "my-fb",
+    "my-fb-pages",
     # "my-fb-caltech",
     # "my-karate",
 ]
@@ -82,7 +82,7 @@ def main():
         community_file = (
             "./new-algo/create-tables/result/"
             + community_file_list[i]
-            + "/community.txt"
+            + "/node_community.txt"
         )
         edge_file = "./Louvain/graph/" + edge_file_list[i]
         filename_with_ext = os.path.basename(edge_file)

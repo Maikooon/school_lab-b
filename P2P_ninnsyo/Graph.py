@@ -157,6 +157,7 @@ class Graph:
 
         # 指定された数だけRWする
         for i in range(count):
+            print("aaaaaaaaaaa")
             current_node = source_node
             while True:
                 # 現在のノードが異なるサーバかチェック
