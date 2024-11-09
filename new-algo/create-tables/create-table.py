@@ -10,24 +10,34 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random
 from collections import defaultdict
+import os
 
 
-GRAPH = "my-fb"  # ニコしたも修正する
+# 環境変数を取得
+GRAPH = os.getenv("GRAPH")
+GRAPH_NAME = os.getenv("GRAPH_NAME")
+GRAPH_COMMUNITY = os.getenv("GRAPH_COMMUNITY")
+NG_RATE = float(os.getenv("NG_RATE", 0.0))  # デフォルト値0.0を指定
+
+# ここで確認する
+print("Graph:", GRAPH)
+print("Graph Name:", GRAPH_NAME)
+print("NG Rate:", NG_RATE)
+
 
 # Louvainでやる時
 # node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
 
 # METISでやる時
-node_community_file = f"./result/{GRAPH}/node_community.txt"
+node_community_file = f"./result/{GRAPH_COMMUNITY}/community.txt"
 
 # エッジファイルを読み込む   TODO: ここも変更する
-edges_file = f"./../../Louvain/graph/fb-pages-company.gr"
-
+edges_file = f"./../../Louvain/graph/{GRAPH_NAME}.gr"
 
 # node_community_file = "./../divide-community/3_communities.txt"
 # edges_file = "./../../Louvain/graph/ns.gr"
 
-output_file = "external_neighbors.txt"
+# 出力ファイル
 group_output_file = "grouped_communities.txt"
 
 
@@ -115,7 +125,9 @@ def write_dynamic_groups_to_file(community_group_mapping, file_path):
 
 
 # グループ分けされたコミュニティでNGノードを選択する関数
-def select_ng_nodes_per_group(community_group_mapping, node_community, percentage=0.05):
+def select_ng_nodes_per_group(
+    community_group_mapping, node_community, percentage=NG_RATE
+):
     ng_nodes_per_community = {}
 
     for community, groups in community_group_mapping.items():
@@ -193,6 +205,7 @@ def write_groups_to_file(groups, group_output_file):
             file.write(f"{group_name}: {nodes}\n")
 
 
+## TODO: いらないとわかったら消す
 # グループからノードをランダムに選び出す関数、全体の１０％ほどになればok
 def select_random_nodes(groups, percentage=0.1):
     selected_nodes = {}
@@ -213,6 +226,8 @@ def write_selected_nodes_to_file(selected_nodes, output_file):
             file.write(f"{group_name}: {nodes}\n")
 
 
+## ここから実行
+
 # データを読み込む
 node_community = load_node_community(node_community_file)
 edges = load_edges(edges_file)
@@ -224,21 +239,25 @@ G = nx.Graph()
 G.add_nodes_from(node_community)
 G.add_edges_from(edges)
 
-# # 異なるコミュニティの隣接ノードを検索
-# external_neighbors = find_external_neighbors(G, node_community)
-
-# # 結果をファイルに書き込み
-# write_external_neighbors_to_file(external_neighbors, output_file)
-
 # 各コミュニティに基づいてノードをグループに分ける
 community_group_mapping = dynamic_grouping_by_community(node_community)
+
+# フォルダが存在しなければ作成
+result_folder = f"./result/{GRAPH}"
+if not os.path.exists(result_folder):
+    os.makedirs(result_folder)
+
+# ファイルに書き込み
 write_dynamic_groups_to_file(
-    community_group_mapping, f"./result/{GRAPH}/dynamic_groups.txt"
+    community_group_mapping, os.path.join(result_folder, "dynamic_groups.txt")
 )
 
+# NGノードをグループごとに選択
 select_ng_nodes_per_group = select_ng_nodes_per_group(
     community_group_mapping, node_community
 )
+
+# # NGノードをファイルに書き込み
 write_ng_nodes_per_community_to_file(
-    select_ng_nodes_per_group, f"./result/{GRAPH}/ng_nodes.txt"
+    select_ng_nodes_per_group, os.path.join(result_folder, "ng_nodes.txt")
 )

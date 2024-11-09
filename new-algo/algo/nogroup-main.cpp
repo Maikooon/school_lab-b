@@ -30,10 +30,9 @@ using namespace std;
 
 // グローバル変数の定義
 // グローバル変数の定義
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "fb-pages-company";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
-
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "my-karate";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
 //Louvainのときはこちらを使用
 const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
 

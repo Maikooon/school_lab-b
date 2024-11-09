@@ -13,7 +13,9 @@
 import glob
 import os
 
-GRAPH = "my-fb"
+# 　ここはファイルの情報のみでおk
+GRAPH = os.getenv("GRAPH", "my-fb")
+print(GRAPH)
 
 
 def read_community_file(filename):
