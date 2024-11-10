@@ -25,3 +25,5 @@ do
 done
 
 echo "すべての実行ファイルの実行が完了しました。"
+
+python plt-hige.py

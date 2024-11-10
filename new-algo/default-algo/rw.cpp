@@ -20,13 +20,16 @@ using namespace std;
 //コミュニティファイルはMETISのフォルダからコピーしてくる
 // const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
 // const std::string GRAPH_NAME = "ca-grqc-connected";
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-fb-pages";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
 
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "my-karate";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
+//1. Louvainの時はこちらを使用
+// const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
 
-const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
-// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
+//2. Louvainではない時にはこちらを使用
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+
 const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const double ALPHA = 0.15;
 const int RW_COUNT = 10;  // ランダムウォークの実行回数
@@ -176,7 +179,7 @@ int main() {
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
-    printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
+    // printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
 

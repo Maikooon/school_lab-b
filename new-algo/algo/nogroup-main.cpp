@@ -30,22 +30,17 @@ using namespace std;
 
 // グローバル変数の定義
 // グローバル変数の定義
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "my-karate";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
-//Louvainのときはこちらを使用
-const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-fb-pages";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
+//1. Louvainのときはこちらを使用
+// const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
 
-// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
+//2. Louvainではないよ時には、独自のコミュニティファイルを使用するのでこちら
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+
 const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
-
-// const std::string GRAPH = "METIS-fb-caltech";
-// const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
-// const std::string GRAPH_FILE = "./../../Louvain/graph/fb-caltech-connected.gr";         /// ここを変更
-// const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
-// const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-// const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
 const int RW_COUNT = 10;  // ランダムウォークの実行回数

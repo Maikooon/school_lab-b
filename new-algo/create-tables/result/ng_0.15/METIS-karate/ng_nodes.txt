@@ -1,0 +1,12 @@
+コミュニティ 0:
+  NG for Group 1: 14
+  NG for Group 2: 3
+
+コミュニティ 1:
+  NG for Group 1: 31
+  NG for Group 2: 31
+
+コミュニティ 2:
+  NG for Group 1: 15
+  NG for Group 2: 32
+
