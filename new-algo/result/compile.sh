@@ -8,6 +8,8 @@
 
 # C++ソースファイルと出力ファイルの対応をリストで定義（key:source_fileの形式）
 cpp_files=("main:./../algo/main.cpp" "nogroup:./../algo/nogroup-main.cpp" "rw:./../default-algo/rw.cpp")
+#　グループ化されていないものだけもう一度調査する
+# cpp_files=("nogroup:./../algo/nogroup-main.cpp")
 
 # コンパイル処理
 for entry in "${cpp_files[@]}"; do

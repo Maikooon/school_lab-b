@@ -3,8 +3,9 @@
 # 実行ファイルのリストを指定（ファイルパスをそれぞれ変更してください）
 EXECUTABLES=("./../algo/main" "./../algo/nogroup" "./../default-algo/rw")
 
-
-# EXECUTABLES=( "./../algo/nogroup")
+EXECUTABLES=("./../algo/nogroup")
+# # "./../algo/nogroup"
+# EXECUTABLES=("./../default-algo/rw")
 
 # 実行回数
 NUM_RUNS=5

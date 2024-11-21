@@ -1,24 +1,21 @@
-grouped-ng-list
-Average path length: 5.542000
-Total moves across communities: 3336
-Program execution time: 47685750 nanoseconds
 
-grouped-ng-list
-Average path length: 5.435000
-Total moves across communities: 3362
-Program execution time: 39699541 nanoseconds
+Average path length: 5.152647
+Total moves across communities: 200
+Program execution time: 2493389 nanoseconds
 
-grouped-ng-list
-Average path length: 5.542000
-Total moves across communities: 3400
-Program execution time: 44478375 nanoseconds
+Average path length: 5.152647
+Total moves across communities: 200
+Program execution time: 2208230 nanoseconds
 
-grouped-ng-list
-Average path length: 5.456000
-Total moves across communities: 3274
-Program execution time: 43573791 nanoseconds
+Average path length: 5.152647
+Total moves across communities: 200
+Program execution time: 2198519 nanoseconds
 
-grouped-ng-list
-Average path length: 5.596000
-Total moves across communities: 3387
-Program execution time: 47532667 nanoseconds
+Average path length: 5.152647
+Total moves across communities: 200
+Program execution time: 2201667 nanoseconds
+
+Average path length: 5.152647
+Total moves across communities: 200
+Program execution time: 2198272 nanoseconds
+

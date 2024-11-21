@@ -20,19 +20,18 @@ using namespace std;
 //コミュニティファイルはMETISのフォルダからコピーしてくる
 // const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
 // const std::string GRAPH_NAME = "ca-grqc-connected";
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-fb-pages";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
-
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/my-ca";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
 //1. Louvainの時はこちらを使用
 // const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
 
 //2. Louvainではない時にはこちらを使用
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
 
 const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const double ALPHA = 0.15;
-const int RW_COUNT = 10;  // ランダムウォークの実行回数
+const int RW_COUNT = 100;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;

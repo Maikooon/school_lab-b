@@ -2,22 +2,24 @@ import networkx as nx
 import os
 from collections import Counter
 
+
+# 　今は分散環境での時間を計測
 edge_file_list = [
-    # "ca-grqc-connected.gr",
-    # "fb-caltech-connected.gr",
+    "ca-grqc-connected.gr",
+    "fb-caltech-connected.gr",
     "fb-pages-company.gr",
-    # "karate.gr",
+    "karate.gr",
 ]
 
 community_file_list = [
-    # "METIS-ca",
-    # "METIS-fb-caltech",
-    # "METIS-fb-pages",
-    # "METIS-karate",
-    # "my-ca",
+    # "ca-grqc-connected",
+    # "fb-caltech-connected",
+    # "fb-pages-company",
+    # "karate",
+    "my-ca-grqc-connected",
+    "my-fb-caltech",
     "my-fb-pages",
-    # "my-fb-caltech",
-    # "my-karate",
+    "my-karate",
 ]
 
 
@@ -79,11 +81,12 @@ def calc(edge_file, community_file, filename):
 
 def main():
     for i in range(len(edge_file_list)):
-        community_file = (
-            "./new-algo/create-tables/result/"
-            + community_file_list[i]
-            + "/node_community.txt"
-        )
+        # community_file = (
+        #     "./new-algo/create-tables/result/"
+        #     + community_file_list[i]
+        #     + "/node_community.txt"
+        # )
+        community_file = "P2P/dataset/" + community_file_list[i] + "/node_community.txt"
         edge_file = "./Louvain/graph/" + edge_file_list[i]
         filename_with_ext = os.path.basename(edge_file)
         filename = os.path.splitext(filename_with_ext)[0]
@@ -91,3 +94,14 @@ def main():
 
 
 main()
+
+
+# fb-pages-company : 0.0023635069902414457
+# karate : 0.03179288244223309
+
+
+# 自分の分割
+# ca-grqc-connected : 0.11326818754078403
+# fb-caltech-connected : 0.17093732873780348
+# fb-pages-company : 0.011861441107325994
+# karate : 0.269185360094451

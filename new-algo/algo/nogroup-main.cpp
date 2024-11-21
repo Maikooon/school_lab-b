@@ -21,29 +21,41 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <set>
+#include <string>
 
 
 // グローバル変数の初期
 using namespace std;
+#include <map>
+#include <set>
 
 
 
 // グローバル変数の定義
 // グローバル変数の定義
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-fb-pages";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "fb-pages-company";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 14113;
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-karate";
+const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
+const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
+// const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-karate";
+// const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
+// const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
+
 //1. Louvainのときはこちらを使用
 // const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
 
 //2. Louvainではないよ時には、独自のコミュニティファイルを使用するのでこちら
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/community.txt";
+const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
 
 const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
 const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
 
 const double ALPHA = 0.15;
-const int RW_COUNT = 10;  // ランダムウォークの実行回数
+const int RW_COUNT = 100;  // ランダムウォークの実行回数
 // int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
@@ -95,31 +107,46 @@ void load_communities(const std::string& file_path) {
 }
 
 // コミュニティごとのグループとNGノードを保持するためのデータ構造
-using NodeMap = std::unordered_map<int, std::vector<int>>;
-NodeMap ng_table;
+std::map<int, std::set<int>> ng_table;
 
 // NGノードテーブルの読み込み関数
 void load_ng_table(const std::string& filepath) {
     std::ifstream file(filepath);
-    std::string line;
 
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file." << std::endl;
+        std::cerr << "Error: Could not open the file at path: " << filepath << std::endl;
         return;
     }
 
+    std::string line;
     while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        int community, node;
+        // 読み込んだ行をデバッグ出力
+        // std::cout << "Read line: " << line << std::endl;
 
-        // ':' を使ってコミュニティIDを分割する
-        if (std::getline(iss, line, ':')) {
-            community = std::stoi(line); // コミュニティIDを整数に変換
-            while (iss >> node) {
-                ng_table[community].push_back(node); // ノードをベクターに追加
+        std::istringstream iss(line);
+        int community;
+        std::string node_str;
+
+        // ':' を使ってコミュニティIDとノードリストを分割する
+        if (std::getline(iss, node_str, ':')) {
+            community = std::stoi(node_str); // コミュニティIDを整数に変換
+            // std::cout << "Parsed community: " << community << std::endl;
+
+            // ノードをカンマで区切ってセットに追加
+            while (std::getline(iss, node_str, ',')) {
+                int node = std::stoi(node_str); // ノード番号を整数に変換
+                ng_table[community].insert(node); // ノードをセットに追加
             }
+
+            // 読み込んだ内容のデバッグ出力
+            // std::cout << "Community " << community << " : ";
+            // for (const int& n : ng_table[community]) {
+            //     std::cout << n << " "; // ノードを表示
+            // }
+            // std::cout << std::endl;
         }
     }
+
     file.close();
 }
 
@@ -151,17 +178,31 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         std::string a;
         auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
         printf("ここには全部到達l");
-        //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+
+        // //次にHopするノードがNGノードの候補として上がっているのか(左一列)
         if (it != ng_table.end()) {
-            std::cout << "NG nodes for node " << next_node << ": ";
+            std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
             for (int num : it->second) {
                 std::cout << num << " ";
                 a += std::to_string(num) + " "; // ノードを文字列に追加
             }
             std::cout << std::endl;
         }
+        // 次にHopするノードがNGノードの候補か確認
+       // if (it != ng_table.end()) {
+       //     // std::cout << "次のノードに到s達できない始点は以下 " << next_node << ": ";
+       //     // std::cout << "要素数: " << it->second.size() << std::endl;
+       //     bool first = true;
+       //     for (int num : it->second) {
+       //         if (!first) std::cout << ", ";
+       //         std::cout << num;
+       //         a += std::to_string(num) + ", ";
+       //         first = false;
+       //     }
+       //     std::cout << std::endl;
+       // }
 
-        // START_NODEが文字列a(２列目以降)に含まれているか確認
+       // START_NODEが文字列a(２列目以降)に含まれているか確認
         if (a.find(std::to_string(START_NODE)) != std::string::npos) {
             std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
             next_node = current_node;  // 現在のノードに戻す
@@ -203,6 +244,7 @@ int main() {
     //その他テーブルの読み込み
     load_ng_table(NGFILE);
 
+
     //時間の計測開始
     auto start_time = chrono::high_resolution_clock::now();
 
@@ -224,11 +266,11 @@ int main() {
             total_length += path.size();
 
             // パスを出力
-            cout << "Random walk " << i + 1 << " path:";
-            for (int node : path) {
-                cout << " " << node;
-            }
-            cout << endl;
+            // cout << "Random walk " << i + 1 << " path:";
+            // for (int node : path) {
+            //     cout << " " << node;
+            // }
+            // cout << endl;
         }
     }
 
@@ -261,4 +303,3 @@ int main() {
 
     return 0;
 }
-

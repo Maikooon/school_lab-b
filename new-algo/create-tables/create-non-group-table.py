@@ -14,7 +14,7 @@ import glob
 import os
 
 # 　ここはファイルの情報のみでおk
-GRAPH = os.getenv("GRAPH", "my-fb")
+GRAPH = os.getenv("GRAPH", "")
 print(GRAPH)
 
 
@@ -40,7 +40,7 @@ def read_community_file(filename):
                 community_groups[current_community][group_number] = set(
                     map(int, numbers.split(","))
                 )
-
+    # print("community_groups:", community_groups)  # デバッグ用の出力
     return community_groups
 
 
@@ -48,6 +48,7 @@ def read_ng_info(filename):
     ng_info = {}
     with open(filename, "r") as file:
         lines = file.readlines()
+        # print(lines)
         current_community = None
 
         for line in lines:
@@ -80,6 +81,7 @@ def read_ng_info(filename):
 data_file_pattern = f"./result/{GRAPH}/node_community.txt"
 # TODO: Loucainのときはここを変更
 # data_file_pattern = f"./../../Louvain/community/{GRAPH}.cm"
+# 　ここにコミュニティ情報を入れる
 data = []
 # コミュニティファイルからコミュニティとグループの情報を取得
 community_groups = read_community_file(f"./result/{GRAPH}/dynamic_groups.txt")
@@ -88,8 +90,10 @@ ng_info = read_ng_info(f"./result/{GRAPH}/ng_nodes.txt")
 
 
 # 複数のデータファイルを読み込む
+print("data_file_pattern:", data_file_pattern)
 for filename in glob.glob(data_file_pattern):
     with open(filename, "r") as file:
+        print("filename:", filename)
         for line in file:
             # 各行を分割してタプルに変換
             parts = line.split()
@@ -97,12 +101,20 @@ for filename in glob.glob(data_file_pattern):
             data.append((int(parts[0]), int(parts[1])))
 
 # 各コミュニティとグループごとに結果をフィルタリング
+# print(community_groups)
 for community, groups in community_groups.items():
     # print(f"コミュニティ {community}")
     # print("groups:", groups)
     for group_number, target_values in groups.items():
         group_number = int(group_number)
+        # target-valuesは元々のコミュニティの番号
+        print(
+            f"  Group {group_number}: {target_values}　元々コミュニティ{target_values}に属する"
+        )
         # 右側が対象の数字であるペアの左側の数字を抽出
+        # 多分ここのResukltの部分がうまくいっていない
+        # データが取れていない
+        # print("ここででデータ", data)
         result = [left for left, right in data if right in target_values]
         # NG情報を取得
 
@@ -111,7 +123,7 @@ for community, groups in community_groups.items():
             str(group_number), 0
         )  # NG値を取得
 
-        # print(f"  NG for Group {group_number}: {ng_value_2}, Result: {result}")
+        print(f"  NG for Group {group_number}: {ng_value_2}, Result: {result}")
 
         print(ng_value_2)
         if ng_value_2 is not []:

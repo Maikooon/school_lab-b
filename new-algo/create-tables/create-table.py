@@ -29,7 +29,7 @@ print("NG Rate:", NG_RATE)
 # node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
 
 # METISでやる時
-node_community_file = f"./result/{GRAPH_COMMUNITY}/community.txt"
+node_community_file = f"./result/{GRAPH_COMMUNITY}/node_community.txt"
 
 # エッジファイルを読み込む   TODO: ここも変更する
 edges_file = f"./../../Louvain/graph/{GRAPH_NAME}.gr"
