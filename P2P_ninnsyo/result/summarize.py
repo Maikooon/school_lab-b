@@ -55,7 +55,7 @@ for line in lines:
 #     server_connection_time /= try_count
 #     determinate_node_access_time /= try_count
 
-determinate_node_access_time *= 0.001
+# determinate_node_access_time *= 0.001
 
 # 結果を表示
 print(f"Total Execution Time: {total_execution_time} seconds")

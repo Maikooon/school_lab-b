@@ -97,3 +97,48 @@ Token Verification Time: 2.5314671993255615 seconds
 Server Connection Time: 7.91735315322876 seconds
 Determinate Node Access Time: 0.008067536830902099 seconds
 Move Server Count: 12 times
+
+
+Total Execution Time: 93.88910000000001 seconds
+Token Generation Time: 0.026199999999999897 seconds
+Token Verification Time: 94.35350584983826 seconds
+Server Connection Time: 724.7649700641632 seconds
+Determinate Node Access Time: 0.19121350979804994 seconds
+Move Server Count: 106 times
+
+
+ここから新規
+
+毎回認証
+これを７でわる
+Total Execution Time: 45.5954 seconds
+Token Generation Time: 0.016899999999999953 seconds
+Token Verification Time: 3.3133075237274165 seconds
+Server Connection Time: 361.57435750961304 seconds
+Determinate Node Access Time: 36.838805198669434 seconds
+Move Server Count: 56 times
+
+デフォルト
+7でわる
+Total Execution Time: 17.7769 seconds
+Token Generation Time: 0.0 seconds
+Token Verification Time: 0.0 seconds
+Server Connection Time: 0.0 seconds
+Determinate Node Access Time: 48.88396239280701 seconds
+Move Server Count: 48 times
+
+１
+Total Execution Time: 9.318900000000001 seconds
+Token Generation Time: 0.0008000000000000001 seconds
+Token Verification Time: 0.01764369010925293 seconds
+Server Connection Time: 10.022747039794922 seconds
+Determinate Node Access Time: 0.05238056182861328 seconds
+Move Server Count: 10 times
+
+これで２ホップ分
+Total Execution Time: 1.5127000000000002 seconds
+Token Generation Time: 0.0002 seconds
+Token Verification Time: 0.006257057189941406 seconds
+Server Connection Time: 0.0 seconds
+Determinate Node Access Time: 0.009310245513916016 seconds
+Move Server Count: 2 times
