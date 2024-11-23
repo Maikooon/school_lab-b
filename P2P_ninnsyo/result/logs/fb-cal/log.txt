@@ -1,3 +1,4 @@
+ある頂点から100回RWした時の結果
 
 default
 Elapsed time: 10.068042278289795 seconds
