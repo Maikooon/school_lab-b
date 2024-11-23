@@ -18,6 +18,7 @@ class GraphManager:
         self.send_queue = Queue()
         self.notify_queue = Queue()
         self.start()
+        self.total_move_count = 0
 
     @classmethod
     def init_for_espresso(cls, dir_path):
@@ -144,7 +145,15 @@ class GraphManager:
                     message.source_id, message.count
                 )
             )
+            self.total_move_count += 1
 
 
 if __name__ == "__main__":
     gm = GraphManager.init_for_espresso(sys.argv[1])
+    try:
+        # プログラムの実行を維持 (例: Ctrl+C で停止)
+        while True:
+            pass
+    except KeyboardInterrupt:
+        # 終了時に total_move_count を表示
+        print(f"Total moves processed: {gm.total_move_count}")
