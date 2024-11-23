@@ -16,7 +16,7 @@ community_2.txt ->abilene11.txt
 import os
 
 # GRAPH = "fb-caltech-connected"
-GRAPH = os.getenv("GRAPH", "karate")
+GRAPH = os.getenv("GRAPH", "fb-caltech-connected")
 
 # Louvainのとき　　　これはまだ使用していない(それだけのサーバを用意できていないため)
 # community_file = "./../../Louvain/community/karate.tcm"
@@ -96,7 +96,7 @@ def generate_and_save_ip_graph(communities, edges):
     # コミュニティごとにファイルを書き込む
     for community_id, edges in ip_graph.items():
         file_name = (
-            "./by-my-own-division/" + GRAPH + f"/community_{community_id}.txt"
+            "./new/" + GRAPH + f"/community_{community_id}.txt"
         )  # コミュニティごとのファイル名
         with open(file_name, "w") as f:
             for edge in edges:

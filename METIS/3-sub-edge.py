@@ -25,7 +25,7 @@ import networkx as nx
 import metis
 import os
 
-GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
+GRAPH = os.getenv("GRAPH", "fb-caltech-connected")
 
 
 # エッジ情報をファイルから読み込む関数
@@ -77,7 +77,7 @@ edges = read_edges("./../Louvain/graph/" + GRAPH + ".gr")
 # node_communities = read_communities(
 #     "./by-my-own-division/" + GRAPH + "/node_community.txt"
 # )
-node_communities = read_communities("./by-METIS/" + GRAPH + "/node_community.txt")
+node_communities = read_communities("./new/" + GRAPH + "/node_community.txt")
 
 # グラフの作成
 G = build_graph(edges)
@@ -85,16 +85,16 @@ G = build_graph(edges)
 # コミュニティごとにファイルに保存するマッピング
 file_mapping = {
     0: (
-        f"./by-METIS/{GRAPH}/community_A.txt",
-        f"./by-METIS/{GRAPH}/community_B.txt",
+        f"./new/{GRAPH}/community_A.txt",
+        f"./new/{GRAPH}/community_B.txt",
     ),
     1: (
-        f"./by-METIS/{GRAPH}/community_C.txt",
-        f"./by-METIS/{GRAPH}/community_D.txt",
+        f"./new/{GRAPH}/community_C.txt",
+        f"./new/{GRAPH}/community_D.txt",
     ),
     2: (
-        f"./by-METIS/{GRAPH}/community_E.txt",
-        f"./by-METIS/{GRAPH}/community_F.txt",
+        f"./new/{GRAPH}/community_E.txt",
+        f"./new/{GRAPH}/community_F.txt",
     ),
 }
 

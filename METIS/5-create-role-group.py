@@ -16,11 +16,11 @@ import os
 import random
 from collections import defaultdict
 
-GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
+GRAPH = os.getenv("GRAPH", "fb-caltech-connected")
 
 # ファイルリストを指定
 file_numbers = ["abilene03", "abilene06", "abilene11"]  # ファイル番号のリスト
-base_path = f"./by-METIS/{GRAPH}/"
+base_path = f"./new/{GRAPH}/"
 
 
 # 複数ファイルからノードとコミュニティを読み込む関数
