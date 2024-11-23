@@ -1,7 +1,7 @@
 import ast
 
 class Message():
-    def __init__(self, source_id, count, GM, user, alpha=0.2):
+    def __init__(self, source_id, count, GM, user, alpha=0.15):
         self.source_id = source_id
         self.count = count
         self.GM = GM #IP e.g., 127.0.0.1

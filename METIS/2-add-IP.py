@@ -16,16 +16,18 @@ community_2.txt ->abilene11.txt
 import os
 
 # GRAPH = "fb-caltech-connected"
-GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
+GRAPH = os.getenv("GRAPH", "karate")
 
 # Louvainのとき　　　これはまだ使用していない(それだけのサーバを用意できていないため)
 # community_file = "./../../Louvain/community/karate.tcm"
 
 # METISの時
-community_file = "./by-METIS/" + GRAPH + "/node_community.txt"
+# community_file = "./by-METIS/" + GRAPH + "/node_community.txt"
 
 # そのたのとき
 # community_file = "./by-my-own-division/" + GRAPH + "/node_community.txt"
+community_file = "./new/" + GRAPH + "/node_community.txt"
+
 edge_file = "./../Louvain/graph/" + GRAPH + ".gr"
 
 # コミュニティごとのIPアドレスのマッピング

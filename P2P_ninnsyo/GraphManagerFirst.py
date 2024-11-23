@@ -342,6 +342,8 @@ class GraphManager:
     # サーバが別のサーバからのRW情報を受け取る
     def receive_message(self):
         print("receive_message")
+        # ここの回数をカウントすルコとでサーバ間の移動回数を測る
+
         context = zmq.Context()
         socket = context.socket(zmq.PULL)
         socket.bind("tcp://{}:{}".format(self.ip_addr, self.port))

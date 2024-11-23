@@ -2,6 +2,7 @@ from GraphManager import *
 import ast
 import os
 import time
+import zmq
 
 
 def save_to_file(self, end_count, elapsed_time):
@@ -27,7 +28,8 @@ class User:
         self.port = 10020
 
     def send_query(self, source_id, count, GM):
-        start_time = time.time()  # 計測を開始
+        # start_time = time.time()  # 計測を開始
+        start_time = time.perf_counter()  # 計測を開始 (高精度)
         self.response_queue = Queue()
         message = self.create_message(source_id, count, GM)
         context = zmq.Context()
@@ -56,9 +58,10 @@ class User:
         socket.close()
         context.destroy()
         # print('Query solved: ', end_count)
-        end_time = time.time()  # 計測を終了
+        # end_time = time.time()  # 計測を終了
+        end_time = time.perf_counter()  # 計測を終了
         elapsed_time = end_time - start_time
-        print("Elapsed time: ", elapsed_time)
+        print("Elapsed time---: ", elapsed_time)
         save_to_file(self, end_count, elapsed_time)
         return end_count
 

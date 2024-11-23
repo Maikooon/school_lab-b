@@ -2,7 +2,8 @@ from Node import *
 import random
 from queue import Queue
 
-class Graph():
+
+class Graph:
     def __init__(self, ADJ, nodes):
         self.nodes = dict()
         self.outside_nodes = dict()
@@ -14,7 +15,9 @@ class Graph():
             for adjacent_id in ADJ[node_id]:
                 self.nodes[node_id].add_edge(nodes[adjacent_id])
                 if adjacent_id not in ADJ.keys():
-                    self.outside_nodes[adjacent_id] = self.nodes[node_id].adj[adjacent_id]
+                    self.outside_nodes[adjacent_id] = self.nodes[node_id].adj[
+                        adjacent_id
+                    ]
                     self.all_nodes[adjacent_id] = nodes[adjacent_id]
 
         self.node_count = len(self.nodes)
@@ -27,7 +30,7 @@ class Graph():
                 adj[str(node)].add(str(adj_node))
         return str(adj)
 
-    def random_walk(self, source_id, count, alpha=0.2):
+    def random_walk(self, source_id, count, alpha=0.15):
         source_node = self.nodes[source_id]
         executer = source_node.manager
         end_walk = dict()
@@ -36,12 +39,17 @@ class Graph():
         for i in range(count):
             current_node = source_node
             while True:
+                print("Random Walk    ここの数がHop数")
                 if current_node.manager != executer:
-                    escaped_walk[current_node.id] = escaped_walk.get(current_node.id, 0) + 1
+                    escaped_walk[current_node.id] = (
+                        escaped_walk.get(current_node.id, 0) + 1
+                    )
+                    print(escaped_walk)
                     break
                 if random.random() < alpha:
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     break
                 current_node = current_node.get_random_adjacent()
+                print("次のノード", current_node.id)
 
         return end_walk, escaped_walk
