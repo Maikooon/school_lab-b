@@ -94,10 +94,9 @@ class GraphManager:
             print("Processing Message: ", message)
             # print('Processing Message: ', message)
             # つまり、ここでRWではなく、確立Nで終わったか次のサーバに移動するのかのいずれかを決定する
-            end_walk, escaped_walk, across_server_count = self.graph.random_walk(
+            end_walk, escaped_walk = self.graph.random_walk(
                 message.source_id, message.count, message.alpha
             )
-            self.across_server_count_total += across_server_count  # またぎ回数を更新
             print("end_walk: {}, escaped_walk: {}".format(end_walk, escaped_walk))
             # # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
             # RWが終了したときの処理
@@ -105,6 +104,7 @@ class GraphManager:
                 self.notify_queue.put([message.user, end_walk])
             # RWが継続するときの処理
             if len(escaped_walk) > 0:
+                self.across_server_count_total += 1
                 for node_id, val in escaped_walk.items():
                     print("Escaped Walk: kokokokokokoko", node_id, val)
                     self.send_queue.put(
