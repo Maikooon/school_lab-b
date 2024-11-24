@@ -24,7 +24,7 @@ class GraphManager:
         self.id = id
         self.graph = graph
         self.ip_addr = ip_addr
-        self.port = 10026
+        self.port = 10027
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
@@ -117,25 +117,33 @@ class GraphManager:
                 self.total_count_test += 1
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
+                    # 　Rwerが初めて、サーバをHopする時、つまり、RwerのjwtがNoneの時
+                    if message.jwt == None:
+                        print("JWTが含まれていない時")
+                        context = zmq.Context()
+                        socket = context.socket(zmq.REQ)
+                        socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+                        start_time_jwt_connected = time.perf_counter()
+                        message_for_ninsyo = (
+                            f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
+                        )
+                        socket.send_string(message_for_ninsyo)  # 認証要求を送信
 
-                    context = zmq.Context()
-                    socket = context.socket(zmq.REQ)
-                    socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
-                    start_time_jwt_connected = time.perf_counter()
-                    message_for_ninsyo = (
-                        f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
-                    )
-                    socket.send_string(message_for_ninsyo)  # 認証要求を送信
-
-                    # サーバからの応答を受け取る
-                    response = socket.recv_string()
-                    print("Received JWT from server:", response)  # 受け取ったJWTを表示
-                    jwt = response  # 受け取ったJWTを変数に格納
-                    end_time_jwt_connect = (
-                        time.perf_counter()
-                    )  # 　---------------------ここまでの時間
-                    socket.close()
-                    context.destroy()
+                        # サーバからの応答を受け取る
+                        response = socket.recv_string()
+                        print(
+                            "Received JWT from server:", response
+                        )  # 受け取ったJWTを表示
+                        jwt = response  # 受け取ったJWTを変数に格納
+                        end_time_jwt_connect = (
+                            time.perf_counter()
+                        )  # 　---------------------ここまでの時間
+                        socket.close()
+                        context.destroy()
+                    # すでにRweにjwtが含まれている時
+                    else:
+                        print("JWTが含まれている時はこれです", message.jwt)
+                        jwt = message.jwt
 
                     self.send_queue.put(
                         Message(
@@ -144,7 +152,7 @@ class GraphManager:
                             self.graph.outside_nodes[node_id].manager,
                             message.user,
                             message.alpha,
-                            response,
+                            jwt,
                         )
                     )
                     elapsed_time_jwt_connected = (
