@@ -1,11 +1,12 @@
 import random
 
-class Node():
+
+class Node:
     def __init__(self, id, manager=None):
         self.id = id
         self.adj = dict()
         self.degree = 0
-        self.manager = manager #IP e.g., 127.0.0.1
+        self.manager = manager  # IP e.g., 127.0.0.1
 
     def __repr__(self):
         return self.id

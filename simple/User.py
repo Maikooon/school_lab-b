@@ -25,7 +25,7 @@ class User:
     def __init__(self, ip_addr):
         self.response_queue = Queue()
         self.ip_addr = ip_addr
-        self.port = 10020
+        self.port = 10026
 
     # コマンドラインからこれを直接入力することで、Userクラスを実行
     def send_query(self, source_id, count, GM):

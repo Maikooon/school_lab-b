@@ -13,7 +13,7 @@ class GraphManager:
         self.id = id
         self.graph = graph
         self.ip_addr = ip_addr
-        self.port = 10020
+        self.port = 10026
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
@@ -79,24 +79,35 @@ class GraphManager:
             )
         )
 
-    def random_walk(self):
-        while True:
-            message = self.receive_queue.get()
+    """
+    メッセージを取り出す
+    処理を実行
+    処理の結果、それを再びキューに格納するのかを指定
+    """
 
-            # notify immediately when source is dangling node.
-            # self.graph.keys() doesn't contain dangling node!
-            if message.source_id not in self.graph.nodes.keys():
-                self.notify_queue.put(
-                    (message.user, {message.source_id: message.count})
-                )
-                continue
+    def random_walk(self):
+        # キューからメッセージがなくなるまで繰り返す
+        while True:
+            print("Random Walk")
+            message = self.receive_queue.get()
+            # if message.source_id not in self.graph.nodes.keys():
+            #     print("Node {} is not in this server".format(message.source_id))
+            #     self.notify_queue.put(
+            #         (message.user, {message.source_id: message.count})
+            #     )
+            #     continue
+            print("Processing Message: ", message)
             # print('Processing Message: ', message)
+            # つまり、ここでRWではなく、確立Nで終わったか次のサーバに移動するのかのいずれかを決定する
             end_walk, escaped_walk = self.graph.random_walk(
                 message.source_id, message.count, message.alpha
             )
-            # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
+            print("end_walk: {}, escaped_walk: {}".format(end_walk, escaped_walk))
+            # # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
+            # RWが終了したときの処理
             if len(end_walk) > 0:
                 self.notify_queue.put([message.user, end_walk])
+            # RWが継続するときの処理
             if len(escaped_walk) > 0:
                 for node_id, val in escaped_walk.items():
                     self.send_queue.put(
