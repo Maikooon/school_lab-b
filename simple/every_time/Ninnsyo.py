@@ -38,11 +38,11 @@ def start_auth_server():
             print("Received authentication request:", message)
 
             # 時間計測開始
-            start_time = time.time()
+            start_time = time.perf_counter()
             # JWTを生成して応答として返す
             jwt_token = generate_jwt(message)
             # 時間計測終了
-            elapsed_time = time.time() - start_time
+            elapsed_time = time.perf_counter() - start_time
 
             # 生成されたJWTがバイト形式であれば文字列に変換
             jwt_token = (

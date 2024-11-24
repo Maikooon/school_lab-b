@@ -8,7 +8,6 @@ class Graph:
         self.nodes = dict()
         self.outside_nodes = dict()
         self.all_nodes = dict()
-        self.across_server_count = 0
 
         for node_id in ADJ.keys():
             self.nodes[node_id] = nodes[node_id]
@@ -36,7 +35,7 @@ class Graph:
 
     """
 
-    def random_walk(self, source_id, count, alpha=0.05):
+    def random_walk(self, source_id, count, alpha=0.1):
         source_node = self.nodes[source_id]
         executer = source_node.manager
         end_walk = dict()
@@ -57,6 +56,7 @@ class Graph:
                     print(type(current_node.id))
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     break
+
                 # 終了確立には達していないが、隣のサーバに遷移する時
                 # 一定の確立で同一サーバ内で遷移いする確立
                 if random.random() < 0.2:
@@ -87,7 +87,6 @@ class Graph:
                     escaped_walk[next_node_id] = escaped_walk.get(next_node_id, 0) + 1
                     print("隣のサーバに遷移します、current_node.id: ", next_node_id)
                     # ここの回数がまたぎ回数に相当するので計測
-                    self.across_server_count += 1
                     break
 
-        return end_walk, escaped_walk, self.across_server_count
+        return end_walk, escaped_walk

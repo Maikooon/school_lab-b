@@ -1,5 +1,6 @@
 from Graph import *
 from Message import *
+from Jwt import *
 import threading
 import os
 import socket
@@ -7,6 +8,15 @@ import sys
 import json
 import zmq
 import time
+
+
+LOG_FILE_PATH = "./access_limit_time.txt"  # 保存先のログファイルパス
+
+
+def save_notify_log(user, end_walk):
+    with open(LOG_FILE_PATH, "a") as log_file:
+        log_file.write(f"Notified to {user}, End Walk: {end_walk}\n")
+        log_file.write("-" * 40 + "\n")
 
 
 class GraphManager:
@@ -18,9 +28,10 @@ class GraphManager:
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
-        self.across_server_count_total = 0
+        # self.across_server_count_total = 0
         self.total_jwt_verify_time = 0
         self.total_jwt_connected = 0
+        self.total_count_test = 0
         self.start()
         # self.total_move_count = 0
 
@@ -93,23 +104,26 @@ class GraphManager:
         # キューからメッセージがなくなるまで繰り返す
         while True:
             message = self.receive_queue.get()
-            end_walk, escaped_walk, across_server_count = self.graph.random_walk(
+            end_walk, escaped_walk = self.graph.random_walk(
                 message.source_id, message.count, message.alpha
             )
-            self.across_server_count_total += across_server_count  # またぎ回数を更新
+            # self.across_server_count_total += across_server_count  # またぎ回数を更新
             print("end_walk: {}, escaped_walk: {}".format(end_walk, escaped_walk))
             # # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
             # RWが終了したときの処理
             if len(end_walk) > 0:
                 self.notify_queue.put([message.user, end_walk])
             # RWが継続するときの処理
+            print("escaped_walk-------------------------", escaped_walk)
             if len(escaped_walk) > 0:
-                context = zmq.Context()
-                socket = context.socket(zmq.REQ)
-                socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+                self.total_count_test += 1
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
-                    start_time_jwt_connected = time.time()
+
+                    context = zmq.Context()
+                    socket = context.socket(zmq.REQ)
+                    socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+                    start_time_jwt_connected = time.perf_counter()
                     message_for_ninsyo = (
                         f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
                     )
@@ -120,8 +134,10 @@ class GraphManager:
                     print("Received JWT from server:", response)  # 受け取ったJWTを表示
                     jwt = response  # 受け取ったJWTを変数に格納
                     end_time_jwt_connect = (
-                        time.time()
+                        time.perf_counter()
                     )  # 　---------------------ここまでの時間
+                    socket.close()
+                    context.destroy()
 
                     print("Escaped Walk: kokokokokokoko", node_id, val)
                     self.send_queue.put(
@@ -137,7 +153,8 @@ class GraphManager:
                     elapsed_time_jwt_connected = (
                         end_time_jwt_connect - start_time_jwt_connected
                     )
-                self.total_jwt_connected += elapsed_time_jwt_connected
+                    self.total_jwt_connected += elapsed_time_jwt_connected
+            print("total_count_test", self.total_count_test)
 
     def notify_result(self):
         while True:
@@ -177,6 +194,21 @@ class GraphManager:
         while True:
             message_bytes = socket.recv()
             message = Message.from_bytes(message_bytes)
+            # 認証情報を確認してから受け取るのでは
+
+            # TODO: JWTの検証を行う
+            print("このJWTを検証する", message.jwt)
+            start_time_jwt_verify = time.perf_counter()  # 　時間を計測
+            jwt_result = verify_jwt(message.jwt)
+            end_time_jwt_verify = time.perf_counter()
+            elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
+            self.total_jwt_verify_time += elapsed_time_jwt_verify
+            print("JWT検証結果", jwt_result)
+            ######ここでTokenを検証する############################################################################
+            # 検証が正当にされたら、受け取る
+            # if jwt_result:
+            #     self.receive_queue.put(message)
+
             self.receive_queue.put(message)
             print(
                 "Recieved message\nsource {}, count {}".format(
@@ -194,10 +226,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # 終了時に 独自のフォルダにログを保存
         print("Exiting...")
-        print("Total moves across servers: {}".format(gm.across_server_count_total))
+        print("Total moves across servers: {}".format(gm.total_count_test))
         if not os.path.exists("./logs"):
             os.mkdir("./logs")
         with open("./logs/count.txt".format(gm.host_name), "w") as f:
-            f.write(
-                "Total moves across servers: {}\n".format(gm.across_server_count_total)
-            )
+            f.write("Total moves across servers: {}\n".format(gm.total_count_test))
