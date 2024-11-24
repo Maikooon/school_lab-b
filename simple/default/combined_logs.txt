@@ -1,0 +1,5 @@
+Query solved: {'0': 1}
+Execution time: 1.2399 seconds
+
+Total moves across servers: 2
+Total moves across servers: 2

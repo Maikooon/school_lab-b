@@ -6,6 +6,7 @@ import socket
 import sys
 import json
 import zmq
+import time
 
 
 class GraphManager:
@@ -13,12 +14,15 @@ class GraphManager:
         self.id = id
         self.graph = graph
         self.ip_addr = ip_addr
-        self.port = 10020
+        self.port = 10026
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
+        self.across_server_count_total = 0
+        self.total_jwt_verify_time = 0
+        self.total_jwt_connected = 0
         self.start()
-        self.total_move_count = 0
+        # self.total_move_count = 0
 
     @classmethod
     def init_for_espresso(cls, dir_path):
@@ -79,27 +83,47 @@ class GraphManager:
             )
         )
 
+    """
+    メッセージを取り出す
+    処理を実行
+    処理の結果、それを再びキューに格納するのかを指定
+    """
+
     def random_walk(self):
+        # キューからメッセージがなくなるまで繰り返す
         while True:
             message = self.receive_queue.get()
-
-            # notify immediately when source is dangling node.
-            # self.graph.keys() doesn't contain dangling node!
-            if message.source_id not in self.graph.nodes.keys():
-                self.notify_queue.put(
-                    (message.user, {message.source_id: message.count})
-                )
-                continue
-            # print('Processing Message: ', message)
-            end_walk, escaped_walk = self.graph.random_walk(
+            end_walk, escaped_walk, across_server_count = self.graph.random_walk(
                 message.source_id, message.count, message.alpha
             )
-            # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
+            self.across_server_count_total += across_server_count  # またぎ回数を更新
+            print("end_walk: {}, escaped_walk: {}".format(end_walk, escaped_walk))
+            # # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
+            # RWが終了したときの処理
             if len(end_walk) > 0:
                 self.notify_queue.put([message.user, end_walk])
+            # RWが継続するときの処理
             if len(escaped_walk) > 0:
+                context = zmq.Context()
+                socket = context.socket(zmq.REQ)
+                socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
                 for node_id, val in escaped_walk.items():
-                    print("Escaped Walk:kokokokoko ", node_id, val)
+                    # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
+                    start_time_jwt_connected = time.time()
+                    message_for_ninsyo = (
+                        f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
+                    )
+                    socket.send_string(message_for_ninsyo)  # 認証要求を送信
+
+                    # サーバからの応答を受け取る
+                    response = socket.recv_string()
+                    print("Received JWT from server:", response)  # 受け取ったJWTを表示
+                    jwt = response  # 受け取ったJWTを変数に格納
+                    end_time_jwt_connect = (
+                        time.time()
+                    )  # 　---------------------ここまでの時間
+
+                    print("Escaped Walk: kokokokokokoko", node_id, val)
                     self.send_queue.put(
                         Message(
                             node_id,
@@ -107,8 +131,13 @@ class GraphManager:
                             self.graph.outside_nodes[node_id].manager,
                             message.user,
                             message.alpha,
+                            jwt,
                         )
                     )
+                    elapsed_time_jwt_connected = (
+                        end_time_jwt_connect - start_time_jwt_connected
+                    )
+                self.total_jwt_connected += elapsed_time_jwt_connected
 
     def notify_result(self):
         while True:
@@ -120,6 +149,12 @@ class GraphManager:
             socket.close()
             context.destroy()
             print("Notified to {}\n{}".format(user, end_walk))
+            print("total_jwt_verify_time:", self.total_jwt_verify_time)
+            print("total_jwt_connected:", self.total_jwt_connected)
+            save_notify_log(
+                self.total_jwt_verify_time,
+                self.total_jwt_connected,
+            )
 
     def send_message(self):
         while True:
@@ -131,6 +166,8 @@ class GraphManager:
             socket.close()
             context.destroy()
             print("Sent to {}\n{}".format(message.GM, message))
+            print("total_time_jwt_verify", self.total_jwt_verify_time)
+            print("total_time_jwt_connected", self.total_jwt_connected)
 
     def receive_message(self):
         # ここの回数ー初めに命令サーバから出された時
@@ -146,15 +183,21 @@ class GraphManager:
                     message.source_id, message.count
                 )
             )
-            self.total_move_count += 1
+            # self.total_move_count += 0
 
 
 if __name__ == "__main__":
     gm = GraphManager.init_for_espresso(sys.argv[1])
     try:
-        # プログラムの実行を維持 (例: Ctrl+C で停止)
         while True:
             pass
     except KeyboardInterrupt:
-        # 終了時に total_move_count を表示
-        print(f"Total moves processed: {gm.total_move_count}")
+        # 終了時に 独自のフォルダにログを保存
+        print("Exiting...")
+        print("Total moves across servers: {}".format(gm.across_server_count_total))
+        if not os.path.exists("./logs"):
+            os.mkdir("./logs")
+        with open("./logs/count.txt".format(gm.host_name), "w") as f:
+            f.write(
+                "Total moves across servers: {}\n".format(gm.across_server_count_total)
+            )

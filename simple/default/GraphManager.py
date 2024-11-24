@@ -17,8 +17,9 @@ class GraphManager:
         self.receive_queue = Queue()
         self.send_queue = Queue()
         self.notify_queue = Queue()
+        self.across_server_count_total = 0
         self.start()
-        self.total_move_count = 0
+        # self.total_move_count = 0
 
     @classmethod
     def init_for_espresso(cls, dir_path):
@@ -90,18 +91,13 @@ class GraphManager:
         while True:
             print("Random Walk")
             message = self.receive_queue.get()
-            # if message.source_id not in self.graph.nodes.keys():
-            #     print("Node {} is not in this server".format(message.source_id))
-            #     self.notify_queue.put(
-            #         (message.user, {message.source_id: message.count})
-            #     )
-            #     continue
             print("Processing Message: ", message)
             # print('Processing Message: ', message)
             # つまり、ここでRWではなく、確立Nで終わったか次のサーバに移動するのかのいずれかを決定する
-            end_walk, escaped_walk = self.graph.random_walk(
+            end_walk, escaped_walk, across_server_count = self.graph.random_walk(
                 message.source_id, message.count, message.alpha
             )
+            self.across_server_count_total += across_server_count  # またぎ回数を更新
             print("end_walk: {}, escaped_walk: {}".format(end_walk, escaped_walk))
             # # print('end_walk: {}, escaped_walk: {}'.format(end_walk, escaped_walk))
             # RWが終了したときの処理
@@ -110,6 +106,7 @@ class GraphManager:
             # RWが継続するときの処理
             if len(escaped_walk) > 0:
                 for node_id, val in escaped_walk.items():
+                    print("Escaped Walk: kokokokokokoko", node_id, val)
                     self.send_queue.put(
                         Message(
                             node_id,
@@ -156,15 +153,21 @@ class GraphManager:
                     message.source_id, message.count
                 )
             )
-            self.total_move_count += 1
+            # self.total_move_count += 0
 
 
 if __name__ == "__main__":
     gm = GraphManager.init_for_espresso(sys.argv[1])
     try:
-        # プログラムの実行を維持 (例: Ctrl+C で停止)
         while True:
             pass
     except KeyboardInterrupt:
-        # 終了時に total_move_count を表示
-        print(f"Total moves processed: {gm.total_move_count}")
+        # 終了時に 独自のフォルダにログを保存
+        print("Exiting...")
+        print("Total moves across servers: {}".format(gm.across_server_count_total))
+        if not os.path.exists("./logs"):
+            os.mkdir("./logs")
+        with open("./logs/count.txt".format(gm.host_name), "w") as f:
+            f.write(
+                "Total moves across servers: {}\n".format(gm.across_server_count_total)
+            )

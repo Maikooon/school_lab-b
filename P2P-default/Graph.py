@@ -41,12 +41,17 @@ class Graph:
             while True:
                 print("Random Walk    ここの数がHop数")
                 if current_node.manager != executer:
+                    print("他のサーバに遷移しす,node_id: ", current_node.id)
+                    # 次にどこから始まるのか記録しておく部分
                     escaped_walk[current_node.id] = (
                         escaped_walk.get(current_node.id, 0) + 1
                     )
                     print(escaped_walk)
+                    # グラフではないときも、ここで調整可能にする
                     break
                 if random.random() < alpha:
+                    # ここに入っているのはただの数字
+                    print("終了確立に達しました,node_id: ", current_node.id)
                     end_walk[current_node.id] = end_walk.get(current_node.id, 0) + 1
                     break
                 current_node = current_node.get_random_adjacent()
