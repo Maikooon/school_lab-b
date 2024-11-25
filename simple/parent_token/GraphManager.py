@@ -118,8 +118,8 @@ class GraphManager:
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                     # 　Rwerが初めて、サーバをHopする時、つまり、RwerのjwtがNoneの時
-                    if len(visited_servers) == 1:
-                        print("JWTが含まれていない時")
+                    if message.jwt == None:
+                        print("JWTが含まれていない時、ここで初めの親Tokenを生成")
                         context = zmq.Context()
                         socket = context.socket(zmq.REQ)
                         socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続

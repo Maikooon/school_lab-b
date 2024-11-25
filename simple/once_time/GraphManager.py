@@ -118,7 +118,7 @@ class GraphManager:
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                     # 　Rwerが初めて、サーバをHopする時、つまり、RwerのjwtがNoneの時
-                    if len(visited_servers) == 1:
+                    if message.jwt == None:
                         print("JWTが含まれていない時")
                         context = zmq.Context()
                         socket = context.socket(zmq.REQ)
@@ -145,6 +145,8 @@ class GraphManager:
                         self.total_jwt_connected += elapsed_time_jwt_connected
                     # すでにRweにjwtが含まれている時
                     else:
+                        # ここでTokneを解読
+                        # TOkenが有効時間いないなら、
                         print("JWTが含まれている時はこれです", message.jwt)
                         jwt = message.jwt
 
