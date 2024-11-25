@@ -72,7 +72,7 @@ class GraphManager:
                 nodes[edge[1]] = Node(edge[1], dest_ip)
             ADJ[edge[0]].append(edge[1])
 
-        start_time_read_file = time.time()  # 　時間を計測
+        start_time_read_file = time.perf_counter()  # 　時間を計測
         # 2. ノードのコミュニティマッピングファイルの読み込み
         node_community_mapping = {}
         node_community_mapping_file = os.path.join(
@@ -139,7 +139,7 @@ class GraphManager:
                         ng_list[current_community][group_number] = ng_nodes
                     else:
                         print(f"警告: 不正なフォーマットのNGリスト行: {line}")
-        end_time_read_file = time.time()
+        end_time_read_file = time.perf_counter()
         elapsed_time_read_file = end_time_read_file - start_time_read_file
         total_time_read_file += elapsed_time_read_file
 
@@ -216,15 +216,15 @@ class GraphManager:
             print(message.start_node_community)
             # ここまで
 
-            print("このJWTを検証する", message.jwt)
+            # print("このJWTを検証する", message.jwt)
             # TODO: JWTの検証を行う
-            start_time_jwt_verify = time.time()  # 　時間を計測
-            jwt_result = verify_jwt(message.jwt)
-            end_time_jwt_verify = time.time()
-            elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
-            self.total_jwt_verify_time += elapsed_time_jwt_verify
+            # start_time_jwt_verify = time.perf_counter()  # 　時間を計測
+            # jwt_result = verify_jwt(message.jwt)
+            # end_time_jwt_verify = time.perf_counter()
+            # elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
+            # self.total_jwt_verify_time += elapsed_time_jwt_verify
             ######ここでTokenを検証する############################################################################
-            print("JWT検証結果", jwt_result)
+            # print("JWT検証結果", jwt_result)
 
             # 取り出したところで処理していいのかを査定する
             print("ここでTokenを検証して認証したい")
@@ -254,35 +254,39 @@ class GraphManager:
                     # 　ここからコメントアウトした
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                     # tokenを持っていない時は作成する
-                    print("これが現在のJEWTの状況です", message.jwt)
-                    # TODO: ここの分岐に入らない。
-                    if message.jwt is None:
-                        print("接続先", "tcp://abline05:10006")
-                        # 接続準備を行う
-                        context = zmq.Context()
-                        socket = context.socket(zmq.REQ)
-                        socket.connect("tcp://10.58.60.5:10006")
-                        start_time_jwt_connected = time.time()  # 　時間を計測
-                        message_for_ninsyo = (
-                            f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
-                        )
-                        socket.send_string(message_for_ninsyo)  # 認証要求を送信
+                    # print("これが現在のJEWTの状況です", message.jwt)
+                    # # TODO: ここの分岐に入らない。
+                    # if message.jwt == None:
+                    #     print("接続先", "tcp://abline05:10006")
+                    #     # 接続準備を行う
+                    #     context = zmq.Context()
+                    #     socket = context.socket(zmq.REQ)
+                    #     socket.connect("tcp://10.58.60.5:10006")
+                    #     start_time_jwt_connected = time.perf_counter()  # 　時間を計測
+                    #     message_for_ninsyo = (
+                    #         f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
+                    #     )
+                    #     socket.send_string(message_for_ninsyo)  # 認証要求を送信
 
-                        # サーバからの応答を受け取る
-                        response = socket.recv_string()
-                        print(
-                            "Received JWT from server:", response
-                        )  # 受け取ったJWTを表示
-                        jwt = response  # 受け取ったJWTを変数に格納
-                        end_time_jwt_connect = time.time()  # 　------------------
-                        elapsed_time_jwt_connected = (
-                            end_time_jwt_connect - start_time_jwt_connected
-                        )
-                        self.total_jwt_connected += elapsed_time_jwt_connected
-                    else:
-                        jwt = message.jwt
+                    #     # サーバからの応答を受け取る
+                    #     response = socket.recv_string()
+                    #     print(
+                    #         "Received JWT from server:", response
+                    #     )  # 受け取ったJWTを表示
+                    #     jwt = response  # 受け取ったJWTを変数に格納
+                    #     socket.close()
+                    #     context.destroy()
+                    #     end_time_jwt_connect = (
+                    #         time.perf_counter()
+                    #     )  # 　------------------
+                    #     elapsed_time_jwt_connected = (
+                    #         end_time_jwt_connect - start_time_jwt_connected
+                    #     )
+                    #     self.total_jwt_connected += elapsed_time_jwt_connected
+                    # else:
+                    #     jwt = message.jwt
                     # 　ここまでコメントアウトした
-                    # jwt = message.jwt
+                    jwt = "aaaa"
                     self.send_queue.put(
                         Message(
                             node_id,

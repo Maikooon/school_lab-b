@@ -67,7 +67,7 @@ class GraphManager:
                 nodes[edge[1]] = Node(edge[1], dest_ip)
             ADJ[edge[0]].append(edge[1])
 
-        start_time_read_file = time.time()  # 　時間を計測
+        start_time_read_file = time.perf_counter()  # 　時間を計測
         # 2. ノードのコミュニティマッピングファイルの読み込み
         node_community_mapping = {}
         node_community_mapping_file = os.path.join(
@@ -134,7 +134,7 @@ class GraphManager:
                         ng_list[current_community][group_number] = ng_nodes
                     else:
                         print(f"警告: 不正なフォーマットのNGリスト行: {line}")
-        end_time_read_file = time.time()
+        end_time_read_file = time.perf_counter()
         elapsed_time_read_file = end_time_read_file - start_time_read_file
         total_time_read_file += elapsed_time_read_file
 
@@ -206,9 +206,9 @@ class GraphManager:
 
             print("このJWTを検証する", message.jwt)
             # TODO: JWTの検証を行う
-            start_time_jwt_verify = time.time()  # 　時間を計測
+            start_time_jwt_verify = time.perf_counter()  # 　時間を計測
             jwt_result = verify_jwt(message.jwt)
-            end_time_jwt_verify = time.time()
+            end_time_jwt_verify = time.perf_counter()
             elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
             self.total_jwt_verify_time += elapsed_time_jwt_verify
             ######ここでTokenを検証する############################################################################
@@ -236,18 +236,17 @@ class GraphManager:
                     {"user": message.user, "end_walk": end_walk, "all_paths": all_paths}
                 )
             print("escaped_walk", escaped_walk)
-            # 他サーバへ向かうRW_>他サーバにRW情報を送信
-            # 他サーバへの送信の前に認証サーバにアクセスするーーここから時間を計測
-            context = zmq.Context()
-            socket = context.socket(zmq.REQ)
-            print("接続先", "tcp://abline05:10006")
-            # socket.connect("tcp://{}:{}".format(message.GM, self.port))
-            socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
             if len(escaped_walk) > 0:
                 for node_id, val in escaped_walk.items():
                     # TODO;キューに格納する前に、JWTを生成するために、認証サーバに接続する
                     # 認証リクエストを送信
-                    start_time_jwt_connected = time.time()  # 　時間を計測
+                    context = zmq.Context()
+                    socket = context.socket(zmq.REQ)
+                    print("接続先", "tcp://abline05:10006")
+                    # socket.connect("tcp://{}:{}".format(message.GM, self.port))
+                    socket.connect("tcp://10.58.60.5:10006")  # 認証サーバへ接続
+
+                    start_time_jwt_connected = time.perf_counter()  # 　時間を計測
                     message_for_ninsyo = (
                         f"{node_id}:{val}"  # 例としてnode_idとvalを文字列に変換
                     )
@@ -257,10 +256,11 @@ class GraphManager:
                     response = socket.recv_string()
                     print("Received JWT from server:", response)  # 受け取ったJWTを表示
                     jwt = response  # 受け取ったJWTを変数に格納
+                    socket.close()  # 通信を終
+                    context.destroy()
                     end_time_jwt_connect = (
-                        time.time()
+                        time.perf_counter()
                     )  # 　---------------------ここまでの時間
-
                     self.send_queue.put(
                         Message(
                             node_id,
@@ -274,12 +274,12 @@ class GraphManager:
                             start_node_community=self.start_node_community,
                         )
                     )
-                elapsed_time_jwt_connected = (
-                    end_time_jwt_connect - start_time_jwt_connected
-                )
-                self.total_jwt_connected += elapsed_time_jwt_connected
-            socket.close()  # 通信を終
-            context.destroy()
+                    elapsed_time_jwt_connected = (
+                        end_time_jwt_connect - start_time_jwt_connected
+                    )
+                    self.total_jwt_connected += elapsed_time_jwt_connected
+            # socket.close()  # 通信を終
+            # context.destroy()
 
     def notify_result(self):
         print("notify_result")

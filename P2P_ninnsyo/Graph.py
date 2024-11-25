@@ -185,7 +185,7 @@ class Graph:
                 # start_nodeとそのほかが同じ場合は、もともとのリストを探索する
                 # 次ノードが移動可能かチェック
                 # TODO:kここで認可を行うーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-                start_time_determinate = time.time()  # 時間を計測
+                start_time_determinate = time.perf_counter()  # 時間を計測
                 source_community = self.node_community_mapping.get(start_node_id)
                 print(f"source_community: {source_community}")
                 if not self.determine_next_hop(
@@ -195,7 +195,7 @@ class Graph:
                         f"RWが一番初めにスタートしたComは{start_node_community}です。Roleを確認したところノード {current_node.id} へのホップはNGです。次のノードを選びます。"
                     )
                     continue  # NGの場合、次のノードに移動しないで再度選択
-                end_time_determinate = time.time()  # 時間を計測
+                end_time_determinate = time.perf_counter()  # 時間を計測
                 elapsed_time_determinate = end_time_determinate - start_time_determinate
                 self.total_determinate_ng_nodes += elapsed_time_determinate
                 # TODO:ここまで----------------------------------------------------------------------------------
