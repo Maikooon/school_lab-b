@@ -9,12 +9,14 @@ class Message:
         path,
         public_key,
         jwt=None,
+        start_time=None,
     ):
         self.ip = ip
         self.next_id = next_id  # Set next_id properly
         self.path = path
         self.public_key = public_key
         self.jwt = jwt
+        self.start_time = start_time
 
     def __bytes__(self):
         dict_rep = {
@@ -23,6 +25,7 @@ class Message:
             "path": self.path,
             "public_key": self.public_key,
             "jwt": self.jwt,
+            "start_time": self.start_time,
         }
         return str(dict_rep).encode("utf-8")
 
@@ -36,4 +39,5 @@ class Message:
             dic["path"],
             dic["public_key"],
             dic["jwt"],
+            dic["start_time"],
         )
