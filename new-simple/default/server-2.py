@@ -47,14 +47,14 @@ class Server2:
         return Message(
             ip=self.server1_ip,
             next_id=self.ip,
-            across_server=0,
+            across_server=message.across_server,  # そのまま
             public_key="Server1_Public_Key",
             jwt="Dummy_JWT_Token",
         )
 
-    def send_message_to_random_server(self, message, across_server_count):
+    def send_message_to_random_server(self, message):
         # サーバ1にメッセージ送信
-        print(f"Sending message to Server1 at across_server {across_server_count + 1}")
+        print(f"Sending to Server1")
         self.sender_to_server1.send_string(message.to_string())
 
     def process_message(self, message):
@@ -66,7 +66,6 @@ class Server2:
 
         while True:
             if random.random() < 0.5:
-                across_server_count += 1
                 if random.random() < 0.5:
                     # 他のサーバにメッセージを送信
                     # パスに現在のIDを追加し、次のサーバに送信
@@ -74,11 +73,11 @@ class Server2:
                     new_message = Message(
                         ip=self.ip,
                         next_id=target_server_ip,
-                        across_server=across_server_count,
+                        across_server=message.across_server + 1,
                         public_key=self.public_key,
                         jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
                     )
-                    self.send_message_to_random_server(new_message, across_server_count)
+                    self.send_message_to_random_server(new_message)
                     break  # メッセージを送信したら終了
                 else:
                     print("Message not sent to the other server (retry).")
@@ -89,9 +88,9 @@ class Server2:
 
         # 必要に応じて命令サーバに終了メッセージを送信
         if end_flag:
-            termination_message = f"total {across_server_count} across_servers."
-            print(f"Sending termination message: {termination_message}")
-            self.sender_to_command.send_string(termination_message)
+            # termination_message = f"total {across_server_count} across_servers."
+            print(f"Sending termination message")
+            self.sender_to_command.send_string(message.to_string())
 
     def run(self):
         print("Server is running. Waiting for messages...")

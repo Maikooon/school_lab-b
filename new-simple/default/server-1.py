@@ -59,14 +59,14 @@ class Server1:
         return Message(
             ip=self.server2_ip,
             next_id=self.ip,
-            across_server=0,
+            across_server=message.across_server,  # そのまま
             public_key="Server1_Public_Key",
             jwt="Dummy_JWT_Token",
         )
 
-    def send_message_to_random_server(self, message, across_server_count):
+    def send_message_to_random_server(self, message):
         # サーバ2にメッセージ送信
-        print(f"Sending message to Server2 at across_server {across_server_count + 1}")
+        print(f"Sending to Server2 ")
         # Message オブジェクトを文字列化して送信
         self.sender_to_server2.send_string(message.to_string())
 
@@ -77,7 +77,6 @@ class Server1:
 
         while True:
             if random.random() < 0.5:
-                across_server_count += 1
                 other_server_probability = random.random()
                 if other_server_probability < 0.9:
                     # 他のサーバにメッセージを送信
@@ -88,11 +87,11 @@ class Server1:
                     new_message = Message(
                         ip=self.ip,
                         next_id=target_server_ip,
-                        across_server=across_server_count,
+                        across_server=message.across_server + 1,
                         public_key=self.public_key,
                         jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
                     )
-                    self.send_message_to_random_server(new_message, across_server_count)
+                    self.send_message_to_random_server(new_message)
                     print(new_message.jwt)
                     break  # メッセージを送信したら終了
                 else:
@@ -104,11 +103,8 @@ class Server1:
 
         # 必要に応じて命令サーバに終了メッセージを送信
         if end_flag:
-            termination_message = f" {across_server_count} across_servers."
-            print(
-                f"Sending termination message to Command Server: {termination_message}"
-            )
-            self.sender_to_command.send_string(termination_message)
+            print(f"Sending termination message")
+            self.sender_to_command.send_string(message.to_string())
 
     def run(self):
         print("Server is running. Waiting for messages...")
@@ -119,7 +115,16 @@ class Server1:
         # 初期命令に応じた処理（必要に応じて内容変更）
         if initial_command == "START":
             print("initial START ")
-            self.process_message("Initial START command processed")
+            # ここで初めてのメッセージを作成して、送信準備
+            self.process_message(
+                message=Message(
+                    ip=self.ip,
+                    next_id=self.server2_ip,
+                    across_server=0,
+                    public_key=self.public_key,
+                    jwt="JWT_TOKEN_PLACE",
+                )
+            )
 
         # その後、Server2からのメッセージ待受
         while True:
