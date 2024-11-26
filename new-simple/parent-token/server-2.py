@@ -107,8 +107,10 @@ class Server2:
                 print("Waiting for messages from Server1...")
                 message = self.receive_message_from_server1()
 
-                # TODO:ここでTokenを検証
-                jwt_result = verify_jwt(message.jwt)
+                # TODO:子Tokenを検証する
+                jwt_result = validate_child_token(
+                    message.jwt, message.public_key, message.next_id
+                )
                 end_time_jwt_verify = time.perf_counter()
                 # elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
                 # self.total_jwt_verify_time += elapsed_time_jwt_verify

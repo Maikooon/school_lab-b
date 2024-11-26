@@ -29,3 +29,23 @@ def verify_jwt(token):
     except jwt.InvalidTokenError:
         print("Invalid token")
         return None
+
+
+# 子Tokenを検証
+def validate_child_token(child_token, parent_token, rw_id):
+    """
+    子トークンが有効かどうかを検証する関数。
+
+    Parameters:
+        child_token (str): 検証対象のトークン
+        parent_token (str): 元となる親トークン
+        rw_id (str): 対象のRandomWalker ID
+
+    Returns:
+        bool: トークンが有効ならTrue、無効ならFalse
+    """
+    # 正しいトークンの期待値を生成
+    expected_token = f"{parent_token}-{rw_id}"
+
+    # 子トークンと期待されるトークンが一致するか検証
+    return child_token == expected_token

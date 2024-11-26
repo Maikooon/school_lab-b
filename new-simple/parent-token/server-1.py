@@ -17,10 +17,8 @@ class Server1:
         public_key,
         alpha,
         beta,
-        # token検証用
         rw_count,
-        parent_token=None,
-        patent_token_expiry=None,
+        parent_token,
     ):
         self.ip = ip
         self.port = port
@@ -31,10 +29,8 @@ class Server1:
         self.public_key = public_key
         self.alpha = alpha
         self.beta = beta
-        # token検証用
         self.rw_count = rw_count
         self.parent_token = parent_token
-        self.parent_token_expiry = patent_token_expiry
         self.context = zmq.Context()
 
         # サーバ1の受信用ソケット（PULL）
@@ -76,17 +72,40 @@ class Server1:
         # Message オブジェクトを文字列化して送信
         self.sender_to_server2.send_string(message.to_string())
 
-    ## tokenに関連するこコード
-    def is_parent_token_valid(self):
-        """
-        親トークンが有効かどうかを確認する
-        """
-        if self.parent_token is None:
-            return False
-        if self.parent_token_expiry is None:
-            return False
-        current_time = time.time()
-        return current_time < self.parent_token_expiry
+    def process_message(self, message):
+        across_server_count = 0
+        end_flag = False
+
+        while True:
+            # 終了確立よりも大きいときには、継続
+            if random.random() > self.alpha:
+                other_server_probability = random.random()
+                # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
+                if other_server_probability < self.beta:
+                    # 他のサーバにメッセージを送信
+                    print(
+                        f"Sending message to the other server (across_server {across_server_count + 1})"
+                    )
+                    target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+                    new_message = Message(
+                        ip=self.ip,
+                        next_id=target_server_ip,
+                        across_server=message.across_server + 1,
+                        public_key=self.public_key,
+                        jwt=message.jwt,  # 実際には有効なJWTを生成する
+                        end_flag=False,
+                    )
+                    self.send_message_to_random_server(new_message)
+                    print(new_message.jwt)
+                    break  # メッセージを送信したら終了
+                else:
+                    print("Message not sent to the other server (retry).")
+            # 終了確立に達したので終了する
+            else:
+                print("Message not sent to the other server. Ending process.")
+                end_flag = True
+                break  # 送信せず終了
+        return end_flag
 
     def request_jwt_from_server(self, server_address, auth_message, timeout=5):
         """
@@ -137,43 +156,8 @@ class Server1:
         親トークンを使って子トークンを生成する
         """
         # 仮の子トークン生成処理（実際はHMACや暗号化手法を用いることを推奨）
+        print("ここで子供のTokenを生成します")
         return f"{parent_token}-{rw_id}"
-
-    ### RWのコード
-    def process_message(self, message):
-        across_server_count = 0
-        end_flag = False
-
-        while True:
-            # 終了確立よりも大きいときには、継続
-            if random.random() > self.alpha:
-                other_server_probability = random.random()
-                # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
-                if other_server_probability < self.beta:
-                    # 他のサーバにメッセージを送信
-                    print(
-                        f"Sending message to the other server (across_server {across_server_count + 1})"
-                    )
-                    target_server_ip = "10.58.60.5"  # 次のサーバIP（例）
-                    new_message = Message(
-                        ip=self.ip,
-                        next_id=target_server_ip,
-                        across_server=message.across_server + 1,
-                        public_key=self.public_key,
-                        jwt=message.jwt,  # 実際には有効なJWTを生成する
-                        end_flag=False,
-                    )
-                    self.send_message_to_random_server(new_message)
-                    print(new_message.jwt)
-                    break  # メッセージを送信したら終了
-                else:
-                    print("Message not sent to the other server (retry).")
-            # 終了確立に達したので終了する
-            else:
-                print("Message not sent to the other server. Ending process.")
-                end_flag = True
-                break  # 送信せず終了
-        return end_flag
 
     def run(self):
         print("Server is running. Waiting for messages...")
@@ -187,39 +171,20 @@ class Server1:
             print("initial START ")
             # 以下のメッセージを送ってRWを行う処理を任意の回数繰り返す
             for i in range(self.rw_count):
-                # 親TOKenの期限が切れている時、もしくはまだ親Tokenが仮のものであるとき
-                # if not self.is_parent_token_valid():
-                #     print("親トークンが無効です。認証サーバに問い合わせます...")
-                #     self.request_jwt_from_server(
-                #         server_address="tcp://10.58.60.5:10007",
-                #         auth_message="認証要求メッセージ",
-                #     )
-                #     if self.parent_token is None:
-                #         print("親トークンの取得に失敗しました。処理を中断します。")
-                #         break
-                target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
-                # TODO:毎回の場合は、ここでJWTを生成する
-                print("認証サーバと通信を開始します...")
-                jwt = self.request_jwt_from_server(
-                    server_address="tcp://10.58.60.5:10006",
-                    auth_message="ここに認証したい文字列を入れる",
-                )
-                if jwt is None:
-                    print("JWTトークンの取得に失敗しました。処理を中断します。")
-                    break
-                print("認証サーバとの通信が完了しました。")
-
-                # ここで親TOkenから子供を生成
-                # 子トークンを生成
+                ## 親Tokenが有効ではない時の処理
+                if self.parent_token is None or not verify_jwt(self.parent_token):
+                    # TODO:Tokenを得るための処理
+                    print("認証サーバと通信を開始します...")
+                    self.parent_token = self.request_jwt_from_server(
+                        server_address="tcp://10.58.60.5:10006",
+                        auth_message="ここに認証したい文字列を入れる",
+                    )
+                    print("認証サーバとの通信が完了し、親Tokenが生成されました")
+                # 親Tokenが正当である時には、子供のTokenを生成する
+                # jwt  = children_token
                 rw_id = f"RW-{i+1}"  # 各RWのID
-                child_token = self.generate_child_token(
-                    self.parent_token, rw_id
-                )  # 子tokenを自分のサーバ内で生成
+                jwt = self.generate_child_token(self.parent_token, rw_id)
 
-                # 子トークンを用いた処理（例）
-                print(f"子トークンを生成しました: {child_token}")
-
-                ##########################################################
                 # ここで初めてのメッセージを作成して、送信準備
                 end_flag = self.process_message(
                     message=Message(
@@ -228,7 +193,7 @@ class Server1:
                         next_id=self.server2_ip,
                         across_server=0,
                         public_key=self.public_key,
-                        jwt=child_token,
+                        jwt=jwt,
                     )
                 )
                 # 初回でなった時も、終了メッセージを命令さ＝ばに送る
@@ -259,12 +224,14 @@ class Server1:
                                 total_move_server += message.across_server
                                 end_flag = True
                             else:
-                                # TODO: JWTの検証を行う
+                                # TODO:ここでTokenを検証
                                 start_time_jwt_verify = (
                                     time.perf_counter()
                                 )  # 　時間を計測
-                                print(message.jwt)
-                                jwt_result = verify_jwt(message.jwt)
+                                print(message.jwt)  # ここでは子tokenが検証される
+                                jwt_result = validate_child_token(
+                                    message.jwt, self.parent_token, rw_id
+                                )
                                 end_time_jwt_verify = time.perf_counter()
                                 elapsed_time_jwt_verify = (
                                     end_time_jwt_verify - start_time_jwt_verify
@@ -279,7 +246,6 @@ class Server1:
                             # 終了指示があればループ終了
                             if end_flag:
                                 print("Ending server process as instructed.")
-                                # self.sender_to_command.send_string(message.to_string())
                                 break
 
                         except Exception as e:
@@ -311,5 +277,6 @@ if __name__ == "__main__":
         alpha=0.15,
         beta=0.5,
         rw_count=3,
+        parent_token=None,
     )
     server1.run()
