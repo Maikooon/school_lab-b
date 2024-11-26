@@ -59,14 +59,7 @@ class Server1:
         print(f"Received message from Server1: {message}")
         # 受信した文字列をMessageオブジェクトに変換
         message = Message.from_string(message)
-
-        return Message(
-            ip=self.server2_ip,
-            next_id=self.ip,
-            across_server=message.across_server,  # そのまま
-            public_key="Server1_Public_Key",
-            jwt="Dummy_JWT_Token",
-        )
+        return message
 
     def send_message_to_random_server(self, message):
         # サーバ2にメッセージ送信
@@ -81,7 +74,7 @@ class Server1:
 
         while True:
             # 終了確立よりも大きいときには、継続
-            if random.random() < self.alpha:
+            if random.random() > self.alpha:
                 other_server_probability = random.random()
                 # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
                 if other_server_probability < self.beta:
@@ -96,6 +89,7 @@ class Server1:
                         across_server=message.across_server + 1,
                         public_key=self.public_key,
                         jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                        end_flag=False,
                     )
                     self.send_message_to_random_server(new_message)
                     print(new_message.jwt)
@@ -107,11 +101,7 @@ class Server1:
                 print("Message not sent to the other server. Ending process.")
                 end_flag = True
                 break  # 送信せず終了
-
-        # 必要に応じて命令サーバに終了メッセージを送信
-        if end_flag:
-            print(f"Sending termination message")
-            self.sender_to_command.send_string(message.to_string())
+        return end_flag
 
     def run(self):
         print("Server is running. Waiting for messages...")
@@ -123,15 +113,31 @@ class Server1:
         if initial_command == "START":
             print("initial START ")
             # ここで初めてのメッセージを作成して、送信準備
-            self.process_message(
+            end_flag = self.process_message(
                 message=Message(
                     ip=self.ip,
+                    end_flag=False,
                     next_id=self.server2_ip,
                     across_server=0,
                     public_key=self.public_key,
                     jwt="JWT_TOKEN_PLACE",
                 )
             )
+            # 初回でなった時も、終了メッセージを命令さ＝ばに送る
+            if end_flag:
+                # 情報量はないが、送受信のフォーマットが決まっているので合わせる
+                message = Message(
+                    ip=self.ip,
+                    next_id=self.server2_ip,
+                    across_server=0,
+                    public_key=self.public_key,
+                    jwt="JWT_TOKEN_PLACE",
+                    end_flag=True,
+                )
+                print("[first]Ending server process as instructed.")
+                self.sender_to_command.send_string(message.to_string())
+            else:
+                print("initial END")
 
         # その後、Server2からのメッセージ待受
         while True:
@@ -141,12 +147,19 @@ class Server1:
                 message = self.receive_message_from_server2()
                 print(f"Received from 2: {message}")
 
-                # メッセージを処理
-                end_flag = self.process_message(message)
+                # 継続のメッセージの場合は、メッセージを処理
+                # end_flag = self.process_message(message)
+                # 終了のメッセージの場合は、ループを終了して、新しいメッセージを送信する
+                if message.end_flag:
+                    end_flag = True
+                else:
+                    end_flag = self.process_message(message)
+                    print("終了ーーーーーーーー")
 
                 # 終了指示があればループ終了
                 if end_flag:
                     print("Ending server process as instructed.")
+                    self.sender_to_command.send_string(message.to_string())
                     break
 
             except Exception as e:
@@ -164,5 +177,6 @@ if __name__ == "__main__":
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
+        beta=0.5,
     )
     server1.run()

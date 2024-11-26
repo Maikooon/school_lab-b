@@ -48,13 +48,7 @@ class Server2:
         print(f"Received message from Server1: {message}")
         # 受信した文字列をMessageオブジェクトに変換
         message = Message.from_string(message)
-        return Message(
-            ip=self.server1_ip,
-            next_id=self.ip,
-            across_server=message.across_server,  # そのまま
-            public_key="Server1_Public_Key",
-            jwt="Dummy_JWT_Token",
-        )
+        return message
 
     def send_message_to_random_server(self, message):
         # サーバ1にメッセージ送信
@@ -70,7 +64,7 @@ class Server2:
 
         while True:
             # 終了確率をチェック
-            if random.random() < self.alpha:
+            if random.random() > self.alpha:
                 if random.random() < self.beta:
                     # 他のサーバにメッセージを送信
                     # パスに現在のIDを追加し、次のサーバに送信
@@ -81,6 +75,7 @@ class Server2:
                         across_server=message.across_server + 1,
                         public_key=self.public_key,
                         jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                        end_flag=False,
                     )
                     self.send_message_to_random_server(new_message)
                     break  # メッセージを送信したら終了
@@ -88,24 +83,28 @@ class Server2:
                     print("Message not sent to the other server (retry).")
             else:
                 print("Message not sent to the other server. Ending process.")
-                end_flag = True
+                print(f"Sending termination message 1 -> 2")
+                target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+                new_message = Message(
+                    ip=self.ip,
+                    next_id=target_server_ip,
+                    across_server=message.across_server,  # 命令サーバへの祖神なのでカウントしない
+                    public_key=self.public_key,
+                    jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                    end_flag=True,
+                )
+                self.sender_to_server1.send_string(new_message.to_string())
                 break  # 送信せず終了
-
-        # 必要に応じて命令サーバに終了メッセージを送信
-        if end_flag:
-            # termination_message = f"total {across_server_count} across_servers."
-            print(f"Sending termination message")
-            self.sender_to_command.send_string(message.to_string())
 
     def run(self):
         print("Server is running. Waiting for messages...")
         # メッセージを受信し、ランダムホップを開始
         end_flag = False
 
-        # その後、Server2からのメッセージ待受
+        # その後、Server1からのメッセージ待受
         while True:
             try:
-                # Server2からのメッセージ受信
+                # Server1からのメッセージ受信
                 print("Waiting for messages from Server1...")
                 message = self.receive_message_from_server1()
                 print(f"Received: {message}")

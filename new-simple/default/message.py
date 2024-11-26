@@ -5,9 +5,17 @@ import time
 
 class Message:
     def __init__(
-        self, ip, next_id, across_server, public_key, jwt=None, start_time=None
+        self,
+        ip,
+        end_flag,
+        next_id,
+        across_server,
+        public_key,
+        jwt=None,
+        start_time=None,
     ):
         self.ip = ip
+        self.end_flag = end_flag
         self.next_id = next_id
         self.across_server = across_server
         self.public_key = public_key
@@ -29,6 +37,7 @@ class Message:
         )  # JSONを使うのが安全だが、ここでは簡易的にevalを利用
         return cls(
             ip=message_dict["ip"],
+            end_flag=message_dict["end_flag"],
             next_id=message_dict["next_id"],
             across_server=message_dict["across_server"],
             public_key=message_dict["public_key"],
