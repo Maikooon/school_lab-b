@@ -1,6 +1,7 @@
 import zmq
 import random
 import time
+from message import Message
 
 
 class Server2:
@@ -12,7 +13,7 @@ class Server2:
         server1_port,
         command_server_ip,
         command_server_port,
-        max_hops,
+        public_key,
     ):
         self.ip = ip
         self.port = port
@@ -20,7 +21,7 @@ class Server2:
         self.server1_port = server1_port
         self.command_server_ip = command_server_ip
         self.command_server_port = command_server_port
-        self.max_hops = max_hops
+        self.public_key = public_key  # 公開鍵
         self.context = zmq.Context()
 
         # サーバ2の受信用ソケット（PULL）
@@ -41,33 +42,43 @@ class Server2:
         # サーバ1からメッセージを受信
         message = self.receiver_from_server1.recv_string()
         print(f"Received message from Server1: {message}")
-        return message
+        # 受信した文字列をMessageオブジェクトに変換
+        message = Message.from_string(message)
+        return Message(
+            ip=self.server1_ip,
+            next_id=self.ip,
+            across_server=0,
+            public_key="Server1_Public_Key",
+            jwt="Dummy_JWT_Token",
+        )
 
-    def send_message_to_random_server(self, message, hop_count):
-        if hop_count < self.max_hops:
-            # サーバ1にメッセージ送信
-            print(f"Sending message to Server1 at hop {hop_count + 1}")
-            self.sender_to_server1.send_string(message)
-        else:
-            # 終了メッセージを命令サーバに送信
-            termination_message = (
-                f"Message reached Server2 after {hop_count} hops. Terminating."
-            )
-            self.sender_to_command.send_string(termination_message)
-            print(termination_message)
+    def send_message_to_random_server(self, message, across_server_count):
+        # サーバ1にメッセージ送信
+        print(f"Sending message to Server1 at across_server {across_server_count + 1}")
+        self.sender_to_server1.send_string(message.to_string())
 
     def process_message(self, message):
         print(f"Processing message: {message}")
-        hop_count = 0
+        across_server_count = 0
         end_flag = False
+        total_across_servers = message.across_server
+        print(f"Total across_servers: {total_across_servers}")
 
         while True:
             if random.random() < 0.5:
-                hop_count += 1
+                across_server_count += 1
                 if random.random() < 0.5:
                     # 他のサーバにメッセージを送信
-                    print(f"Sending message to the other server (hop {hop_count + 1})")
-                    self.send_message_to_random_server(message, hop_count)
+                    # パスに現在のIDを追加し、次のサーバに送信
+                    target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+                    new_message = Message(
+                        ip=self.ip,
+                        next_id=target_server_ip,
+                        across_server=across_server_count,
+                        public_key=self.public_key,
+                        jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                    )
+                    self.send_message_to_random_server(new_message, across_server_count)
                     break  # メッセージを送信したら終了
                 else:
                     print("Message not sent to the other server (retry).")
@@ -78,7 +89,7 @@ class Server2:
 
         # 必要に応じて命令サーバに終了メッセージを送信
         if end_flag:
-            termination_message = f"total {hop_count} hops."
+            termination_message = f"total {across_server_count} across_servers."
             print(f"Sending termination message: {termination_message}")
             self.sender_to_command.send_string(termination_message)
 
@@ -116,6 +127,6 @@ if __name__ == "__main__":
         server1_port=3100,
         command_server_ip="10.58.60.11",
         command_server_port=3103,
-        max_hops=5,  # 最大ホップ数
+        public_key="Server1_Public_Key",  # 公開鍵
     )
     server2.run()
