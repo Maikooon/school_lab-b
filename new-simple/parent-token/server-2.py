@@ -57,8 +57,6 @@ class Server2:
         self.sender_to_server1.send_string(message.to_string())
 
     def process_message(self, message):
-        across_server_count = 0
-        end_flag = False
         total_across_servers = message.across_server
         print(f"Total across_servers: {total_across_servers}")
 
@@ -111,9 +109,6 @@ class Server2:
                 jwt_result = validate_child_token(
                     message.jwt, message.public_key, message.next_id
                 )
-                end_time_jwt_verify = time.perf_counter()
-                # elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
-                # self.total_jwt_verify_time += elapsed_time_jwt_verify
                 print("JWT検証結果", jwt_result)
                 ############################
 

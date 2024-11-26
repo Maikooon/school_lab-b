@@ -18,8 +18,6 @@ def generate_jwt(message):
 def save_to_log(message, jwt_token, elapsed_time):
     # ログデータをファイルに保存
     with open(LOG_FILE_PATH, "a") as log_file:
-        # log_file.write(f"Request message: {message}\n")
-        # log_file.write(f"Generated JWT: {jwt_token}\n")
         log_file.write(f"Time taken generate: {elapsed_time:.4f} seconds\n")
         log_file.write("-" * 40 + "\n")
 

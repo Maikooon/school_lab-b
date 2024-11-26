@@ -72,6 +72,8 @@ class Server1:
     def process_message(self, message):
         across_server_count = 0
         end_flag = False
+        total_across_servers = message.across_server
+        print(f"Total across_servers: {total_across_servers}")
 
         while True:
             # 終了確立よりも大きいときには、継続
@@ -139,10 +141,6 @@ class Server1:
                         end_flag=True,
                     )
                     print("[first]Ending server process as instructed.")
-                    total_move_server += message.across_server
-                    # self.sender_to_command.send_string(message.to_string())
-                    # 次のRW実行に移る
-                    # break
                 else:
                     # その後、Server2からのメッセージ待受
                     while True:
@@ -183,6 +181,7 @@ class Server1:
                 end_flag=True,
             )
             print("[last]Ending server process as instructed.")
+            # print("次のメッセージを命令サーバに送信", message.to_string())
             self.sender_to_command.send_string(message.to_string())
 
 
@@ -195,8 +194,8 @@ if __name__ == "__main__":
         command_server_ip="10.58.60.11",
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
-        alpha=0.15,
+        alpha=0.15,  # RWの終了確立
         beta=0.5,
-        rw_count=3,
+        rw_count=1,
     )
     server1.run()

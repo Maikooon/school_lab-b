@@ -1,12 +1,14 @@
 import zmq
 import time
+from message import Message
 
 
 class CommandServer:
-    def __init__(self, ip, send_port, receive_port):
+    def __init__(self, ip, send_port, receive_port, across_server=0):
         self.ip = ip
         self.send_port = send_port
         self.receive_port = receive_port
+        self.across_server = across_server
         self.context = zmq.Context()
 
         # サーバ1への命令送信用ソケット
@@ -26,6 +28,13 @@ class CommandServer:
         # 終了メッセージを受信
         message = self.receiver.recv_string()
         print(f"Received termination message: {message}")
+        modify_message = Message.from_string(message)
+        print("サーバのまたぎ回数", modify_message.across_server)
+        self.across_server = modify_message.across_server
+        # ここでファイルに保存する
+        # with open("logs.txt", "a") as log_file:
+        #     log_file.write(f"サーバのまたぎ回数: {modify_message.across_server}\n")
+        #     log_file.write("-" * 40 + "\n")
 
     def run(self):
         start_time = time.perf_counter()
@@ -33,11 +42,17 @@ class CommandServer:
         self.send_initial_command("START")
 
         # 終了メッセージを受信
-        self.receive_termination_message()
+        message = self.receive_termination_message()
         print("メッセージを受信しました", self.ip)
         end_time = time.perf_counter()
         elast_time = end_time - start_time
         print(f"経過時間: {elast_time}秒")
+
+        # ここで結果をログファイルに保存する
+        with open("log.txt", "a") as log_file:
+            log_file.write(f"total execution time: {elast_time:.9f} seconds\n")
+            log_file.write(f"サーバのまたぎ回数: {self.across_server}\n")
+            log_file.write("-" * 40 + "\n")
 
 
 if __name__ == "__main__":

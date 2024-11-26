@@ -173,7 +173,7 @@ class Server1:
             for i in range(self.rw_count):
                 ## 親Tokenが有効ではない時の処理
                 if self.parent_token is None or not verify_jwt(self.parent_token):
-                    # TODO:Tokenを得るための処理
+                    # TODO:親Tokenを得るための処理
                     print("認証サーバと通信を開始します...")
                     self.parent_token = self.request_jwt_from_server(
                         server_address="tcp://10.58.60.5:10006",
@@ -181,7 +181,6 @@ class Server1:
                     )
                     print("認証サーバとの通信が完了し、親Tokenが生成されました")
                 # 親Tokenが正当である時には、子供のTokenを生成する
-                # jwt  = children_token
                 rw_id = f"RW-{i+1}"  # 各RWのID
                 jwt = self.generate_child_token(self.parent_token, rw_id)
 
@@ -196,9 +195,9 @@ class Server1:
                         jwt=jwt,
                     )
                 )
-                # 初回でなった時も、終了メッセージを命令さ＝ばに送る
+                # 初回でなった時も、終了メッセージを命令サーバに送信
+                # 情報量はないが、送受信のフォーマットが決まっているので合わせる
                 if end_flag:
-                    # 情報量はないが、送受信のフォーマットが決まっているので合わせる
                     message = Message(
                         ip=self.ip,
                         next_id=self.server2_ip,
@@ -209,6 +208,7 @@ class Server1:
                     )
                     print("[first]Ending server process as instructed.")
                     total_move_server += message.across_server
+                    print("次のサーバに移行")
                 else:
                     # その後、Server2からのメッセージ待受
                     while True:
@@ -218,13 +218,12 @@ class Server1:
                             message = self.receive_message_from_server2()
 
                             # 継続のメッセージの場合は、メッセージを処理
-                            # end_flag = self.process_message(message)
                             # 終了のメッセージの場合は、ループを終了して、新しいメッセージを送信する
                             if message.end_flag:
                                 total_move_server += message.across_server
                                 end_flag = True
                             else:
-                                # TODO:ここでTokenを検証
+                                # Tokenを検証
                                 start_time_jwt_verify = (
                                     time.perf_counter()
                                 )  # 　時間を計測
@@ -240,8 +239,6 @@ class Server1:
                                 #####ここでTokenを検証する############################################################################
                                 end_flag = self.process_message(message)
                                 total_move_server += message.across_server
-                                # ここがTrueなら、終了確立に達したので、終了
-                                # Falseなら、tryの継続
 
                             # 終了指示があればループ終了
                             if end_flag:
