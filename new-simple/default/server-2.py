@@ -56,18 +56,56 @@ class Server2:
             self.sender_to_command.send_string(termination_message)
             print(termination_message)
 
-    def run(self):
-        # メッセージを受信し、ランダムホップを開始
+    def process_message(self, message):
+        print(f"Processing message: {message}")
         hop_count = 0
-        while hop_count < self.max_hops:
-            message = self.receive_message_from_server1()
-            self.send_message_to_random_server(message, hop_count)
-            hop_count += 1
-            time.sleep(1)  # ホップ間の間隔
-        # hop_countがmax_hopsに達したら終了、命令サーバに終了メッセージを送信
-        termination_message = "Message reached Server2 after 5 hops. Terminating."
-        self.sender_to_command.send_string(termination_message)
-        print(termination_message)
+        end_flag = False
+
+        while True:
+            if random.random() < 0.5:
+                hop_count += 1
+                if random.random() < 0.5:
+                    # 他のサーバにメッセージを送信
+                    print(f"Sending message to the other server (hop {hop_count + 1})")
+                    self.send_message_to_random_server(message, hop_count)
+                    break  # メッセージを送信したら終了
+                else:
+                    print("Message not sent to the other server (retry).")
+            else:
+                print("Message not sent to the other server. Ending process.")
+                end_flag = True
+                break  # 送信せず終了
+
+        # 必要に応じて命令サーバに終了メッセージを送信
+        if end_flag:
+            termination_message = f"total {hop_count} hops."
+            print(f"Sending termination message: {termination_message}")
+            self.sender_to_command.send_string(termination_message)
+
+    def run(self):
+        print("Server is running. Waiting for messages...")
+        # メッセージを受信し、ランダムホップを開始
+        end_flag = False
+
+        # その後、Server2からのメッセージ待受
+        while True:
+            try:
+                # Server2からのメッセージ受信
+                print("Waiting for messages from Server1...")
+                message = self.receive_message_from_server1()
+                print(f"Received: {message}")
+
+                # メッセージを処理
+                end_flag = self.process_message(message)
+
+                # 終了指示があればループ終了
+                if end_flag:
+                    print("Ending server process as instructed.")
+                    break
+
+            except Exception as e:
+                print(f"Error occurred: {e}")
+                break
 
 
 if __name__ == "__main__":

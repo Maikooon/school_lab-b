@@ -28,6 +28,9 @@ class Server1:
         self.receiver_from_command.connect(
             f"tcp://{self.command_server_ip}:{self.port}"
         )
+        # サーバ2の受信用ソケット（PULL）
+        self.receiver_from_server2 = self.context.socket(zmq.PULL)
+        self.receiver_from_server2.bind(f"tcp://{self.ip}:{self.port}")
 
         # サーバ2送信用ソケット（PUSH）
         self.sender_to_server2 = self.context.socket(zmq.PUSH)
@@ -45,6 +48,12 @@ class Server1:
         print(f"Received initial command: {message}")
         return message
 
+    def receive_message_from_server2(self):
+        # サーバ1からメッセージを受信
+        message = self.receiver_from_server2.recv_string()
+        print(f"Received message from Server1: {message}")
+        return message
+
     def send_message_to_random_server(self, message, hop_count):
         if hop_count < self.max_hops:
             # サーバ2にメッセージ送信
@@ -58,24 +67,65 @@ class Server1:
             self.sender_to_command.send_string(termination_message)
             print(termination_message)
 
-    def run(self):
-        # 初期命令を受信
-        self.receive_initial_command()
-
-        # ランダムホップを開始
-        message = "Message from Server1"
+    def process_message(self, message):
+        print(f"Processing message: {message}")
         hop_count = 0
-        while hop_count < self.max_hops:
-            self.send_message_to_random_server(message, hop_count)
-            hop_count += 1
-            time.sleep(1)  # ホップ間の間隔
+        end_flag = False
 
-        # hop_countがmax_hopsに達したら終了、命令サーバに終了メッセージを送信
-        termination_message = (
-            "Server1 has reached the maximum number of hops. Terminating."
-        )
-        self.sender_to_command.send_string(termination_message)
-        print(termination_message)
+        while True:
+            if random.random() < 0.5:
+                hop_count += 1
+                other_server_probability = random.random()
+                if other_server_probability < 0.9:
+                    # 他のサーバにメッセージを送信
+                    print(f"Sending message to the other server (hop {hop_count + 1})")
+                    self.send_message_to_random_server(message, hop_count)
+                    break  # メッセージを送信したら終了
+                else:
+                    print("Message not sent to the other server (retry).")
+            else:
+                print("Message not sent to the other server. Ending process.")
+                end_flag = True
+                break  # 送信せず終了
+
+        # 必要に応じて命令サーバに終了メッセージを送信
+        if end_flag:
+            termination_message = f" {hop_count} hops."
+            print(
+                f"Sending termination message to Command Server: {termination_message}"
+            )
+            self.sender_to_command.send_string(termination_message)
+
+    def run(self):
+        print("Server is running. Waiting for messages...")
+
+        # 初期命令を受信
+        initial_command = self.receive_initial_command()
+
+        # 初期命令に応じた処理（必要に応じて内容変更）
+        if initial_command == "START":
+            print("initial START ")
+            self.process_message("Initial START command processed")
+
+        # その後、Server2からのメッセージ待受
+        while True:
+            try:
+                # Server2からのメッセージ受信
+                print("Waiting for messages from Server2...")
+                message = self.receive_message_from_server2()
+                print(f"Received from 2: {message}")
+
+                # メッセージを処理
+                end_flag = self.process_message(message)
+
+                # 終了指示があればループ終了
+                if end_flag:
+                    print("Ending server process as instructed.")
+                    break
+
+            except Exception as e:
+                print(f"Error occurred: {e}")
+                break
 
 
 if __name__ == "__main__":

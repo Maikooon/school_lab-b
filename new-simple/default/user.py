@@ -1,4 +1,5 @@
 import zmq
+import time
 
 
 class CommandServer:
@@ -27,12 +28,16 @@ class CommandServer:
         print(f"Received termination message: {message}")
 
     def run(self):
+        start_time = time.perf_counter()
         # サーバ1に命令を送信
         self.send_initial_command("START")
 
         # 終了メッセージを受信
         self.receive_termination_message()
         print("メッセージを受信しました", self.ip)
+        end_time = time.perf_counter()
+        elast_time = end_time - start_time
+        print(f"経過時間: {elast_time}秒")
 
 
 if __name__ == "__main__":
