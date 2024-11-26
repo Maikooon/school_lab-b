@@ -14,6 +14,8 @@ class Server1:
         command_server_ip,
         command_server_port,
         public_key,
+        alpha,
+        beta,
     ):
         self.ip = ip
         self.port = port
@@ -22,6 +24,8 @@ class Server1:
         self.command_server_ip = command_server_ip
         self.command_server_port = command_server_port
         self.public_key = public_key
+        self.alpha = alpha
+        self.beta = beta
         self.context = zmq.Context()
 
         # サーバ1の受信用ソケット（PULL）
@@ -76,9 +80,11 @@ class Server1:
         end_flag = False
 
         while True:
-            if random.random() < 0.5:
+            # 終了確立よりも大きいときには、継続
+            if random.random() < self.alpha:
                 other_server_probability = random.random()
-                if other_server_probability < 0.9:
+                # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
+                if other_server_probability < self.beta:
                     # 他のサーバにメッセージを送信
                     print(
                         f"Sending message to the other server (across_server {across_server_count + 1})"
@@ -96,6 +102,7 @@ class Server1:
                     break  # メッセージを送信したら終了
                 else:
                     print("Message not sent to the other server (retry).")
+            # 終了確立に達したので終了する
             else:
                 print("Message not sent to the other server. Ending process.")
                 end_flag = True
@@ -156,5 +163,6 @@ if __name__ == "__main__":
         command_server_ip="10.58.60.11",
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
+        alpha=0.15,
     )
     server1.run()

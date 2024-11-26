@@ -14,6 +14,8 @@ class Server2:
         command_server_ip,
         command_server_port,
         public_key,
+        alpha,
+        beta,
     ):
         self.ip = ip
         self.port = port
@@ -22,6 +24,8 @@ class Server2:
         self.command_server_ip = command_server_ip
         self.command_server_port = command_server_port
         self.public_key = public_key  # 公開鍵
+        self.alpha = alpha
+        self.beta = beta
         self.context = zmq.Context()
 
         # サーバ2の受信用ソケット（PULL）
@@ -65,8 +69,9 @@ class Server2:
         print(f"Total across_servers: {total_across_servers}")
 
         while True:
-            if random.random() < 0.5:
-                if random.random() < 0.5:
+            # 終了確率をチェック
+            if random.random() < self.alpha:
+                if random.random() < self.beta:
                     # 他のサーバにメッセージを送信
                     # パスに現在のIDを追加し、次のサーバに送信
                     target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
@@ -127,5 +132,7 @@ if __name__ == "__main__":
         command_server_ip="10.58.60.11",
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
+        alpha=0.15,
+        beta=0.5,
     )
     server2.run()
