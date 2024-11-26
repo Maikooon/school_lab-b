@@ -2,6 +2,7 @@ import zmq
 import random
 import time
 from message import Message
+from Jwt import *
 
 
 class Server1:
@@ -89,7 +90,7 @@ class Server1:
                         next_id=target_server_ip,
                         across_server=message.across_server + 1,
                         public_key=self.public_key,
-                        jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                        jwt=message.jwt,  # 実際には有効なJWTを生成する
                         end_flag=False,
                     )
                     self.send_message_to_random_server(new_message)
@@ -116,6 +117,25 @@ class Server1:
             print("initial START ")
             # 以下のメッセージを送ってRWを行う処理を任意の回数繰り返す
             for i in range(self.rw_count):
+                # 初回のみTokenを得るためにサーバと通信する
+                # TODO:Tokenを得るための処理
+                print(
+                    "認証サーバと通信しますーーーーーーーーーーーーーーーーーーーーーーー"
+                )
+                context = zmq.Context()
+                socket = context.socket(zmq.REQ)
+                socket.connect("tcp://10.58.60.5:10006")
+                start_time_jwt_connected = time.perf_counter()  # 　時間を計測
+                message_for_ninsyo = "ここに認証したい文字列を入れる"  # 例としてnode_idとvalを文字列に変換
+                socket.send_string(message_for_ninsyo)  # 認証要求を送信
+                # サーバからの応答を受け取る
+                response = socket.recv_string()
+                print("Received JWT from server:", response)  # 受け取ったJWTを表示
+                jwt = response  # 受け取ったJWTを変数に格納
+                socket.close()
+                context.destroy()
+                ##########################################################
+                print("認証サーバとの通信が終了しました")
                 # ここで初めてのメッセージを作成して、送信準備
                 end_flag = self.process_message(
                     message=Message(
@@ -124,7 +144,7 @@ class Server1:
                         next_id=self.server2_ip,
                         across_server=0,
                         public_key=self.public_key,
-                        jwt="JWT_TOKEN_PLACE",
+                        jwt=jwt,
                     )
                 )
                 # 初回でなった時も、終了メッセージを命令さ＝ばに送る
@@ -135,7 +155,7 @@ class Server1:
                         next_id=self.server2_ip,
                         across_server=0,
                         public_key=self.public_key,
-                        jwt="JWT_TOKEN_PLACE",
+                        jwt=jwt,
                         end_flag=True,
                     )
                     print("[first]Ending server process as instructed.")
@@ -158,6 +178,20 @@ class Server1:
                                 total_move_server += message.across_server
                                 end_flag = True
                             else:
+                                # TODO:ここでTokenを検証
+                                # TODO: JWTの検証を行う
+                                start_time_jwt_verify = (
+                                    time.perf_counter()
+                                )  # 　時間を計測
+                                print(message.jwt)
+                                jwt_result = verify_jwt(message.jwt)
+                                end_time_jwt_verify = time.perf_counter()
+                                elapsed_time_jwt_verify = (
+                                    end_time_jwt_verify - start_time_jwt_verify
+                                )
+                                print("JWT検証結果", jwt_result)
+                                #####ここでTokenを検証する############################################################################
+                                ############################
                                 end_flag = self.process_message(message)
                                 total_move_server += message.across_server
                                 # ここがTrueなら、終了確立に達したので、終了
@@ -179,7 +213,7 @@ class Server1:
                 next_id=self.server2_ip,
                 across_server=total_move_server,
                 public_key=self.public_key,
-                jwt="JWT_TOKEN_PLACE",
+                jwt=jwt,
                 end_flag=True,
             )
             print("[last]Ending server process as instructed.")

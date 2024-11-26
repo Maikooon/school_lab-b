@@ -2,6 +2,7 @@ import zmq
 import random
 import time
 from message import Message
+from Jwt import *
 
 
 class Server2:
@@ -73,7 +74,7 @@ class Server2:
                         next_id=target_server_ip,
                         across_server=message.across_server + 1,
                         public_key=self.public_key,
-                        jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                        jwt=message.jwt,  # 実際には有効なJWTを生成する
                         end_flag=False,
                     )
                     self.send_message_to_random_server(new_message)
@@ -88,7 +89,7 @@ class Server2:
                     next_id=target_server_ip,
                     across_server=message.across_server,  # 命令サーバへの祖神なのでカウントしない
                     public_key=self.public_key,
-                    jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                    jwt=message.jwt,  # 実際には有効なJWTを生成する
                     end_flag=True,
                 )
                 self.sender_to_server1.send_string(new_message.to_string())
@@ -105,6 +106,14 @@ class Server2:
                 # Server1からのメッセージ受信
                 print("Waiting for messages from Server1...")
                 message = self.receive_message_from_server1()
+
+                # TODO:ここでTokenを検証
+                jwt_result = verify_jwt(message.jwt)
+                end_time_jwt_verify = time.perf_counter()
+                # elapsed_time_jwt_verify = end_time_jwt_verify - start_time_jwt_verify
+                # self.total_jwt_verify_time += elapsed_time_jwt_verify
+                print("JWT検証結果", jwt_result)
+                ############################
 
                 # メッセージを処理
                 end_flag = self.process_message(message)
