@@ -1,12 +1,14 @@
 import zmq
 import time
+from message import Message
 
 
 class CommandServer:
-    def __init__(self, ip, send_port, receive_port):
+    def __init__(self, ip, send_port, receive_port, across_server=0):
         self.ip = ip
         self.send_port = send_port
         self.receive_port = receive_port
+        self.across_server = across_server
         self.context = zmq.Context()
 
         # サーバ1への命令送信用ソケット
@@ -25,6 +27,7 @@ class CommandServer:
     def receive_termination_message(self):
         # 終了メッセージを受信
         message = self.receiver.recv_string()
+        self.across_server = message
         print(f"Received termination message: {message}")
 
     def run(self):
@@ -38,6 +41,10 @@ class CommandServer:
         end_time = time.perf_counter()
         elast_time = end_time - start_time
         print(f"経過時間: {elast_time}秒")
+        with open("log.txt", "a") as log_file:
+            log_file.write(f"total execution time: {elast_time:.9f} seconds\n")
+            log_file.write(f"サーバのまたぎ回数: {self.across_server}\n")
+            log_file.write("-" * 40 + "\n")
 
 
 if __name__ == "__main__":

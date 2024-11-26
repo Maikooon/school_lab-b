@@ -124,7 +124,7 @@ class Server1:
                 other_server_probability = random.random()
                 # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
                 if other_server_probability < self.beta:
-                    # 他のサーバにメッセージを送信
+                    # --------------他のサーバにメッセージを送信---------------------------------------
                     print(
                         f"Sending message to the other server (across_server {across_server_count + 1})"
                     )
@@ -197,7 +197,7 @@ class Server1:
                         end_flag=True,
                     )
                     print("[first]Ending server process as instructed.")
-                    total_move_server += message.across_server
+                    # total_move_server += message.across_server
                 else:
                     # その後、Server2からのメッセージ待受
                     while True:
@@ -210,7 +210,7 @@ class Server1:
                             # end_flag = self.process_message(message)
                             # 終了のメッセージの場合は、ループを終了して、新しいメッセージを送信する
                             if message.end_flag:
-                                total_move_server += message.across_server
+                                # total_move_server += message.across_server
                                 end_flag = True
                             else:
                                 # TODO:ここでTokenを検証
@@ -227,7 +227,7 @@ class Server1:
                                 #####ここでTokenを検証する############################################################################
                                 ############################
                                 end_flag = self.process_message(message)
-                                total_move_server += message.across_server
+                                # total_move_server += message.across_server
                                 # ここがTrueなら、終了確立に達したので、終了
                                 # Falseなら、tryの継続
 
@@ -242,10 +242,11 @@ class Server1:
                             break
                 print("次の実行に移ります")
             # すべての実行が終わったので、メッセージを送信します
+            print("across-server-----------------------", message.across_server)
             message = Message(
                 ip=self.ip,
                 next_id=self.server2_ip,
-                across_server=total_move_server,
+                across_server=message.across_server,
                 public_key=self.public_key,
                 jwt=jwt,
                 end_flag=True,
@@ -264,7 +265,7 @@ if __name__ == "__main__":
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
-        beta=0.5,
-        rw_count=3,
+        beta=0.2,
+        rw_count=1,
     )
     server1.run()

@@ -31,10 +31,6 @@ class CommandServer:
         modify_message = Message.from_string(message)
         print("サーバのまたぎ回数", modify_message.across_server)
         self.across_server = modify_message.across_server
-        # ここでファイルに保存する
-        # with open("logs.txt", "a") as log_file:
-        #     log_file.write(f"サーバのまたぎ回数: {modify_message.across_server}\n")
-        #     log_file.write("-" * 40 + "\n")
 
     def run(self):
         start_time = time.perf_counter()

@@ -56,9 +56,51 @@ class Server2:
         print(f"->1")
         self.sender_to_server1.send_string(message.to_string())
 
+    def request_jwt_from_server(self, server_address, auth_message, timeout=5):
+        """
+        認証サーバと通信してJWTトークンを取得する関数。
+
+        Args:
+            server_address (str): 認証サーバのアドレス (例: "tcp://10.58.60.5:10006")
+            auth_message (str): 認証要求メッセージ
+            timeout (int): サーバからの応答待機時間（秒）
+
+        Returns:
+            str: JWTトークン（成功時）
+            None: エラー発生時
+        """
+        try:
+            # ZMQ通信のセットアップ
+            context = zmq.Context()
+            socket = context.socket(zmq.REQ)
+            socket.connect(server_address)
+            socket.setsockopt(
+                zmq.RCVTIMEO, timeout * 1000
+            )  # タイムアウト設定（ミリ秒）
+
+            # 認証要求を送信
+            start_time = time.perf_counter()
+            socket.send_string(auth_message)
+
+            # サーバからの応答を受信
+            jwt_token = socket.recv_string()
+            elapsed_time = time.perf_counter() - start_time
+
+            print(f"認証サーバからの応答を受信しました: {jwt_token}")
+            print(f"通信時間: {elapsed_time:.2f}秒")
+            return jwt_token
+        except zmq.ZMQError as e:
+            print(f"通信エラー: {e}")
+            return None
+        except Exception as e:
+            print(f"予期しないエラー: {e}")
+            return None
+        finally:
+            # ソケットとコンテキストをクリーンアップ
+            socket.close()
+            context.destroy()
+
     def process_message(self, message):
-        across_server_count = 0
-        end_flag = False
         total_across_servers = message.across_server
         print(f"Total across_servers: {total_across_servers}")
 
@@ -67,6 +109,16 @@ class Server2:
             if random.random() > self.alpha:
                 if random.random() < self.beta:
                     # 他のサーバにメッセージを送信
+                    # 今回は毎回行うので、認証サーバと通信を行います
+                    print("認証サーバと通信を開始します...")
+                    jwt = self.request_jwt_from_server(
+                        server_address="tcp://10.58.60.5:10006",
+                        auth_message="ここに認証したい文字列を入れる",
+                    )
+                    if jwt is None:
+                        print("JWTトークンの取得に失敗しました。処理を中断します。")
+                        break
+                    print("認証サーバとの通信が完了しました。")
                     # パスに現在のIDを追加し、次のサーバに送信
                     target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
                     new_message = Message(
