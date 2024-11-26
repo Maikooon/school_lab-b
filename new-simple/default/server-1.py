@@ -112,59 +112,59 @@ class Server1:
         # 初期命令に応じた処理（必要に応じて内容変更）
         if initial_command == "START":
             print("initial START ")
-            # ここで初めてのメッセージを作成して、送信準備
-            end_flag = self.process_message(
-                message=Message(
-                    ip=self.ip,
-                    end_flag=False,
-                    next_id=self.server2_ip,
-                    across_server=0,
-                    public_key=self.public_key,
-                    jwt="JWT_TOKEN_PLACE",
+            # 以下のメッセージを送ってRWを行う処理を任意の回数繰り返す
+            for i in range(3):
+                # ここで初めてのメッセージを作成して、送信準備
+                end_flag = self.process_message(
+                    message=Message(
+                        ip=self.ip,
+                        end_flag=False,
+                        next_id=self.server2_ip,
+                        across_server=0,
+                        public_key=self.public_key,
+                        jwt="JWT_TOKEN_PLACE",
+                    )
                 )
-            )
-            # 初回でなった時も、終了メッセージを命令さ＝ばに送る
-            if end_flag:
-                # 情報量はないが、送受信のフォーマットが決まっているので合わせる
-                message = Message(
-                    ip=self.ip,
-                    next_id=self.server2_ip,
-                    across_server=0,
-                    public_key=self.public_key,
-                    jwt="JWT_TOKEN_PLACE",
-                    end_flag=True,
-                )
-                print("[first]Ending server process as instructed.")
-                self.sender_to_command.send_string(message.to_string())
-            else:
-                print("initial END")
-
-        # その後、Server2からのメッセージ待受
-        while True:
-            try:
-                # Server2からのメッセージ受信
-                print("Waiting for messages from Server2...")
-                message = self.receive_message_from_server2()
-                print(f"Received from 2: {message}")
-
-                # 継続のメッセージの場合は、メッセージを処理
-                # end_flag = self.process_message(message)
-                # 終了のメッセージの場合は、ループを終了して、新しいメッセージを送信する
-                if message.end_flag:
-                    end_flag = True
-                else:
-                    end_flag = self.process_message(message)
-                    print("終了ーーーーーーーー")
-
-                # 終了指示があればループ終了
+                # 初回でなった時も、終了メッセージを命令さ＝ばに送る
                 if end_flag:
-                    print("Ending server process as instructed.")
+                    # 情報量はないが、送受信のフォーマットが決まっているので合わせる
+                    message = Message(
+                        ip=self.ip,
+                        next_id=self.server2_ip,
+                        across_server=0,
+                        public_key=self.public_key,
+                        jwt="JWT_TOKEN_PLACE",
+                        end_flag=True,
+                    )
+                    print("[first]Ending server process as instructed.")
                     self.sender_to_command.send_string(message.to_string())
-                    break
+                else:
+                    # その後、Server2からのメッセージ待受
+                    while True:
+                        try:
+                            # Server2からのメッセージ受信
+                            print("Waiting for messages from Server2...")
+                            message = self.receive_message_from_server2()
+                            print(f"Received from 2: {message}")
 
-            except Exception as e:
-                print(f"Error occurred: {e}")
-                break
+                            # 継続のメッセージの場合は、メッセージを処理
+                            # end_flag = self.process_message(message)
+                            # 終了のメッセージの場合は、ループを終了して、新しいメッセージを送信する
+                            if message.end_flag:
+                                end_flag = True
+                            else:
+                                end_flag = self.process_message(message)
+                                print("終了ーーーーーーーー")
+
+                            # 終了指示があればループ終了
+                            if end_flag:
+                                print("Ending server process as instructed.")
+                                self.sender_to_command.send_string(message.to_string())
+                                break
+
+                        except Exception as e:
+                            print(f"Error occurred: {e}")
+                            break
 
 
 if __name__ == "__main__":
