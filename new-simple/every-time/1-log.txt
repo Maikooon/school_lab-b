@@ -1,0 +1,62 @@
+total execution time: 3.081465159 seconds
+サーバのまたぎ回数: 6
+
+total execution time: 2.957376689 seconds
+サーバのまたぎ回数: 6
+
+total execution time: 0.333620992 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 3.462246589 seconds
+サーバのまたぎ回数: 7
+
+total execution time: 3.068562526 seconds
+サーバのまたぎ回数: 6
+
+total execution time: 0.303913862 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 1.629962429 seconds
+サーバのまたぎ回数: 3
+
+total execution time: 0.363150220 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 0.393172324 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 0.365464635 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 1.191477802 seconds
+サーバのまたぎ回数: 2
+
+total execution time: 0.361861132 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 1.663927067 seconds
+サーバのまたぎ回数: 3
+
+total execution time: 0.774698563 seconds
+サーバのまたぎ回数: 1
+
+total execution time: 2.935880400 seconds
+サーバのまたぎ回数: 0
+
+total execution time: 0.322527122 seconds, 
+サーバのまたぎ回数: 0
+
+total execution time: 1.751632217 seconds, 
+サーバのまたぎ回数: 3
+
+total execution time: 2.724355593 seconds, 
+サーバのまたぎ回数: 5
+
+total execution time: 1.122961760 seconds, 
+サーバのまたぎ回数: 2
+
+total execution time: 1.281927075 seconds, 
+サーバのまたぎ回数: 2
+
+total execution time: 0.751350805 seconds, 
+サーバのまたぎ回数: 1

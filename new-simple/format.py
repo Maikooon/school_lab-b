@@ -2,7 +2,7 @@ total_time = []
 across_server_list = []
 
 # ファイルを読み込む
-with open("./parent-token/100-log.txt", "r", encoding="utf-8") as file:
+with open("./first-time/100-log.txt", "r", encoding="utf-8") as file:
     for line in file:
         # 'across_server' を含む行を探す
         if "total execution time" in line:
@@ -19,6 +19,6 @@ with open("./parent-token/100-log.txt", "r", encoding="utf-8") as file:
             print("Across Server Value:", across_server_value)
 
 # ファイルに書き込む
-with open("./parent-token/100-log-mo.txt", "w", encoding="utf-8") as file:
+with open("./first-time/100-log-mo.txt", "w", encoding="utf-8") as file:
     for i in range(len(across_server_list)):
         file.write(f"{total_time[i]}サーバのまたぎ回数: {across_server_list[i]}\n")
