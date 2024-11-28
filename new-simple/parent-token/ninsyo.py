@@ -2,17 +2,31 @@ import zmq
 import jwt  # PyJWTがインストールされていることを前提
 import time
 import os
+import datetime
 
 SECRET_KEY = "your_secret_key"  # JWT用のシークレットキー
 LOG_FILE_PATH = "./auth_server_logs.txt"  # ログファイルのパス
 
 
-def generate_jwt(message):
-    # JWTのペイロードに必要なデータを追加
-    payload = {"message": message, "timestamp": int(time.time())}
-    # JWTを生成
-    jwt_token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-    return jwt_token
+# def generate_jwt(message):
+#     # JWTのペイロードに必要なデータを追加
+#     payload = {"message": message, "timestamp": int(time.time())}
+#     # JWTを生成
+#     jwt_token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+#     return jwt_token
+
+
+def generate_jwt(user_id):
+    payload = {
+        "user_id": user_id,
+        "exp": datetime.datetime.utcnow()
+        + datetime.timedelta(minutes=0),  # TODO: 有効期限を0にして失敗するか確認
+        "iat": datetime.datetime.utcnow(),  # 発行時刻
+    }
+    print(payload)
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    print("これが使用されています！")
+    return token
 
 
 def save_to_log(message, jwt_token, elapsed_time):
@@ -46,10 +60,11 @@ def start_auth_server():
             jwt_token = (
                 jwt_token.decode("utf-8") if isinstance(jwt_token, bytes) else jwt_token
             )
-            print("Generated JWT:", jwt_token)
+            print("Generated JWT----------------------------:", jwt_token)
 
             # 生成したJWTをクライアントに返送
             socket.send_string(jwt_token)
+            print("Sent JWT to client.")
 
             # ログをファイルに保存
             save_to_log(message, jwt_token, elapsed_time)

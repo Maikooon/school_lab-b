@@ -109,7 +109,7 @@ class Server2:
                 jwt_result = validate_child_token(
                     message.jwt, message.public_key, message.next_id
                 )
-                print("JWT検証結果", jwt_result)
+                print("子Tokenの検証結果", jwt_result)
                 ############################
 
                 # メッセージを処理

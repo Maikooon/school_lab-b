@@ -10,11 +10,12 @@ def generate_jwt(user_id):
     payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow()
-        # TODO: これを０にしたときにちゃんと失敗するのか確認したい
-        + datetime.timedelta(minutes=0),  # 30分の有効期限
+        + datetime.timedelta(minutes=0),  # TODO: 有効期限を0にして失敗するか確認
         "iat": datetime.datetime.utcnow(),  # 発行時刻
     }
+    print(payload)
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    print("これが使用されています！")
     return token
 
 
@@ -25,9 +26,13 @@ def verify_jwt(token):
         decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return decoded
     except jwt.ExpiredSignatureError:
-        print("Token has expired")
+        # 有効期限切れのエラー
+        current_time = datetime.datetime.utcnow()
+        print(f"Token has expired at {current_time}.")
+        print("The token's expiration time has passed.")
         return None
     except jwt.InvalidTokenError:
+        # その他のトークンエラー
         print("Invalid token")
         return None
 

@@ -274,7 +274,7 @@ if __name__ == "__main__":
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
         beta=0.2,
-        rw_count=100,
+        rw_count=2,
         parent_token=None,
     )
     server1.run()

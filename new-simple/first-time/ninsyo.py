@@ -2,17 +2,18 @@ import zmq
 import jwt  # PyJWTがインストールされていることを前提
 import time
 import os
+from Jwt import *
 
 SECRET_KEY = "your_secret_key"  # JWT用のシークレットキー
 LOG_FILE_PATH = "./auth_server_logs.txt"  # ログファイルのパス
 
 
-def generate_jwt(message):
-    # JWTのペイロードに必要なデータを追加
-    payload = {"message": message, "timestamp": int(time.time())}
-    # JWTを生成
-    jwt_token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-    return jwt_token
+# def generate_jwt(message):
+#     # JWTのペイロードに必要なデータを追加
+#     payload = {"message": message, "timestamp": int(time.time())}
+#     # JWTを生成
+#     jwt_token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+#     return jwt_token
 
 
 def save_to_log(message, jwt_token, elapsed_time):

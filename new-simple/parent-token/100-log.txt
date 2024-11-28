@@ -85,3 +85,15 @@ total execution time: 21.613231055 seconds
 サーバのまたぎ回数: 359
 total execution time: 13.613231055 seconds
 サーバのまたぎ回数: 219
+
+
+あってもいいかも
+total execution time: 8.750829972 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 132, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZXNzYWdlIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwidGltZXN0YW1wIjoxNzMyNzg0MDA4fQ._Z6caVAx7ecCTW2NyIxxfMRBSFwOZMOCaU8zmTxlhBY-RW-100', 'start_time': 1732784016.1736333}
+----------------------------------------
+total execution time: 7.953815416 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 110, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZXNzYWdlIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwidGltZXN0YW1wIjoxNzMyNzg0NDk2fQ.UUnVIwEwVyBCLD7Cu5Kw8PZTBJVlIwlWuKloja6oxe8-RW-100', 'start_time': 1732784503.3143294}
+----------------------------------------
+total execution time: 10.735679589 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 166, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZXNzYWdlIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwidGltZXN0YW1wIjoxNzMyNzg0NTQ2fQ.nFIrWnebHDIHLQ8mBMTes7Txxu6vJoL3Sq2m2eSVKEE-RW-100', 'start_time': 1732784556.8989081}
+----------------------------------------
