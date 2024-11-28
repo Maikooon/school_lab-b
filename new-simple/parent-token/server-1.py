@@ -55,7 +55,6 @@ class Server1:
     def receive_initial_command(self):
         # 命令サーバから初期命令を受信
         message = self.receiver_from_command.recv_string()
-        print(f"Received initial command")
         return message
 
     def receive_message_from_server2(self):
@@ -160,7 +159,6 @@ class Server1:
         return f"{parent_token}-{rw_id}"
 
     def run(self):
-        print("Server is running. Waiting for messages...")
         total_move_server = 0
 
         # 初期命令を受信
@@ -168,13 +166,14 @@ class Server1:
 
         # 初期命令に応じた処理（必要に応じて内容変更）
         if initial_command == "START":
-            print("initial START ")
             # 以下のメッセージを送ってRWを行う処理を任意の回数繰り返す
             for i in range(self.rw_count):
                 ## 親Tokenが有効ではない時の処理
                 if self.parent_token is None or not verify_jwt(self.parent_token):
                     # TODO:親Tokenを得るための処理
-                    print("認証サーバと通信を開始します...")
+                    print(
+                        "親Tokenがないまたは、期限が切れているので認証サーバと通信を開始します..."
+                    )
                     self.parent_token = self.request_jwt_from_server(
                         server_address="tcp://10.58.60.5:10006",
                         auth_message="ここに認証したい文字列を入れる",
@@ -273,8 +272,8 @@ if __name__ == "__main__":
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
-        beta=0.2,
-        rw_count=2,
+        beta=0.4,
+        rw_count=100,
         parent_token=None,
     )
     server1.run()

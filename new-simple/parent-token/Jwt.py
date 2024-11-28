@@ -7,15 +7,16 @@ SECRET_KEY = "your_secret_key"  # 自サーバーで管理する秘密鍵
 
 # JWTを生成
 def generate_jwt(user_id):
+    # TODO:ここで有効期限を明記
+    validity_seconds = 0.5  # 有効期限は1時間
     payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow()
-        + datetime.timedelta(minutes=0),  # TODO: 有効期限を0にして失敗するか確認
+        + datetime.timedelta(seconds=validity_seconds),
         "iat": datetime.datetime.utcnow(),  # 発行時刻
     }
-    print(payload)
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-    print("これが使用されています！")
+    print("Generated Token:", token)
     return token
 
 
