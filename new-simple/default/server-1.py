@@ -188,14 +188,14 @@ class Server1:
 if __name__ == "__main__":
     server1 = Server1(
         ip="10.58.60.3",
-        port=3100,
+        port=3200,
         server2_ip="10.58.60.6",
-        server2_port=3102,
+        server2_port=3202,
         command_server_ip="10.58.60.11",
-        command_server_port=3103,
+        command_server_port=3203,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,  # RWの終了確立
-        beta=0.5,
-        rw_count=1,
+        beta=0.7,
+        rw_count=100,
     )
     server1.run()

@@ -238,7 +238,8 @@ class Server1:
                                 print("JWT検証結果", jwt_result)
                                 #####ここでTokenを検証する############################################################################
                                 end_flag = self.process_message(message)
-                                total_move_server += message.across_server
+                                if end_flag:
+                                    total_move_server += message.across_server
 
                             # 終了指示があればループ終了
                             if end_flag:
@@ -272,8 +273,8 @@ if __name__ == "__main__":
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
-        beta=0.5,
-        rw_count=3,
+        beta=0.7,
+        rw_count=100,
         parent_token=None,
     )
     server1.run()

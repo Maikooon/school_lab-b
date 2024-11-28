@@ -4,7 +4,7 @@
 #!/bin/bash
 
 # 1. 各サーバからファイルをコピー
-scp kate@ab11:./new-simple/first-time/log.txt ./log.txt
+scp kate@ab11:./new-simple/parent-token/log.txt ./log.txt
 # ssh kate@ab11 "rm ./new-simple/first-time/log.txt"  # リモートのファイルを削除
 
 # 5. 完了メッセージ

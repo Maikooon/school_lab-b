@@ -27,7 +27,7 @@ def save_to_log(message, jwt_token, elapsed_time):
 def start_auth_server():
     context = zmq.Context()
     socket = context.socket(zmq.REP)  # REPソケットでクライアントの要求を待つ
-    socket.bind("tcp://10.58.60.5:10006")  # ポート10006で接続を待機
+    socket.bind("tcp://10.58.60.5:10009")  # ポート10006で接続を待機
 
     print("認証サーバが起動しました。")
 

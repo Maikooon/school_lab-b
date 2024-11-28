@@ -27,8 +27,7 @@ class CommandServer:
     def receive_termination_message(self):
         # 終了メッセージを受信
         message = self.receiver.recv_string()
-        modify_message = Message.from_string(message)
-        self.across_server = message.across_server
+        self.across_server = message
         print(f"Received termination message: {message}")
 
     def run(self):

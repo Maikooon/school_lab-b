@@ -28,9 +28,6 @@ Total execution time: 0.363150220 seconds
 Total execution time: 0.393172324 seconds
 サーバのまたぎ回数: 0
 
-Total execution time: 6.638627525 seconds
-サーバのまたぎ回数: 14
-
 Total execution time: 0.365464635 seconds
 サーバのまたぎ回数: 0
 

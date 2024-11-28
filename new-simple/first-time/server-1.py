@@ -124,7 +124,7 @@ class Server1:
                 )
                 context = zmq.Context()
                 socket = context.socket(zmq.REQ)
-                socket.connect("tcp://10.58.60.5:10006")
+                socket.connect("tcp://10.58.60.5:10009")
                 start_time_jwt_connected = time.perf_counter()  # 　時間を計測
                 message_for_ninsyo = "ここに認証したい文字列を入れる"  # 例としてnode_idとvalを文字列に変換
                 socket.send_string(message_for_ninsyo)  # 認証要求を送信
@@ -159,8 +159,6 @@ class Server1:
                         end_flag=True,
                     )
                     print("[first]Ending server process as instructed.")
-                    total_move_server += message.across_server
-                    # self.sender_to_command.send_string(message.to_string())
                     # 次のRW実行に移る
                     # break
                 else:
@@ -178,7 +176,6 @@ class Server1:
                                 total_move_server += message.across_server
                                 end_flag = True
                             else:
-                                # TODO:ここでTokenを検証
                                 # TODO: JWTの検証を行う
                                 start_time_jwt_verify = (
                                     time.perf_counter()
@@ -193,7 +190,8 @@ class Server1:
                                 #####ここでTokenを検証する############################################################################
                                 ############################
                                 end_flag = self.process_message(message)
-                                total_move_server += message.across_server
+                                if end_flag:
+                                    total_move_server += message.across_server
                                 # ここがTrueなら、終了確立に達したので、終了
                                 # Falseなら、tryの継続
 
@@ -231,6 +229,6 @@ if __name__ == "__main__":
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
         beta=0.5,
-        rw_count=3,
+        rw_count=100,
     )
     server1.run()

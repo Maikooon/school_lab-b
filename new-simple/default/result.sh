@@ -5,7 +5,7 @@
 
 # 1. 各サーバからファイルをコピー
 scp kate@ab11:./new-simple/default/log.txt ./log.txt
-ssh kate@ab11 "rm ./new-simple/default/log.txt"  # リモートのファイルを削除
+# ssh kate@ab11 "rm ./new-simple/default/log.txt"  # リモートのファイルを削除
 
 # 5. 完了メッセージ
 echo "すべてのファイルがコピーされ、combined_logs.txtにまとめられ、ジャンルごとに整理されました。不要なファイルは削除されました。"

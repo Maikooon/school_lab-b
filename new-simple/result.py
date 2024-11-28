@@ -5,7 +5,7 @@ import numpy as np
 x_list = []
 y_list = []
 # データをリストに格納
-file = open("./first-time/log.txt", "r")
+file = open("./default/100-log.txt", "r")
 # 一行づつ読み込んんで、x、yに入れる,空行が車で続ける
 
 
@@ -26,5 +26,5 @@ plt.xlabel("サーバのまたぎ回数")
 plt.ylabel("total execution time (秒)")
 
 # グラフを表示
-plt.savefig("result-evenry.png")
+plt.savefig("100-default.png")
 plt.show()
