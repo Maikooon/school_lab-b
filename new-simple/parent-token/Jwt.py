@@ -10,7 +10,8 @@ def generate_jwt(user_id):
     payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow()
-        + datetime.timedelta(minutes=30),  # 30分の有効期限
+        # TODO: これを０にしたときにちゃんと失敗するのか確認したい
+        + datetime.timedelta(minutes=0),  # 30分の有効期限
         "iat": datetime.datetime.utcnow(),  # 発行時刻
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")

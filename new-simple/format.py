@@ -2,7 +2,7 @@ total_time = []
 across_server_list = []
 
 # ファイルを読み込む
-with open("./first-time/100-log.txt", "r", encoding="utf-8") as file:
+with open("./first-time/log.txt", "r", encoding="utf-8") as file:
     for line in file:
         # 'across_server' を含む行を探す
         if "total execution time" in line:

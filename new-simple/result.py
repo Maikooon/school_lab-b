@@ -28,6 +28,8 @@ data_files = {
 
 colors = ["red", "blue", "green"]
 plt.figure(figsize=(8, 6))
+# ux軸の範囲を決めたい
+plt.xlim(170, 380)
 
 # 各データセットをプロット
 for label, (color, file_path) in zip(

@@ -195,7 +195,7 @@ if __name__ == "__main__":
         command_server_port=3203,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,  # RWの終了確立
-        beta=0.3,
+        beta=0.2,
         rw_count=100,
     )
     server1.run()

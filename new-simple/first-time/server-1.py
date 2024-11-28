@@ -228,7 +228,7 @@ if __name__ == "__main__":
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
-        beta=0.5,
+        beta=0.2,
         rw_count=100,
     )
     server1.run()

@@ -12,6 +12,7 @@ server1 = Server1(
         parent_token=None,
     )
     
+
 total execution time: 19.398549967 seconds
 サーバのまたぎ回数: 316
 total execution time: 17.857950930 seconds
@@ -60,3 +61,27 @@ total execution time: 26.180995326 seconds
 サーバのまたぎ回数: 448
 total execution time: 26.995354190 seconds
 サーバのまたぎ回数: 471
+total execution time: 22.791671664 seconds
+サーバのまたぎ回数: 396
+total execution time: 16.706858765 seconds
+サーバのまたぎ回数: 245
+total execution time: 18.510643985 seconds
+サーバのまたぎ回数: 297
+total execution time: 15.577189464 seconds
+サーバのまたぎ回数: 247
+total execution time: 17.148602910 seconds
+サーバのまたぎ回数: 272
+total execution time: 19.116868023 seconds
+サーバのまたぎ回数: 317
+total execution time: 16.007580463 seconds
+サーバのまたぎ回数: 260
+total execution time: 20.036424667 seconds
+サーバのまたぎ回数: 318
+total execution time: 17.288311843 seconds
+サーバのまたぎ回数: 283
+total execution time: 18.291457742 seconds
+サーバのまたぎ回数: 299
+total execution time: 21.613231055 seconds
+サーバのまたぎ回数: 359
+total execution time: 13.613231055 seconds
+サーバのまたぎ回数: 219

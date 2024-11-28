@@ -46,3 +46,25 @@ total execution time: 57.712231036 seconds
 サーバのまたぎ回数: 287
 total execution time: 56.616598208 seconds
 サーバのまたぎ回数: 276
+total execution time: 57.719844181 seconds
+サーバのまたぎ回数: 281
+total execution time: 55.123637773 seconds
+サーバのまたぎ回数: 236
+total execution time: 55.327931695 seconds
+サーバのまたぎ回数: 245
+total execution time: 56.511872843 seconds
+サーバのまたぎ回数: 246
+total execution time: 57.491489995 seconds
+サーバのまたぎ回数: 268
+total execution time: 56.874947023 seconds
+サーバのまたぎ回数: 252
+total execution time: 55.621056125 seconds
+サーバのまたぎ回数: 256
+total execution time: 54.904928066 seconds
+サーバのまたぎ回数: 233
+total execution time: 52.457751393 seconds
+サーバのまたぎ回数: 185
+total execution time: 54.258738834 seconds
+サーバのまたぎ回数: 236
+total execution time: 57.619915564 seconds
+サーバのまたぎ回数: 273
