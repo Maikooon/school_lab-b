@@ -5,6 +5,7 @@
 
 # 1. 各サーバからファイルをコピー
 scp kate@ab11:./new-simple/cache/log.txt ./log.txt
+scp kate@ab03:./new-simple/cache/cache.txt ./cache.txt
 # ssh kate@ab11 "rm ./new-simple/first-time/log.txt"  # リモートのファイルを削除
 
 # 5. 完了メッセージ

@@ -60,38 +60,30 @@ class Server2:
         total_across_servers = message.across_server
         print(f"Total across_servers: {total_across_servers}")
 
-        while True:
-            # 終了確率をチェック
-            if random.random() > self.alpha:
-                if random.random() < self.beta:
-                    # 他のサーバにメッセージを送信
-                    # パスに現在のIDを追加し、次のサーバに送信
-                    target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
-                    new_message = Message(
-                        ip=self.ip,
-                        next_id=target_server_ip,
-                        across_server=message.across_server + 1,
-                        public_key=self.public_key,
-                        jwt=message.jwt,  # 実際には有効なJWTを生成する
-                        end_flag=False,
-                    )
-                    self.send_message_to_random_server(new_message)
-                    break  # メッセージを送信したら終了
-                else:
-                    print("Message not sent to the other server (retry).")
-            else:
-                print(f"Sending termination message 1 -> 2")
-                target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
-                new_message = Message(
-                    ip=self.ip,
-                    next_id=target_server_ip,
-                    across_server=message.across_server,  # 命令サーバへの祖神なのでカウントしない
-                    public_key=self.public_key,
-                    jwt=message.jwt,  # 実際には有効なJWTを生成する
-                    end_flag=True,
-                )
-                self.sender_to_server1.send_string(new_message.to_string())
-                break  # 送信せず終了
+        target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+        new_message = Message(
+            ip=self.ip,
+            next_id=target_server_ip,
+            across_server=message.across_server + 1,
+            public_key=self.public_key,
+            jwt=message.jwt,  # 実際には有効なJWTを生成する
+            end_flag=False,
+        )
+        self.send_message_to_random_server(new_message)
+
+        if total_across_servers == 5:
+            print(f"Sending termination message 1 -> 2")
+            target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+            new_message = Message(
+                ip=self.ip,
+                next_id=target_server_ip,
+                across_server=message.across_server,  # 命令サーバへの祖神なのでカウントしない
+                public_key=self.public_key,
+                jwt=message.jwt,  # 実際には有効なJWTを生成する
+                end_flag=True,
+            )
+            self.sender_to_server1.send_string(new_message.to_string())
+            return True
 
     def run(self):
         print("Server is running. Waiting for messages...")
@@ -105,34 +97,46 @@ class Server2:
                 # Server1からのメッセージ受信
                 print("Waiting for messages from Server1...")
                 message = self.receive_message_from_server1()
+                total_rw_hop_count += 1
 
                 # -初めてのメッセージでキャッシュがなかったら検証する
                 if cache == 0:
                     print("初めてのメッセージでキャッシュがなかったら検証する")
                     cache = validate_child_token(message.jwt)
-                    cache_time = time.time()
+                    cache_time = time.perf_counter()
                 # -2回目以降のメッセージ
                 else:
                     # -- キャッシュを使用する場合
                     if random.random() < 0.5:  # キャッシュを使用して検証
                         print("キャッシュを使用して検証")
                         # キャッシュの有効期限が切れていない
-                        # この場合だと有効期限は100秒
-                        if cache_time + 100 > time.time():
+                        # TODO:有効期限を設定
+                        if cache_time + 0.125 > time.perf_counter():
                             print("キャッシュの有効期限が切れていないのでそのまま通過")
                         # キャッシュの有効期限が切れている
                         else:
                             print("キャッシュの有効期限が切れているので検証する")
+                            # start_time = time.time()
                             cache = validate_child_token(message.jwt)
+                            # 時間を更新
+                            cache_time = time.perf_counter()  # end_time = time.time()
+                            # all_time = end_time - start_time
+                            # print("検証にかかった時間", all_time)
                     # 　-- 初めてのサーバになりすまして、キャッシュを使用せず検証する場合
                     else:
                         print(
                             "キャッシュを使用せず検証する,キャッシュは新規サーバのものとして保存"
                         )
+                        start_time = time.time()
                         cache_new = validate_child_token(message.jwt)
+                        end_time = time.time()
+                        all_time = end_time - start_time
+                        print("検証にかかった時間", all_time)
                 # print("子Tokenの検証結果", jwt_result)
                 ############################
-
+                print("-" * 50)
+                if total_rw_hop_count == 5:
+                    end_flag = True
                 # メッセージを処理
                 end_flag = self.process_message(message)
 
@@ -155,7 +159,7 @@ if __name__ == "__main__":
         command_server_ip="10.58.60.11",
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
-        alpha=0.15,
-        beta=0.5,
+        alpha=0,
+        beta=1,
     )
     server2.run()

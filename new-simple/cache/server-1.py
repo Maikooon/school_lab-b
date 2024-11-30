@@ -75,35 +75,21 @@ class Server1:
         across_server_count = 0
         end_flag = False
 
-        while True:
-            # 終了確立よりも大きいときには、継続
-            if random.random() > self.alpha:
-                other_server_probability = random.random()
-                # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
-                if other_server_probability < self.beta:
-                    # 他のサーバにメッセージを送信
-                    print(
-                        f"Sending message to the other server (across_server {across_server_count + 1})"
-                    )
-                    target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
-                    new_message = Message(
-                        ip=self.ip,
-                        next_id=target_server_ip,
-                        across_server=message.across_server + 1,
-                        public_key=self.public_key,
-                        jwt=message.jwt,  # 実際には有効なJWTを生成する
-                        end_flag=False,
-                    )
-                    self.send_message_to_random_server(new_message)
-                    print(new_message.jwt)
-                    break  # メッセージを送信したら終了
-                else:
-                    print("Message not sent to the other server (retry).")
-            # 終了確立に達したので終了する
-            else:
-                print("Message not sent to the other server. Ending process.")
-                end_flag = True
-                break  # 送信せず終了
+        # 他のサーバにメッセージを送信
+        print(
+            f"Sending message to the other server (across_server {across_server_count + 1})"
+        )
+        target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+        new_message = Message(
+            ip=self.ip,
+            next_id=target_server_ip,
+            across_server=message.across_server + 1,
+            public_key=self.public_key,
+            jwt=message.jwt,  # 実際には有効なJWTを生成する
+            end_flag=False,
+        )
+        self.send_message_to_random_server(new_message)
+        print(new_message.jwt)
         return end_flag
 
     def request_jwt_from_server(self, server_address, auth_message, timeout=5):
@@ -129,15 +115,15 @@ class Server1:
             )  # タイムアウト設定（ミリ秒）
 
             # 認証要求を送信
-            start_time = time.perf_counter()
+            # start_time = time.perf_counter()
             socket.send_string(auth_message)
 
             # サーバからの応答を受信
             jwt_token = socket.recv_string()
-            elapsed_time = time.perf_counter() - start_time
+            # elapsed_time = time.perf_counter() - start_time
 
             print(f"認証サーバからの応答を受信しました: {jwt_token}")
-            print(f"通信時間: {elapsed_time:.2f}秒")
+            # print(f"通信時間: {elapsed_time:.2f}秒")
             return jwt_token
         except zmq.ZMQError as e:
             print(f"通信エラー: {e}")
@@ -173,6 +159,7 @@ class Server1:
 
         # 初期命令を受信
         initial_command = self.receive_initial_command()
+        start_time = time.time()
 
         # 初期命令に応じた処理（必要に応じて内容変更）
         if initial_command == "START":
@@ -232,15 +219,15 @@ class Server1:
                             if cache == 0:
                                 # Tokenを検証
                                 cache = validate_child_token(message.jwt)
-                                cache_time = time.time()
+                                cache_time = time.perf_counter()
                             # 2回目以降のメッセージ
                             else:
                                 # -- キャッシュを使用する場合
                                 if random.random() < 0.5:  # キャッシュを使用して検証
                                     print("キャッシュを使用して検証")
                                     # キャッシュの有効期限が切れていない
-                                    # この場合だと有効期限は100秒
-                                    if cache_time + 100 > time.time():
+                                    # TODO:有効期限を設定
+                                    if cache_time + 0.125 > time.perf_counter():
                                         print(
                                             "キャッシュの有効期限が切れていないのでそのまま通過"
                                         )
@@ -250,6 +237,7 @@ class Server1:
                                             "キャッシュの有効期限が切れているので検証する"
                                         )
                                         cache = validate_child_token(message.jwt)
+                                        cache_time = time.perf_counter()
                                 # 　-- 初めてのサーバになりすまして、キャッシュを使用せず検証する場合
                                 else:
                                     print(
@@ -263,18 +251,8 @@ class Server1:
                                 total_move_server += message.across_server
                                 end_flag = True
                             else:
-                                # Tokenを検証
-                                start_time_jwt_verify = (
-                                    time.perf_counter()
-                                )  # 　時間を計測
                                 print(message.jwt)  # ここでは子tokenが検証される
-                                jwt_result = validate_child_token(
-                                    message.jwt, self.parent_token, rw_id
-                                )
-                                end_time_jwt_verify = time.perf_counter()
-                                elapsed_time_jwt_verify = (
-                                    end_time_jwt_verify - start_time_jwt_verify
-                                )
+                                jwt_result = validate_child_token(message.jwt)
                                 print("JWT検証結果", jwt_result)
                                 #####ここでTokenを検証する############################################################################
                                 end_flag = self.process_message(message)
@@ -300,6 +278,13 @@ class Server1:
                 end_flag=True,
             )
             print("[last]Ending server process as instructed.")
+            end_time = time.time()
+            print("処理時間", end_time - start_time)
+            # この時間をログに保存する
+            with open("cache.txt", "a") as log_file:
+                log_file.write(f"処理時間: {end_time - start_time:.9f} seconds\n")
+                log_file.write("-" * 40 + "\n")
+
             self.sender_to_command.send_string(message.to_string())
 
 
@@ -312,8 +297,8 @@ if __name__ == "__main__":
         command_server_ip="10.58.60.11",
         command_server_port=3103,
         public_key="Server1_Public_Key",  # 公開鍵
-        alpha=0.15,
-        beta=0.4,
+        alpha=0,
+        beta=1,
         rw_count=1,
         parent_token=None,
     )
