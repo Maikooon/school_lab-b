@@ -13,7 +13,7 @@ def load_and_partition_graph(graph_name, partition_count):
     # ノードの分割を行う
     edgecut, parts = metis.part_graph(G, partition_count)
     # ノードとコミュニティ情報をファイルに保存
-    save_node_community(parts, graph_name)
+    save_node_community(parts, graph_name, partition_count)
 
 
 # ファイルからノードの接続情報を読み込む関数
@@ -27,8 +27,18 @@ def load_graph_from_file(filename):
 
 
 # ノードとコミュニティ情報をファイルに保存する関数
-def save_node_community(parts, graph_name):
-    output_file = f"./{graph_name}/node_community.txt"
+def save_node_community(parts, graph_name, partition_count):
+    output_file = f"./{graph_name}/{partition_count}/node_community.txt"
+    # フォルダがなければ作成
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    # ファイルがなければ作成
+    if not os.path.isfile(output_file):
+        with open(output_file, "w") as file:
+            # 初期データを書き込む場合
+            file.write("Your initial content here\n")
+
+    print(f"File '{output_file}' is ready.")
     with open(output_file, "w") as f:
         for i, p in enumerate(parts):
             f.write(f"{i} {p}\n")
@@ -36,6 +46,6 @@ def save_node_community(parts, graph_name):
 
 # TODO:グラフの名前を定義するーメイン処理
 if __name__ == "__main__":
-    GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
-    npart = 3  # 分割数を指定
+    GRAPH = os.getenv("GRAPH", "com-amazon-connected")
+    npart = 2000  # 分割数を指定
     load_and_partition_graph(GRAPH, npart)

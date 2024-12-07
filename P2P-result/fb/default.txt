@@ -1,5 +1,0 @@
-Elapsed time 22.90226912498474
-Elapsed time 24
-Elapsed time 24.335333824157715
-Elapsed time 24.56685185432434
-Elapsed time 25.453712224960327

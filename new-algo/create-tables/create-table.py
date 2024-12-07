@@ -18,6 +18,7 @@ GRAPH = os.getenv("GRAPH")
 GRAPH_NAME = os.getenv("GRAPH_NAME")
 GRAPH_COMMUNITY = os.getenv("GRAPH_COMMUNITY")
 NG_RATE = float(os.getenv("NG_RATE", 0.0))  # デフォルト値0.0を指定
+COM_NUM = int(os.getenv("COM_NUM", 0))  # デフォルト値0を指定
 
 # ここで確認する
 print("Graph:", GRAPH)
@@ -29,7 +30,7 @@ print("NG Rate:", NG_RATE)
 # node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
 
 # METISでやる時
-node_community_file = f"./result/{GRAPH_COMMUNITY}/node_community.txt"
+node_community_file = f"./result/{GRAPH_COMMUNITY}/{COM_NUM}/node_community.txt"
 
 # エッジファイルを読み込む   TODO: ここも変更する
 edges_file = f"./../../Louvain/graph/{GRAPH_NAME}.gr"
@@ -64,22 +65,31 @@ def load_edges(file_path):
     return edges
 
 
-# ランダムに2〜3のグループにコミュニティを分ける関数
-def create_random_groups(communities, min_groups=2, max_groups=3):
-    num_groups = random.randint(
-        min_groups, max_groups
-    )  # ランダムに2〜3のグループ数を選ぶ
-    random.shuffle(communities)  # コミュニティの順序をランダム化
-    group_size = len(communities) // num_groups  # 各グループの基本サイズ
-    remainder = len(communities) % num_groups  # グループ数に割り切れない場合の余り
+# # ランダムに2〜3のグループにコミュニティを分ける関数
+# def create_random_groups(communities, min_groups=2, max_groups=3):
+#     num_groups = random.randint(
+#         min_groups, max_groups
+#     )  # ランダムに2〜3のグループ数を選ぶ
+#     random.shuffle(communities)  # コミュニティの順序をランダム化
+#     group_size = len(communities) // num_groups  # 各グループの基本サイズ
+#     remainder = len(communities) % num_groups  # グループ数に割り切れない場合の余り
 
-    groups = []
-    start = 0
-    for i in range(num_groups):
-        # 各グループには少なくとも1つのコミュニティが含まれるようにする
-        end = start + group_size + (1 if i < remainder else 0)
-        groups.append(communities[start:end])
-        start = end
+#     groups = []
+#     start = 0
+#     for i in range(num_groups):
+#         # 各グループには少なくとも1つのコミュニティが含まれるようにする
+#         end = start + group_size + (1 if i < remainder else 0)
+#         groups.append(communities[start:end])
+#         start = end
+
+
+#     return groups
+def create_random_groups(communities):
+    # コミュニティの順序をランダム化
+    random.shuffle(communities)
+
+    # 各コミュニティはそのままグループとして処理
+    groups = [[community] for community in communities]
 
     return groups
 

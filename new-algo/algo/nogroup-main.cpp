@@ -154,34 +154,28 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         std::string a;
         auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
-        printf("ここには全部到達l");
+        // printf("ここには全部到達l");
 
-        // //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+        //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+        // if (it != ng_table.end()) {
+        //     std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+        //     for (int num : it->second) {
+        //         std::cout << num << " ";
+        //         a += std::to_string(num) + " "; // ノードを文字列に追加
+        //     }
+        //     std::cout << std::endl;
+        // }
         if (it != ng_table.end()) {
-            std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+            bool first = true;
             for (int num : it->second) {
-                std::cout << num << " ";
-                a += std::to_string(num) + " "; // ノードを文字列に追加
+                a += std::to_string(num) + ", ";
+                first = false;
             }
-            std::cout << std::endl;
         }
-        // 次にHopするノードがNGノードの候補か確認
-       // if (it != ng_table.end()) {
-       //     // std::cout << "次のノードに到s達できない始点は以下 " << next_node << ": ";
-       //     // std::cout << "要素数: " << it->second.size() << std::endl;
-       //     bool first = true;
-       //     for (int num : it->second) {
-       //         if (!first) std::cout << ", ";
-       //         std::cout << num;
-       //         a += std::to_string(num) + ", ";
-       //         first = false;
-       //     }
-       //     std::cout << std::endl;
-       // }
 
-       // START_NODEが文字列a(２列目以降)に含まれているか確認
+        // START_NODEが文字列a(２列目以降)に含まれているか確認
         if (a.find(std::to_string(START_NODE)) != std::string::npos) {
-            std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
+            // std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
             next_node = current_node;  // 現在のノードに戻す
             continue;
         }
@@ -269,6 +263,7 @@ int main() {
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
     cout << "Average path length: " << average_length << endl;
+    cout << "Total moves by nodes " << total_length << endl;
     cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
@@ -279,6 +274,7 @@ int main() {
 
     // 結果を出力
     std::string results = "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves by nodes: " + std::to_string(total_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
     results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";

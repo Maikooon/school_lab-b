@@ -123,7 +123,6 @@ void load_community_ng_nodes(const std::string& filepath) {
 
 // ランダムウォークを実行  1RWの誕生から死滅まですべて
 vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
-
     int move_count = 0;
     vector<int> path;
     int current_node = START_NODE;
@@ -132,7 +131,9 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     start_community = node_communities[START_NODE];
 
     while ((double)rand() / RAND_MAX > ALPHA) {
+        printf("current_node: %d\n", current_node);
         auto neighbors = graph[current_node];
+        printf("neighbors: %d\n", neighbors.size());
         if (neighbors.empty()) {
             break;
         }
@@ -141,7 +142,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
         int current_community = node_communities[current_node];
         int next_community = node_communities[next_node];
-
+        //TODO: ここから
         //コミュニテイが同じ場合は、すでに読み込んであるリストを参照することで認可を行う
         // printf("current_community: %d, next_community: %d\n", current_community, next_community);
         if (current_community == next_community) {
@@ -186,8 +187,13 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             }
             move_count++;
         }
-
+        //ここまで
         path.push_back(next_node);
+
+        if (node_communities[current_node] != node_communities[next_node]) {
+            // cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
+            move_count++;
+        }
         current_node = next_node;
     }
     total_move += move_count;

@@ -105,25 +105,47 @@ vector<int> random_walk(int& total_move, int START_NODE) {
 
         current_node = next_node;
     }
+    //コミュニティが異なるときの移動回数
     total_move += move_count;
     return path;
 }
 
 
-void saveResultsToFile(const std::string& filePath, const std::string& results) {
-    // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
-    std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
+// void saveResultsToFile(const std::string& filePath, const std::string& results) {
+//     // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
+//     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
 
-    // ファイルが正常に開けたかを確認
+//     // ファイルが正常に開けたかを確認
+//     if (!outputFile) {
+//         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
+//         return;
+//     }
+
+//     // 結果をファイルに書き込む
+//     outputFile << results;
+
+//     // ファイルを閉じる
+//     outputFile.close();
+// }
+void saveResultsToFile(const std::string& filePath, const std::string& results) {
+    std::__fs::filesystem::path dirPath = std::__fs::filesystem::path(filePath).parent_path();
+
+    // ディレクトリが存在しない場合、作成する
+    if (!std::__fs::filesystem::exists(dirPath)) {
+        try {
+            std::__fs::filesystem::create_directories(dirPath);
+        }
+        catch (const std::__fs::filesystem::filesystem_error& e) {
+            std::cerr << "ディレクトリの作成に失敗しました: " << e.what() << std::endl;
+            return;
+        }
+    }
+    std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
     if (!outputFile) {
         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
         return;
     }
-
-    // 結果をファイルに書き込む
     outputFile << results;
-
-    // ファイルを閉じる
     outputFile.close();
 }
 
@@ -184,6 +206,7 @@ int main() {
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
     cout << "Average path length: " << average_length << endl;
+    cout << "Total moves by nodes: " << total_length << endl;
     cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
@@ -197,6 +220,7 @@ int main() {
     //結果を出力する
    // 保存したい結果
     std::string results = "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves by nodes: " + std::to_string(total_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
     results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
