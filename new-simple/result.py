@@ -26,16 +26,23 @@ data_files = {
     "parent-token": "./parent-token/100-log.txt",
 }
 
-colors = ["red", "blue", "green"]
+colors = [
+    "red",
+    "green",
+    "purple",
+]
 plt.figure(figsize=(8, 6))
 # ux軸の範囲を決めたい
-plt.xlim(170, 380)
+# plt.xlim(10, 380)
 
 # 各データセットをプロット
 for label, (color, file_path) in zip(
     data_files.keys(), zip(colors, data_files.values())
 ):
     x_list, y_list = read_data(file_path)
+    ## ここまで100回分の平均であるので、すべてを/100して考える
+    x_list = [x / 100 for x in x_list]
+    y_list = [y / 100 for y in y_list]
     plt.scatter(x_list, y_list, label=label, color=color)
 
 # 軸ラベルと凡例を設定

@@ -1,0 +1,63 @@
+0.2 
+total execution time: 48.711642485 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 212, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwiZXhwIjoxNzMyNzkzODQyLCJpYXQiOjE3MzI3OTM4NDF9._Q-PNah7OUOM3W8nBSNjz4N8BJhNdIU3qIxEC4rEMWc-RW-100', 'start_time': 1732793842.5792518}
+----------------------------------------
+total execution time: 53.440346330 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 271, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwiZXhwIjoxNzMyNzkzOTUwLCJpYXQiOjE3MzI3OTM5NDl9.DB7HQ_FXTPhX-zrBg1aS96NL5thaX_D8RJT09Iur9RM-RW-100', 'start_time': 1732793950.5192657}
+----------------------------------------
+total execution time: 54.100127481 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 280, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwiZXhwIjoxNzMyNzk0MDM3LCJpYXQiOjE3MzI3OTQwMzd9.U7MRT4xqOf6rT183U9SlJmlZGTTBErKerNDOftxmIbg-RW-100', 'start_time': 1732794037.539237}
+----------------------------------------
+total execution time: 49.098381184 seconds
+サーバのまたぎ回数: {'ip': '10.58.60.3', 'end_flag': True, 'next_id': '10.58.60.6', 'across_server': 247, 'public_key': 'Server1_Public_Key', 'jwt': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiXHUzMDUzXHUzMDUzXHUzMDZiXHU4YThkXHU4YTNjXHUzMDU3XHUzMDVmXHUzMDQ0XHU2NTg3XHU1YjU3XHU1MjE3XHUzMDkyXHU1MTY1XHUzMDhjXHUzMDhiIiwiZXhwIjoxNzMyNzk0MTIzLCJpYXQiOjE3MzI3OTQxMjN9.sZfZFBG9wEfP-kIsh-OiS6JEYJCqUdnMSUQhJ4qhW2A-RW-100', 'start_time': 1732794123.8451192}
+----------------------------------------
+
+
+0	57.876	307
+0	54.729	225
+0	54.528	227
+0	55.25	233
+0	54.272	239
+0	55.097	238
+0	54.944	240
+0	52.684	211
+0.2 48.711642485 212
+0.2 53.440346330 271
+0.2 54.100127481 280 
+0.2 49.098381184 247
+0.5	34.869	212
+0.5	38.634	217
+0.5	32.864	192
+0.5	35.655	225
+0.5	40.32	229
+0.5	33.248	191
+0.5	34.782	218
+1	20.626	195
+1	27.022	281
+1	23.827	242
+1	25.895	267
+1.75 17.164 220
+1.75 19.365 260
+1.75 17.365 232
+1.75 17.398
+2	23.563	321
+2	20.077	277
+2	16.86	208
+2	19.123	243
+2	14.243	174
+2	17.333	266
+3	17.513	251
+3	16.165	212
+3	15.162	206
+3	15.833	215
+5	13.098	190
+5	15.588	237
+5	14.408	220
+5	18.319	282
+5	16.394	245
+10	13.592	201
+10	13.567	200
+10	12.998	205
+10	15.548	244
+10	14.291	228
+10	14.322	222
