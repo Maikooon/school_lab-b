@@ -210,6 +210,15 @@ void saveResultsToFile(const std::string& filePath, const std::string& results) 
     outputFile.close();
 }
 
+// 千位区切りを追加する関数
+string addThousandSeparator(long long number) {
+    stringstream ss;
+    ss.imbue(locale("en_US.UTF-8"));  // ロケールを指定（US英語のスタイル）
+    ss << fixed << number;
+    return ss.str();
+}
+
+
 // プログラムの実行
 int main() {
     srand(time(nullptr));
@@ -234,7 +243,7 @@ int main() {
     // }
 
     vector<int> start_nodes(1);  // 1つのスタートノードを設定
-    start_nodes[0] = 1;
+    start_nodes[0] = START_NODE;
 
     // 複数のスタートノードに対してランダムウォークを実行
     for (int start_node : start_nodes) {
@@ -259,18 +268,20 @@ int main() {
 
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length / ALLNODE << endl;
-    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
+    cout << "Average path length: " << average_length << endl;
+    cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
+    cout << "Program execution time: " << duration << " nanoseconds" << endl;
+    cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
 
 
     // 結果を出力
-    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
-    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
+    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
     // ファイルパス

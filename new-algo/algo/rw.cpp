@@ -17,6 +17,9 @@ g++ -std=c++11 rw.cpp -o rw
 
 using namespace std;
 
+// g++ -std=c++11 main.cpp -o main
+
+
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
 
@@ -41,6 +44,16 @@ void load_graph(const std::string& file_path) {
         graph[node2].insert(node1);
     }
     edges_file.close();
+
+    // load_graph 関数内でのデバッグ
+    // for (const auto& node : graph) {
+    //     std::cout << "Node " << node.first << " has neighbors: ";
+    //     for (const auto& neighbor : node.second) {
+    //         std::cout << neighbor << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
+
 }
 
 // コミュニティファイルを読み込んでノードのコミュニティを登録
@@ -73,7 +86,9 @@ vector<int> random_walk(int& total_move, int START_NODE) {
     path.push_back(current_node);
 
     while ((double)rand() / RAND_MAX > ALPHA) {
+        printf("current_node: %d\n", current_node);
         auto neighbors = graph[current_node];
+        printf("neighbors: %d\n", neighbors.size());
         if (neighbors.empty()) {
             break;
         }
@@ -111,6 +126,16 @@ void saveResultsToFile(const std::string& filePath, const std::string& results) 
     // ファイルを閉じる
     outputFile.close();
 }
+
+// 千位区切りを追加する関数
+string addThousandSeparator(long long number) {
+    stringstream ss;
+    ss.imbue(locale("en_US.UTF-8"));  // ロケールを指定（US英語のスタイル）
+    ss << fixed << number;
+    return ss.str();
+}
+
+
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 // プログラムの実行
@@ -136,7 +161,7 @@ int main() {
     //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
     // }
     vector<int> start_nodes(1);  // 1つのスタートノードを設定
-    start_nodes[0] = 1;
+    start_nodes[0] = START_NODE;
 
     // 複数のスタートノードに対してランダムウォークを実行
     for (int start_node : start_nodes) {
@@ -148,31 +173,33 @@ int main() {
             total_length += path.size();
 
             // パスを出力
-            // cout << "Random walk " << i + 1 << " path:";
-            // for (int node : path) {
-            //     cout << " " << node;
-            // }
-            // cout << endl;
+            cout << "Random walk " << i + 1 << " path:";
+            for (int node : path) {
+                cout << " " << node;
+            }
+            cout << endl;
         }
     }
 
     // 平均経路長を計算して出力
     double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length / ALLNODE << endl;
-    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
+    cout << "Average path length: " << average_length << endl;
+    cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
     // printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
+    cout << "Program execution time: " << duration << " nanoseconds" << endl;
+    cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
 
 
     //結果を出力する
    // 保存したい結果
-    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
-    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
+    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
 
     // ファイルパス
     std::string filePath = "./../result-1207/" + GRAPH + "/default.txt";

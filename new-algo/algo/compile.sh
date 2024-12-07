@@ -1,28 +1,13 @@
 #!/bin/bash
 
-# グローバル変数を環境変数として設定
-# export GRAPH="METIS-fb-pages"
-# export GRAPH_NAME="fb-pages-company"
-# export ALLNODE=14113
-# 4158
-
 # C++ソースファイルと出力ファイルの対応をリストで定義（key:source_fileの形式）
-cpp_files=("main:./../algo/main.cpp" "nogroup:./../algo/nogroup-main.cpp" "rw:./../default-algo/rw.cpp")
-#　グループ化されていないものだけもう一度調査する
-# cpp_files=("nogroup:./../algo/nogroup-main.cpp")
-
+cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
 # コンパイル処理
 for entry in "${cpp_files[@]}"; do
     # entryをキーとソースファイルパスに分割
     key="${entry%%:*}"
     source_file="${entry#*:}"
-    
-    # 出力ファイルのディレクトリとファイル名を指定
-    if [[ "$key" == "rw" ]]; then
-        output_dir="./../default-algo"
-    else
-        output_dir="./../algo"
-    fi
+    output_dir="./"
     
     # 出力フォルダが存在しない場合は作成
     mkdir -p "$output_dir"

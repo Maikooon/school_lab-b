@@ -138,12 +138,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         }
 
         // 隣接ノードからランダムに次のノードを選択
-        int next_node;
-        next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        int next_node = *next(neighbors.begin(), rand() % neighbors.size());
         int current_community = node_communities[current_node];
         int next_community = node_communities[next_node];
 
         //コミュニテイが同じ場合は、すでに読み込んであるリストを参照することで認可を行う
+        // printf("current_community: %d, next_community: %d\n", current_community, next_community);
         if (current_community == next_community) {
             if (ng_list.find(next_node) != ng_list.end()) {
                 std::cout << "NGなのでスキップ" << next_node << std::endl;
@@ -156,38 +156,33 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // 次のコミュニティにおいて、どのノードにアクセス可能なのかを知るためには、次のコミュニティのアクセスリストを改めて参照する必要がある
         else {
             //始点コミュニティと移動先コミュニティが同じ時にはアクセス権の確認なし
-            if (next_community == start_community) {     //ここはおk
-                continue;
-            }
-            else {
+
                 // 次のコミュニティのグループを取得--start_communityが次のコミュニティでどのような権限が与えられているのかをみる
                 //ここから二つのテーブルを参照して行う
-                for (auto& group : community_groups[next_community]) {
-                    //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
-                    if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
-                        // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
-                        //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
-                        //次に移動するコミュニティ固有のNGリストを取得
-                        ng_list = community_ng_nodes[next_community][group.first];
-                        // std::cout << "NG nodes for Group " << group.first << ": ";  //ここまでもOK
-                        // for (const int node : ng_list) {
-                        //     std::cout << node << " ";
-                        // }
-                        // std::cout << std::endl;
-                        // printf("検査の結果大丈夫だと判断\n");
-
-                        // 次のHop先に、出発もとのノードがアクセスできるのかを確認
-                        if (ng_list.find(next_node) != ng_list.end()) {
-                            // std::cout << "NG node found" << next_node << ::endl;
-                            //進まないようにやり直す
-                            next_node = current_node;
-                            printf("やり直し！");
-                            continue; // NGノードの場合は次のHopを探す
-                        }
-                        // break; // NGノードではない場合、次のHopを許可
+            for (auto& group : community_groups[next_community]) {
+                //dynamic-groupを参照して、、元々のコミュニティがどの権限(Group)になっているのかを確認
+                if (std::find(group.second.begin(), group.second.end(), start_community) != group.second.end()) {
+                    // NGリストを参照、ここでコミュニティので更新して、次に移動するまで同じものを参照できるようにする
+                    //ng_listを参照して、始点コミュニティにとってNGなノードを確認し、それが次のHop先でないことを確認
+                    //次に移動するコミュニティ固有のNGリストを取得
+                    ng_list = community_ng_nodes[next_community][group.first];
+                    std::cout << "NG nodes for Group " << group.first << ": ";  //ここまでもOK
+                    for (const int node : ng_list) {
+                        std::cout << node << " ";
                     }
-                }
+                    std::cout << std::endl;
+                    printf("検査の結果大丈夫だと判断\n");
 
+                    // 次のHop先に、出発もとのノードがアクセスできるのかを確認
+                    if (ng_list.find(next_node) != ng_list.end()) {
+                        // std::cout << "NG node found" << next_node << ::endl;
+                        //進まないようにやり直す
+                        next_node = current_node;
+                        printf("やり直し！");
+                        continue; // NGノードの場合は次のHopを探す
+                    }
+                    // break; // NGノードではない場合、次のHopを許可
+                }
             }
             move_count++;
         }
@@ -199,27 +194,38 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     return path;
 }
 
-void saveResultsToFile(const std::string& filePath, const std::string& content) {
-    std::filesystem::path dirPath = std::filesystem::path(filePath).parent_path();
 
-    try {
-        if (!std::filesystem::exists(dirPath)) {
-            std::filesystem::create_directories(dirPath);
+
+void saveResultsToFile(const std::string& filePath, const std::string& results) {
+    std::__fs::filesystem::path dirPath = std::__fs::filesystem::path(filePath).parent_path();
+
+    // ディレクトリが存在しない場合、作成する
+    if (!std::__fs::filesystem::exists(dirPath)) {
+        try {
+            std::__fs::filesystem::create_directories(dirPath);
         }
-    }
-    catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
+        catch (const std::__fs::filesystem::filesystem_error& e) {
+            std::cerr << "ディレクトリの作成に失敗しました: " << e.what() << std::endl;
+            return;
+        }
     }
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
     if (!outputFile) {
         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
         return;
     }
-    outputFile << content;
+    outputFile << results;
     outputFile.close();
-
-    // ファイル書き込み処理をここに追加
 }
+
+// 千位区切りを追加する関数
+string addThousandSeparator(long long number) {
+    stringstream ss;
+    ss.imbue(locale("en_US.UTF-8"));  // ロケールを指定（US英語のスタイル）
+    ss << fixed << number;
+    return ss.str();
+}
+
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 
@@ -243,7 +249,7 @@ int main() {
     //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
     // }
     vector<int> start_nodes(1);  // 1つのスタートノードを設定
-    start_nodes[0] = 1;
+    start_nodes[0] = START_NODE;
 
     for (int start_node : start_nodes) {
         int start_community = node_communities[start_node];
@@ -252,23 +258,29 @@ int main() {
             //RWの実行
             vector<int> path = random_walk(total_move, start_node, start_community);
             total_length += path.size();
+            // パスを出力
+            cout << "Random walk " << i + 1 << " path:";
+            for (int node : path) {
+                cout << " " << node;
+            }
+            cout << endl;
         }
     }
 
+    // 平均経路長を計算して出力
+    double average_length = static_cast<double>(total_length) / RW_COUNT;
+    cout << "Average path length: " << average_length << endl;
+    cout << "Total moves across communities: " << total_move << endl;
 
     // 時間計測を終了して結果を表示（ナノ秒）
     auto end_time = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
-    cout << "Program execution time: " << duration / ALLNODE << " nanoseconds" << endl;
+    cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
 
-    // 平均経路長を計算して出力
-    double average_length = static_cast<double>(total_length) / RW_COUNT;
-    cout << "Average path length: " << average_length / ALLNODE << endl;
-    cout << "Total moves across communities: " << total_move / ALLNODE << endl;
-
-    std::string results = "Average path length: " + std::to_string(average_length / ALLNODE) + "\n";
-    results += "Total moves across communities: " + std::to_string(total_move / ALLNODE) + "\n";
-    results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
+    std::string results = "Average path length: " + std::to_string(average_length) + "\n";
+    results += "Total moves across communities: " + std::to_string(total_move) + "\n";
+    results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
     std::string filePath = "./../result-1207/" + GRAPH + "/group-access.txt";
