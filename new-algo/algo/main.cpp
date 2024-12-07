@@ -20,27 +20,12 @@ g++ -std=c++11 main.cpp -o main
 #include <ctime>
 #include <chrono>
 #include <set>
+#include "config.h"
+#include <filesystem>
+
 
 using namespace std;
 
-
-// グローバル変数の定義
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/my-ca";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
-//Louvainのときはこちらを使用
-// const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
-
-//Louvainではない時にはこちらを使用    ここ注意！
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
-
-const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
-const std::string GROUP_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/dynamic_groups.txt";
-const std::string NG_NODES_PER_COMMUNITY = "./../create-tables/result/" + GRAPH + "/ng_nodes.txt";
-
-const double ALPHA = 0.15;
-const int RW_COUNT = 100;  // ランダムウォークの実行回数
-// int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -214,28 +199,26 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     return path;
 }
 
+void saveResultsToFile(const std::string& filePath, const std::string& content) {
+    std::filesystem::path dirPath = std::filesystem::path(filePath).parent_path();
 
-
-void saveResultsToFile(const std::string& filePath, const std::string& results) {
-    std::__fs::filesystem::path dirPath = std::__fs::filesystem::path(filePath).parent_path();
-
-    // ディレクトリが存在しない場合、作成する
-    if (!std::__fs::filesystem::exists(dirPath)) {
-        try {
-            std::__fs::filesystem::create_directories(dirPath);
+    try {
+        if (!std::filesystem::exists(dirPath)) {
+            std::filesystem::create_directories(dirPath);
         }
-        catch (const std::__fs::filesystem::filesystem_error& e) {
-            std::cerr << "ディレクトリの作成に失敗しました: " << e.what() << std::endl;
-            return;
-        }
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Filesystem error: " << e.what() << std::endl;
     }
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
     if (!outputFile) {
         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
         return;
     }
-    outputFile << results;
+    outputFile << content;
     outputFile.close();
+
+    // ファイル書き込み処理をここに追加
 }
 /*------------------------------------------------------------------------------------------------------------------------*/
 
@@ -254,11 +237,13 @@ int main() {
     int total_move = 0;
     int total_length = 0;
     // int start_community = node_communities[START_NODE];
-    vector<int> start_nodes(ALLNODE);  // スタートノードをリストで定義
+    // vector<int> start_nodes(ALLNODE);  // スタートノードをリストで定義
 
-    for (int i = 0; i < ALLNODE; ++i) {
-        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
-    }
+    // for (int i = 0; i < ALLNODE; ++i) {
+    //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    // }
+    vector<int> start_nodes(1);  // 1つのスタートノードを設定
+    start_nodes[0] = 1;
 
     for (int start_node : start_nodes) {
         int start_community = node_communities[start_node];
@@ -286,7 +271,7 @@ int main() {
     results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
     results += "\n";
 
-    std::string filePath = "./../result/" + GRAPH + "/group-access.txt";
+    std::string filePath = "./../result-1207/" + GRAPH + "/group-access.txt";
 
     // フォルダを作成する
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);  // appはファイルがなければ作成される

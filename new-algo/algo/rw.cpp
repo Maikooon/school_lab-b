@@ -13,26 +13,9 @@ g++ -std=c++11 rw.cpp -o rw
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include "config.h"
 
 using namespace std;
-
-// グローバル変数の定義
-//コミュニティファイルはMETISのフォルダからコピーしてくる
-// const std::string GRAPH = "METIS-ca";    ///☺︎したのグラフも変更する
-// const std::string GRAPH_NAME = "ca-grqc-connected";
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/my-ca";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
-//1. Louvainの時はこちらを使用
-// const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
-
-//2. Louvainではない時にはこちらを使用
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
-
-const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
-const double ALPHA = 0.15;
-const int RW_COUNT = 100;  // ランダムウォークの実行回数
-// int START_NODE = 12;         // ランダムウォークの開始ノード
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -146,12 +129,14 @@ int main() {
     auto start_time = chrono::high_resolution_clock::now();
 
 
-    vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
+    // vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
 
-    // 1〜32までのノードを start_nodes 配列に代入
-    for (int i = 0; i < ALLNODE; ++i) {
-        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
-    }
+    // // 1〜32までのノードを start_nodes 配列に代入
+    // for (int i = 0; i < ALLNODE; ++i) {
+    //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    // }
+    vector<int> start_nodes(1);  // 1つのスタートノードを設定
+    start_nodes[0] = 1;
 
     // 複数のスタートノードに対してランダムウォークを実行
     for (int start_node : start_nodes) {
@@ -190,7 +175,7 @@ int main() {
     results += "Program execution time: " + std::to_string(duration / ALLNODE) + " nanoseconds\n";
 
     // ファイルパス
-    std::string filePath = "./../result/" + GRAPH + "/default.txt";
+    std::string filePath = "./../result-1207/" + GRAPH + "/default.txt";
 
     // 結果をファイルに保存
     saveResultsToFile(filePath, results);

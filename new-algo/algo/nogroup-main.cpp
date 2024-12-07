@@ -33,30 +33,7 @@
 using namespace std;
 #include <map>
 #include <set>
-
-
-
-// グローバル変数の定義
-// グローバル変数の定義
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-karate";
-const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
-const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
-// const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.1/METIS-karate";
-// const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "karate";
-// const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 34;
-
-//1. Louvainのときはこちらを使用
-// const std::string COMMUNITY_FILE = "./../../Louvain/community/" + GRAPH + ".cm";
-
-//2. Louvainではないよ時には、独自のコミュニティファイルを使用するのでこちら
-const std::string COMMUNITY_FILE = "./../create-tables/result/" + GRAPH + "/node_community.txt";
-
-const std::string GRAPH_FILE = "./../../Louvain/graph/" + GRAPH_NAME + ".gr";         /// ここを変更
-const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng-nodes.txt"; // 読み込むファイルのパス
-
-const double ALPHA = 0.15;
-const int RW_COUNT = 100;  // ランダムウォークの実行回数
-// int START_NODE = 12;         // ランダムウォークの開始ノード
+#include "config.h"
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
@@ -251,10 +228,13 @@ int main() {
     int total_move = 0;
     int total_length = 0;
     // int start_community = node_communities[START_NODE];
-    vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
-    for (int i = 0; i < ALLNODE; ++i) {
-        start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
-    }
+    // vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
+    // for (int i = 0; i < ALLNODE; ++i) {
+    //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
+    // }
+
+    vector<int> start_nodes(1);  // 1つのスタートノードを設定
+    start_nodes[0] = 1;
 
     // 複数のスタートノードに対してランダムウォークを実行
     for (int start_node : start_nodes) {
@@ -294,7 +274,7 @@ int main() {
     results += "\n";
 
     // ファイルパス
-    std::string filePath = "./../result/" + GRAPH + "/access.txt";
+    std::string filePath = "./../result-1207/" + GRAPH + "/access.txt";
 
     // 結果をファイルに保存
     saveResultsToFile(filePath, results);
