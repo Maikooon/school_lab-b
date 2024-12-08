@@ -1,0 +1,68 @@
+Average path length: 6.721300
+Total moves across communities: 41956
+Program execution time: 973812375 nanoseconds
+
+Average path length: 6.692600
+Total moves across communities: 41684
+Program execution time: 946087208 nanoseconds
+
+Average path length: 6.672800
+Total moves across communities: 41444
+Program execution time: 944298041 nanoseconds
+
+Average path length: 6.701000
+Total moves across communities: 41953
+Program execution time: 1109194000 nanoseconds
+
+Average path length: 6.796100
+Total moves across communities: 42525
+Program execution time: 1288823459 nanoseconds
+
+Average path length: 6.696100
+Total moves across communities: 41602
+Program execution time: 1089187167 nanoseconds
+
+Average path length: 6.713500
+Total moves across communities: 41813
+Program execution time: 1406868750 nanoseconds
+
+Average path length: 6.736200
+Total moves across communities: 42189
+Program execution time: 1063624833 nanoseconds
+
+Average path length: 6.684600
+Total moves across communities: 41619
+Program execution time: 978276833 nanoseconds
+
+Average path length: 6.712400
+Total moves across communities: 41723
+Program execution time: 1263256875 nanoseconds
+
+Average path length: 6.721200
+Total moves across communities: 41959
+Program execution time: 1659104084 nanoseconds
+
+Average path length: 6.706200
+Total moves across communities: 41422
+Program execution time: 953917167 nanoseconds
+
+Average path length: 6.613900
+Total moves across communities: 41061
+Program execution time: 1203978791 nanoseconds
+
+Average path length: 6.685300
+Total moves across communities: 41590
+Program execution time: 1070913500 nanoseconds
+
+Average path length: 6.662300
+Total moves across communities: 41369
+Program execution time: 1339311750 nanoseconds
+
+Average path length: 6.619900
+Total moves across communities: 41182
+Program execution time: 1309118542 nanoseconds
+
+Average path length: 6.674000
+Total moves across communities: 41747
+Program execution time: 1028138791 nanoseconds
+

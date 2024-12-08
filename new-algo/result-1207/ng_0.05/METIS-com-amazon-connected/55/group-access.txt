@@ -1,0 +1,44 @@
+Average path length: 6.731300
+Total moves across communities: 42564
+Program execution time: 1390080458 nanoseconds
+
+Average path length: 6.633800
+Total moves across communities: 41796
+Program execution time: 1371259834 nanoseconds
+
+Average path length: 6.690800
+Total moves across communities: 41805
+Program execution time: 1033340334 nanoseconds
+
+Average path length: 6.746600
+Total moves across communities: 42601
+Program execution time: 1791209750 nanoseconds
+
+Average path length: 6.682000
+Total moves across communities: 42186
+Program execution time: 1603168083 nanoseconds
+
+Average path length: 6.707000
+Total moves across communities: 42408
+Program execution time: 988120042 nanoseconds
+
+Average path length: 6.689100
+Total moves across communities: 42265
+Program execution time: 1346215792 nanoseconds
+
+Average path length: 6.593100
+Total moves across communities: 41362
+Program execution time: 1233667792 nanoseconds
+
+Average path length: 6.779300
+Total moves across communities: 42948
+Program execution time: 1316737917 nanoseconds
+
+Average path length: 6.589000
+Total moves across communities: 41246
+Program execution time: 1217909875 nanoseconds
+
+Average path length: 6.734500
+Total moves across communities: 42573
+Program execution time: 1729482959 nanoseconds
+

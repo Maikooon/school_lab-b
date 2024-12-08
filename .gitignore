@@ -18,13 +18,13 @@ algo/certification/create_table/table/ca-grqc-connected/community_0_result.json
 /algo/certification/construction/all-jwt-result
 /algo/certification/construction/all-jwt-result
 
-*node_community.txt
-*non-group-ng-nodes.txt
+# *node_community.txt
+# *non-group-ng-nodes.txt
 *ng_nodes.txt
-*dynamic_groups.txt
-*group-access.txt
-*/group-access.txt
-group-access.txt
-*default.txt
-*/default.txt
-*group.txt
+# *dynamic_groups.txt
+# *group-access.txt
+# */group-access.txt
+# group-access.txt
+# *default.txt
+# */default.txt
+# *group.txt

@@ -45,7 +45,7 @@ def extract_execution_time(file_path):
                     half_moves = float(match2.group(1)) / 2
 
                 half_moves = float(match2.group(1)) / 2  # Divide by 2
-                print(half_moves)
+                # print(half_moves)
                 total_moves.append(half_moves)
     # print(execution_times)
     return execution_times, total_moves
@@ -98,7 +98,7 @@ def process_folders(base_dir):
                 #  またぎ回数とグループ数
                 move_data.extend([(node_count, count) for count in counts])
     # (10, [879531417, 1107503292, 943199291, 862074542, 874861291, 822483709, 872804708, 862436334]),
-    print(move_data)
+    # print(move_data)
     return sorted(data), sorted(move_data)  # ノード数でソート
 
 
@@ -131,7 +131,7 @@ def plot_execution_times(data, additional_data):
         label="Default/Access Time",
     )
 
-    plt.xlim(0, 100)
+    plt.xlim(0, 80)
     # plt.ylim(22000, 32000)
     plt.xlabel("Number of community groups")
     plt.ylabel("Execution Time (nanoseconds)")

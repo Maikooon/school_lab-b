@@ -41,11 +41,14 @@
 
 # 定義された環境変数
 export NG_RATE=0.05
-export GRAPH_COMMUNITY="ng_${NG_RATE}/METIS-ca"
-export GRAPH_NAME="ca-grqc-connected"
+export GRAPH_COMMUNITY="ng_${NG_RATE}/METIS-com-amazon-connected"
+export GRAPH_NAME="com-amazon-connected"    
 
 # COM_NUMの値を配列で指定
-COM_NUM_ARRAY=(2 3 5 8 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
+COM_NUM_ARRAY=(2 3 5 8 10 15 20 25 30 35 40)
+COM_NUM_ARRAY=(50 55 60 65 70 )
+# 45 50 55 60 65 70 7
+# 5 80 85 90 95 100)
 
 # 配列の値でループ処理
 for COM_NUM in "${COM_NUM_ARRAY[@]}"; do

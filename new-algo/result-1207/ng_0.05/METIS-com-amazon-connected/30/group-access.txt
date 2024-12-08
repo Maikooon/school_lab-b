@@ -1,0 +1,68 @@
+Average path length: 6.623100
+Total moves across communities: 41639
+Program execution time: 923161583 nanoseconds
+
+Average path length: 6.718300
+Total moves across communities: 42328
+Program execution time: 1046854375 nanoseconds
+
+Average path length: 6.599000
+Total moves across communities: 41581
+Program execution time: 2351635542 nanoseconds
+
+Average path length: 6.753200
+Total moves across communities: 42695
+Program execution time: 1011599083 nanoseconds
+
+Average path length: 6.594300
+Total moves across communities: 41679
+Program execution time: 896201708 nanoseconds
+
+Average path length: 6.687500
+Total moves across communities: 42260
+Program execution time: 895291083 nanoseconds
+
+Average path length: 6.673100
+Total moves across communities: 42052
+Program execution time: 988834625 nanoseconds
+
+Average path length: 6.698800
+Total moves across communities: 42350
+Program execution time: 837488875 nanoseconds
+
+Average path length: 6.707200
+Total moves across communities: 42160
+Program execution time: 1131335542 nanoseconds
+
+Average path length: 6.728400
+Total moves across communities: 42481
+Program execution time: 1166275167 nanoseconds
+
+Average path length: 6.656800
+Total moves across communities: 41857
+Program execution time: 944150959 nanoseconds
+
+Average path length: 6.630800
+Total moves across communities: 41407
+Program execution time: 952750583 nanoseconds
+
+Average path length: 6.596800
+Total moves across communities: 41545
+Program execution time: 900917292 nanoseconds
+
+Average path length: 6.657000
+Total moves across communities: 41946
+Program execution time: 1046618500 nanoseconds
+
+Average path length: 6.615900
+Total moves across communities: 41548
+Program execution time: 1200231584 nanoseconds
+
+Average path length: 6.670100
+Total moves across communities: 41911
+Program execution time: 1148070791 nanoseconds
+
+Average path length: 6.667700
+Total moves across communities: 41987
+Program execution time: 1179337958 nanoseconds
+

@@ -1,60 +1,80 @@
-Average path length: 6.505700
-Total moves across communities: 58368
-Program execution time: 1130260916 nanoseconds
+Average path length: 6.716300
+Total moves across communities: 30224
+Program execution time: 869469625 nanoseconds
 
-Average path length: 6.745400
-Total moves across communities: 59674
-Program execution time: 938218166 nanoseconds
+Average path length: 6.647900
+Total moves across communities: 29394
+Program execution time: 867055375 nanoseconds
 
-Average path length: 6.654200
-Total moves across communities: 59146
-Program execution time: 978403375 nanoseconds
+Average path length: 6.734700
+Total moves across communities: 29749
+Program execution time: 900916584 nanoseconds
 
-Average path length: 6.566700
-Total moves across communities: 58660
-Program execution time: 897522500 nanoseconds
+Average path length: 6.655200
+Total moves across communities: 29602
+Program execution time: 866286208 nanoseconds
 
-Average path length: 6.747900
-Total moves across communities: 59562
-Program execution time: 939004542 nanoseconds
+Average path length: 6.631700
+Total moves across communities: 29367
+Program execution time: 920156125 nanoseconds
 
-Average path length: 6.684700
-Total moves across communities: 59374
-Program execution time: 912001125 nanoseconds
+Average path length: 6.777800
+Total moves across communities: 30076
+Program execution time: 907318833 nanoseconds
 
-Average path length: 6.618600
-Total moves across communities: 59160
-Program execution time: 904165917 nanoseconds
+Average path length: 6.682600
+Total moves across communities: 29632
+Program execution time: 1351620750 nanoseconds
 
-Average path length: 6.692300
-Total moves across communities: 59570
-Program execution time: 928415375 nanoseconds
+Average path length: 6.692900
+Total moves across communities: 29350
+Program execution time: 867972917 nanoseconds
 
-Average path length: 6.685500
-Total moves across communities: 59607
-Program execution time: 919412084 nanoseconds
+Average path length: 6.600300
+Total moves across communities: 29319
+Program execution time: 832330667 nanoseconds
 
-Average path length: 6.612100
-Total moves across communities: 58890
-Program execution time: 895073042 nanoseconds
+Average path length: 6.709900
+Total moves across communities: 29882
+Program execution time: 963647375 nanoseconds
 
-Average path length: 6.653600
-Total moves across communities: 58969
-Program execution time: 900095542 nanoseconds
+Average path length: 6.672600
+Total moves across communities: 29522
+Program execution time: 882237833 nanoseconds
 
-Average path length: 6.777200
-Total moves across communities: 60453
-Program execution time: 876645792 nanoseconds
+Average path length: 6.681200
+Total moves across communities: 29658
+Program execution time: 890398541 nanoseconds
 
-Average path length: 6.597200
-Total moves across communities: 59124
-Program execution time: 856684916 nanoseconds
+Average path length: 6.720400
+Total moves across communities: 29846
+Program execution time: 920896708 nanoseconds
+
+Average path length: 6.668700
+Total moves across communities: 29560
+Program execution time: 850023375 nanoseconds
+
+Average path length: 6.612000
+Total moves across communities: 29200
+Program execution time: 874341833 nanoseconds
 
 Average path length: 6.635900
-Total moves across communities: 58983
-Program execution time: 1487839334 nanoseconds
+Total moves across communities: 29414
+Program execution time: 849278834 nanoseconds
 
-Average path length: 6.592800
-Total moves across communities: 58829
-Program execution time: 1114846541 nanoseconds
+Average path length: 6.720600
+Total moves across communities: 29829
+Program execution time: 888668458 nanoseconds
+
+Average path length: 6.631200
+Total moves across communities: 29213
+Program execution time: 877090750 nanoseconds
+
+Average path length: 6.589100
+Total moves across communities: 29150
+Program execution time: 1188365750 nanoseconds
+
+Average path length: 6.727200
+Total moves across communities: 30076
+Program execution time: 894166916 nanoseconds
 

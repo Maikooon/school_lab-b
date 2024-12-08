@@ -1,0 +1,68 @@
+Average path length: 6.681300
+Total moves across communities: 42038
+Program execution time: 935830417 nanoseconds
+
+Average path length: 6.613800
+Total moves across communities: 41390
+Program execution time: 1014016500 nanoseconds
+
+Average path length: 6.585500
+Total moves across communities: 41308
+Program execution time: 877920958 nanoseconds
+
+Average path length: 6.653100
+Total moves across communities: 42021
+Program execution time: 925809000 nanoseconds
+
+Average path length: 6.617200
+Total moves across communities: 41667
+Program execution time: 1414348708 nanoseconds
+
+Average path length: 6.691000
+Total moves across communities: 42024
+Program execution time: 1008229916 nanoseconds
+
+Average path length: 6.542900
+Total moves across communities: 40842
+Program execution time: 1254075833 nanoseconds
+
+Average path length: 6.680000
+Total moves across communities: 42253
+Program execution time: 1135258333 nanoseconds
+
+Average path length: 6.644400
+Total moves across communities: 41786
+Program execution time: 956246542 nanoseconds
+
+Average path length: 6.616900
+Total moves across communities: 41663
+Program execution time: 937235875 nanoseconds
+
+Average path length: 6.694300
+Total moves across communities: 42095
+Program execution time: 1027628833 nanoseconds
+
+Average path length: 6.618300
+Total moves across communities: 41565
+Program execution time: 1249534542 nanoseconds
+
+Average path length: 6.651600
+Total moves across communities: 41886
+Program execution time: 927062208 nanoseconds
+
+Average path length: 6.624900
+Total moves across communities: 41671
+Program execution time: 1131032459 nanoseconds
+
+Average path length: 6.627100
+Total moves across communities: 41663
+Program execution time: 1066719750 nanoseconds
+
+Average path length: 6.705800
+Total moves across communities: 42459
+Program execution time: 1082092958 nanoseconds
+
+Average path length: 6.646000
+Total moves across communities: 41672
+Program execution time: 1104302291 nanoseconds
+
