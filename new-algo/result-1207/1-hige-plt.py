@@ -71,10 +71,8 @@ def plot_bar_chart(data):
 
 
 # 実行部分
-default_file = (
-    "./ng_0.05/METIS-ca/3/group-access.txt"  # 指定された default.txt ファイル
-)
-access_file = "./ng_0.05/METIS-ca/3/access.txt"  # 指定された access.txt ファイル
+default_file = "./ng_0.05/METIS-ca/default.txt"  # 指定された default.txt ファイル
+access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt ファイル
 
 # ユーザーが指定する X 軸のラベル
 label_default = "Default"

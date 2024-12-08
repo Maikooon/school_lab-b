@@ -214,7 +214,7 @@ int main() {
     // printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
-    // cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
+    cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
 
 
     //結果を出力する
@@ -223,7 +223,7 @@ int main() {
     results += "Total moves by nodes: " + std::to_string(total_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
-    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
+    // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
 
     // ファイルパス
     std::string filePath = "./../result-1207/" + GRAPH + "/default.txt";

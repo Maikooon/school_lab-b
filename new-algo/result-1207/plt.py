@@ -39,6 +39,11 @@ def extract_execution_time(file_path):
             # 移動回数もカウントして、２で割る
             match2 = re.search(r"Total moves across communities: (\d+)", line)
             if match2:
+                # 実行方法を途中で変更したので揃える
+                # もひし50000 以上ならば、わる、以下ならばそのまま
+                if int(match2.group(1)) > 50000:
+                    half_moves = float(match2.group(1)) / 2
+
                 half_moves = float(match2.group(1)) / 2  # Divide by 2
                 print(half_moves)
                 total_moves.append(half_moves)
@@ -133,7 +138,7 @@ def plot_execution_times(data, additional_data):
     plt.title("Execution Time vs Number of Nodes")
     plt.grid(True)
     plt.legend()
-    plt.savefig("amazon-scatter_plot.png")
+    plt.savefig("ca-scatter_plot.png")
     plt.show()
 
 
@@ -156,5 +161,5 @@ access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt フ�
 data, count = process_folders(base_dir)
 additional_data, additional_count = process_additional_files(default_file, access_file)
 
-# plot_execution_times(data, additional_data)
-plot_execution_times(count, additional_count)
+plot_execution_times(data, additional_data)
+# plot_execution_times(count, additional_count)
