@@ -277,7 +277,7 @@ int main() {
     results += "Total moves by nodes: " + std::to_string(total_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
-    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
+    // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
     // ファイルパス

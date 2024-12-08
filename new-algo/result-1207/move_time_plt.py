@@ -57,16 +57,16 @@ def process_additional_files(default_file, access_file):
     count_data = []
 
     # default.txt の時間を x=0 として追加
-    if os.path.exists(default_file):
-        default_times, default_count = extract_execution_time(default_file)
-        data.extend([(0, time) for time in default_times])  # x=0
-        count_data.extend([(0, count) for count in default_count])
+    # if os.path.exists(default_file):
+    #     default_times, default_count = extract_execution_time(default_file)
+    #     data.extend([(0, time) for time in default_times])  # x=0
+    #     count_data.extend([(0, count) for count in default_count])
 
-    # access.txt の時間を x=100 として追加
-    if os.path.exists(access_file):
-        access_times, access_count = extract_execution_time(access_file)
-        data.extend([(100, time) for time in access_times])  # x=100
-        count_data.extend([(100, count) for count in access_count])
+    # # access.txt の時間を x=100 として追加
+    # if os.path.exists(access_file):
+    #     access_times, access_count = extract_execution_time(access_file)
+    #     data.extend([(100, time) for time in access_times])  # x=100
+    #     count_data.extend([(100, count) for count in access_count])
     return data, count_data
 
 
@@ -125,29 +125,27 @@ def plot_execution_times(data, additional_data):
         color="red",
         label="Default/Access Time",
     )
-
-    plt.xlim(0, 100)
-    # plt.ylim(22000, 32000)
-    plt.xlabel("Number of community groups")
-    plt.ylabel("Execution Time (nanoseconds)")
-    plt.title("Execution Time vs Number of Nodes")
+    plt.xlim(0, 125)
+    plt.xlabel("Number of Groups")
+    plt.ylabel("move count across communities")
+    plt.title("move count across communities vs Number of Groups")
     plt.grid(True)
     plt.legend()
-    plt.savefig("amazon-scatter_plot.png")
+    plt.savefig("move_count_amazon.png")
     plt.show()
 
 
 # METIS-com-amazon-connected
-# base_dir = "./ng_0.05/METIS-com-amazon-connected"
-# default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"  # 指定された default.txt ファイル
-# access_file = (
-#     "./ng_0.05/METIS-com-amazon-connected/access.txt"  # 指定された access.txt ファイル
-# )
+base_dir = "./ng_0.05/METIS-com-amazon-connected"
+default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"  # 指定された default.txt ファイル
+access_file = (
+    "./ng_0.05/METIS-com-amazon-connected/access.txt"  # 指定された access.txt ファイル
+)
 
 # 実行
-base_dir = "./ng_0.05/METIS-ca"
-default_file = "./ng_0.05/METIS-ca/default.txt"  # 指定された default.txt ファイル
-access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt ファイル
+# base_dir = "./ng_0.05/METIS-ca"
+# default_file = "./ng_0.05/METIS-ca/default.txt"  # 指定された default.txt ファイル
+# access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt ファイル
 
 # base_dir = "./ng_0.05/test"
 # default_file = "./ng_0.05/test/default.txt"  # 指定された default.txt ファイル

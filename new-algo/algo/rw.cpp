@@ -178,7 +178,7 @@ int main() {
 
     // vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
 
-    // // 1〜32までのノードを start_nodes 配列に代入
+    // 1〜32までのノードを start_nodes 配列に代入
     // for (int i = 0; i < ALLNODE; ++i) {
     //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
     // }
@@ -214,7 +214,7 @@ int main() {
     // printf("Program execution time: %ld nanoseconds\n", chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count());
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count();
     cout << "Program execution time: " << duration << " nanoseconds" << endl;
-    cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
+    // cout << "Program execution time: " << addThousandSeparator(duration) << " nanoseconds" << endl;
 
 
     //結果を出力する

@@ -190,10 +190,10 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         //ここまで
         path.push_back(next_node);
 
-        if (node_communities[current_node] != node_communities[next_node]) {
-            // cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
-            move_count++;
-        }
+        // if (node_communities[current_node] != node_communities[next_node]) {
+        //     // cout << "Node " << next_node << " (Community " << node_communities[next_node] << ") is in a different community from Node " << current_node << " (Community " << node_communities[current_node] << ")" << endl;
+        //     move_count++;
+        // }
         current_node = next_node;
     }
     total_move += move_count;
@@ -286,7 +286,7 @@ int main() {
     std::string results = "Average path length: " + std::to_string(average_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
-    results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
+    // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
     std::string filePath = "./../result-1207/" + GRAPH + "/group-access.txt";

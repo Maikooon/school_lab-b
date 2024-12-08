@@ -66,12 +66,15 @@ def plot_bar_chart(data):
     plt.title("Average Execution Time by Category")
     plt.xticks(x_positions, x_labels)  # X軸に文字列ラベルを割り当て
     plt.grid(axis="y", linestyle="--", alpha=0.7)
+    plt.savefig("1-bar_chart.png")
     plt.show()
 
 
 # 実行部分
-default_file = "./ng_0.05/METIS-ca/default.txt"  # 指定された default.txt ファイル
-access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt ファイル
+default_file = (
+    "./ng_0.05/METIS-ca/3/group-access.txt"  # 指定された default.txt ファイル
+)
+access_file = "./ng_0.05/METIS-ca/3/access.txt"  # 指定された access.txt ファイル
 
 # ユーザーが指定する X 軸のラベル
 label_default = "Default"
