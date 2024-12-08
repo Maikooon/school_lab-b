@@ -45,7 +45,37 @@ def save_node_community(parts, graph_name, partition_count):
 
 
 # TODO:グラフの名前を定義するーメイン処理
+# if __name__ == "__main__":
+#     GRAPH = os.getenv("GRAPH", "com-amazon-connected")
+#     npart = 15  # 分割数を指定
+#     load_and_partition_graph(GRAPH, npart)
 if __name__ == "__main__":
-    GRAPH = os.getenv("GRAPH", "com-amazon-connected")
-    npart = 2000  # 分割数を指定
-    load_and_partition_graph(GRAPH, npart)
+    GRAPH = os.getenv("GRAPH", "ca-grqc-connected")
+    partitions = [
+        2,
+        3,
+        5,
+        8,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        95,
+        100,
+    ]  # 分割数を配列で指定
+
+    for npart in partitions:
+        load_and_partition_graph(GRAPH, npart)
