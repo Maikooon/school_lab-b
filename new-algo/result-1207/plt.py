@@ -327,7 +327,7 @@ def plot_execution_times_multiple(data_sets, line_sets):
     plt.figure(figsize=(12, 8))
 
     # 散布図データ
-    colors = ["blue", "green"]
+    colors = ["blue", "red"]
     labels = ["CA Dataset", "Amazon Dataset"]
     for i, data in enumerate(data_sets):
         if not data:
@@ -357,8 +357,8 @@ def plot_execution_times_multiple(data_sets, line_sets):
                 linestyles="--",
             )
 
-    plt.xlim(0, 80)
-    plt.ylim(500000000, 1500000000)
+    plt.xlim(0, 50)
+    plt.ylim(500000000, 1300000000)
     plt.xlabel("Number of community groups")
     plt.ylabel("Execution Time (nanoseconds)")
     plt.title("Execution Time Comparison: CA vs Amazon")
