@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 // ca
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-ca/10";  // 環境変数から取得
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-cae/0.1";  // 環境変数から取得
 const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
 const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
 
@@ -32,6 +32,5 @@ const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng
 const double ALPHA = 0.15;
 const int RW_COUNT = 10000;
 const int START_NODE = 22;
-
 
 #endif // CONFIG_H

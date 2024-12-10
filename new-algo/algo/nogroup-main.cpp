@@ -116,11 +116,11 @@ void load_ng_table(const std::string& filepath) {
             }
 
             // 読み込んだ内容のデバッグ出力
-            // std::cout << "Community " << community << " : ";
-            // for (const int& n : ng_table[community]) {
-            //     std::cout << n << " "; // ノードを表示
-            // }
-            // std::cout << std::endl;
+            std::cout << "Community " << community << " : ";
+            for (const int& n : ng_table[community]) {
+                std::cout << n << " "; // ノードを表示
+            }
+            std::cout << std::endl;
         }
     }
 
@@ -157,14 +157,14 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // printf("ここには全部到達l");
 
         //次にHopするノードがNGノードの候補として上がっているのか(左一列)
-        // if (it != ng_table.end()) {
-        //     std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
-        //     for (int num : it->second) {
-        //         std::cout << num << " ";
-        //         a += std::to_string(num) + " "; // ノードを文字列に追加
-        //     }
-        //     std::cout << std::endl;
-        // }
+        if (it != ng_table.end()) {
+            std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+            for (int num : it->second) {
+                std::cout << num << " ";
+                a += std::to_string(num) + " "; // ノードを文字列に追加
+            }
+            std::cout << std::endl;
+        }
         if (it != ng_table.end()) {
             bool first = true;
             for (int num : it->second) {
@@ -191,8 +191,6 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     total_move += move_count;
     return path;
 }
-
-
 
 void saveResultsToFile(const std::string& filePath, const std::string& results) {
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);

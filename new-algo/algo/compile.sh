@@ -32,7 +32,7 @@
 
 # GRAPH配列の定義
 # # amaxon
-GRAPH_VALUES=("ng_0.05/METIS-ca/2")
+# GRAPH_VALUES=("ng_0.05/METIS-ca/2")
 #  "ng_0.05/METIS-com-amazon-connected/10"  "ng_0.05/METIS-com-amazon-connected/15"
 #   "ng_0.05/METIS-com-amazon-connected/20"  "ng_0.05/METIS-com-amazon-connected/25" "ng_0.05/METIS-com-amazon-connected/30" "ng_0.05/METIS-com-amazon-connected/35" "ng_0.05/METIS-com-amazon-connected/40" 
 #   "ng_0.05/METIS-com-amazon-connected/45" "ng_0.05/METIS-com-amazon-connected/50" "ng_0.05/METIS-com-amazon-connected/55" "ng_0.05/METIS-com-amazon-connected/60" "ng_0.05/METIS-com-amazon-connected/65" "ng_0.05/METIS-com-amazon-connected/70" )
@@ -40,14 +40,19 @@ GRAPH_VALUES=("ng_0.05/METIS-ca/2")
 
 
 # ca
-# GRAPH_VALUES=("ng_0.05/METIS-ca/2" "ng_0.05/METIS-ca/3""ng_0.05/METIS-ca/5" "ng_0.05/METIS-ca/8" "ng_0.05/METIS-ca/10" "ng_0.05/METIS-ca/15"  
+GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-ca-ngrate/0.02"  "ng_0.05/METIS-ca-ngrate/0.03" "ng_0.05/METIS-ca-ngrate/0.04" "ng_0.05/METIS-ca-ngrate/0.05" "ng_0.05/METIS-ca-ngrate/0.06" "ng_0.05/METIS-ca-ngrate/0.07" "ng_0.05/METIS-ca-ngrate/0.08" "ng_0.05/METIS-ca-ngrate/0.09" "ng_0.05/METIS-ca-ngrate/0.005"
+"ng_0.05/METIS-ca-ngrate/0.1" )
+# "ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-cangrate/0.001")
 # "ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
 # "ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
 # list  = (2 3 4)
 # GRAPH_VALUES=("ng_0.05/METIS-com-amazon-connected/{list}")/
 
 # コンパイル対象の C++ ソースファイルを選択
-cpp_files=("nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
+# cpp_files=("nogroup:./nogroup-main.cpp" )
+cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
+# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
+# cpp_files= ("nogroup:./nogroup-main.cpp")
 
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do
@@ -57,6 +62,7 @@ for GRAPH in "${GRAPH_VALUES[@]}"; do
     
     # コンパイル処理
     for entry in "${cpp_files[@]}"; do
+        echo "${entry}"
         # entryをキーとソースファイルパスに分割
         key="${entry%%:*}"
         source_file="${entry#*:}"

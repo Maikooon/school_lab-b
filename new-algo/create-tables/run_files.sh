@@ -71,10 +71,10 @@
 #!/bin/bash
 
 # 定義された環境変数   %単位　　最大１
-export NG_RATES=( 0.05  0.005 0.001 0.0005 0.0001)  # NGレートを変更  100分の１、1000分の１
+export NG_RATES=(0.1)  # NGレートを変更  100分の１、1000分の１
 # export NG_RATES=( 0.1 )
 export GRAPH_COMMUNITY="ng_0.05/METIS-ca-ngrate"  # NGノードを含むグラフの名前
-export GRAPH_NAME="com-amazon-connected"    
+export GRAPH_NAME="ca-grqc-connected"    
 
 # COM_NUMの値を指定
 COM_NUM=3
