@@ -114,7 +114,7 @@ for community, groups in community_groups.items():
         # 右側が対象の数字であるペアの左側の数字を抽出
         # 多分ここのResukltの部分がうまくいっていない
         # データが取れていない
-        # print("ここででデータ", data)
+        # print("ここでxでデータ", data)
         result = [left for left, right in data if right in target_values]
         # NG情報を取得
 

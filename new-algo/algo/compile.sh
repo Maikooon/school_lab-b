@@ -32,7 +32,7 @@
 
 # GRAPH配列の定義
 # # amaxon
-# GRAPH_VALUES=("ng_0.05/METIS-com-amazon-connected/2" "ng_0.05/METIS-com-amazon-connected/3" "ng_0.05/METIS-com-amazon-connected/5"
+GRAPH_VALUES=("ng_0.05/METIS-ca/2")
 #  "ng_0.05/METIS-com-amazon-connected/10"  "ng_0.05/METIS-com-amazon-connected/15"
 #   "ng_0.05/METIS-com-amazon-connected/20"  "ng_0.05/METIS-com-amazon-connected/25" "ng_0.05/METIS-com-amazon-connected/30" "ng_0.05/METIS-com-amazon-connected/35" "ng_0.05/METIS-com-amazon-connected/40" 
 #   "ng_0.05/METIS-com-amazon-connected/45" "ng_0.05/METIS-com-amazon-connected/50" "ng_0.05/METIS-com-amazon-connected/55" "ng_0.05/METIS-com-amazon-connected/60" "ng_0.05/METIS-com-amazon-connected/65" "ng_0.05/METIS-com-amazon-connected/70" )
@@ -40,14 +40,14 @@
 
 
 # ca
-GRAPH_VALUES=("ng_0.05/METIS-ca/2" "ng_0.05/METIS-ca/3""ng_0.05/METIS-ca/5" "ng_0.05/METIS-ca/8" "ng_0.05/METIS-ca/10" "ng_0.05/METIS-ca/15"  
-"ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
-"ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
+# GRAPH_VALUES=("ng_0.05/METIS-ca/2" "ng_0.05/METIS-ca/3""ng_0.05/METIS-ca/5" "ng_0.05/METIS-ca/8" "ng_0.05/METIS-ca/10" "ng_0.05/METIS-ca/15"  
+# "ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
+# "ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
 # list  = (2 3 4)
 # GRAPH_VALUES=("ng_0.05/METIS-com-amazon-connected/{list}")/
 
 # コンパイル対象の C++ ソースファイルを選択
-cpp_files=("main:./main.cpp")
+cpp_files=("nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
 
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do

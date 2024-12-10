@@ -30,8 +30,8 @@ print("NG Rate:", NG_RATE)
 # node_community_file = f"./../../Louvain/community/{GRAPH}.cm"
 
 # METISでやる時
-node_community_file = f"./result/{GRAPH_COMMUNITY}/{COM_NUM}/node_community.txt"
-
+# node_community_file = f"./result/{GRAPH_COMMUNITY}/{COM_NUM}/node_community.txt"
+node_community_file = f"./result/{GRAPH_COMMUNITY}/node_community.txt"
 # エッジファイルを読み込む   TODO: ここも変更する
 edges_file = f"./../../Louvain/graph/{GRAPH_NAME}.gr"
 
@@ -263,11 +263,11 @@ write_dynamic_groups_to_file(
 )
 
 # NGノードをグループごとに選択
-select_ng_nodes_per_group = select_ng_nodes_per_group(
-    community_group_mapping, node_community
+select_ng_nodes_per_community = select_ng_nodes_per_group(
+    community_group_mapping, node_community, NG_RATE
 )
 
 # # NGノードをファイルに書き込み
 write_ng_nodes_per_community_to_file(
-    select_ng_nodes_per_group, os.path.join(result_folder, "ng_nodes.txt")
+    select_ng_nodes_per_community, os.path.join(result_folder, "ng_nodes.txt")
 )
