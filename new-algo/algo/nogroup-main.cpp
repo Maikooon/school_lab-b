@@ -150,31 +150,31 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
 
         int next_node;
         next_node = *next(neighbors.begin(), rand() % neighbors.size());
-        // std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
+        std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
 
         std::string a;
         auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
         // printf("ここには全部到達l");
 
         //次にHopするノードがNGノードの候補として上がっているのか(左一列)
-        // if (it != ng_table.end()) {
-        //     std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
-        //     for (int num : it->second) {
-
-
-
-        //         std::cout << num << " ";
-        //         a += std::to_string(num) + " "; // ノードを文字列に追加
-        //     }
-        //     std::cout << std::endl;
-        // }
         if (it != ng_table.end()) {
-            bool first = true;
+            std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
             for (int num : it->second) {
-                a += std::to_string(num) + ", ";
-                first = false;
+
+
+
+                std::cout << num << " ";
+                a += std::to_string(num) + " "; // ノードを文字列に追加
             }
+            std::cout << std::endl;
         }
+        // if (it != ng_table.end()) {
+        //     bool first = true;
+        //     for (int num : it->second) {
+        //         a += std::to_string(num) + ", ";
+        //         first = false;
+        //     }
+        // }
 
         // START_NODEが文字列a(２列目以降)に含まれているか確認
         if (a.find(std::to_string(START_NODE)) != std::string::npos) {

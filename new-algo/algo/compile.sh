@@ -52,9 +52,9 @@ GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.07" )
 
 # コンパイル対象の C++ ソースファイルを選択
 # cpp_files=("nogroup:./nogroup-main.cpp" )
-cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
-# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
-# cpp_files= ("nogroup:./nogroup-main.cpp")
+# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
+cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
+# cpp_files= ("nogroup:./nogroup-main.cpp" )
 
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do
