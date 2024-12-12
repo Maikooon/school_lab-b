@@ -1,3 +1,7 @@
+"""
+ノード情報を入れるとグラフの概形を描画してくれるファイル
+"""
+
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
