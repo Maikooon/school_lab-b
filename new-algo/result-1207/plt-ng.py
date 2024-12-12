@@ -212,7 +212,7 @@ def plot_execution_times(data, data2):
             label="Access",
         )
 
-    # plt.ylim(500000000, 2000000000)
+    # plt.ylim(500000000, 5000000000)
     plt.xlabel("Number of Nodes")
     plt.ylabel("Execution Time (nanoseconds)")
     plt.title("Execution Time vs Number of Nodes")

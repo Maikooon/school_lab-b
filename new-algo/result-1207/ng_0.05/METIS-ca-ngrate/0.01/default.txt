@@ -26,3 +26,55 @@ Average path length: 6.648000
 Total moves by nodes: 66480
 Total moves across communities: 24826
 Program execution time: 611816667 nanoseconds
+Average path length: 6.615300
+Total moves by nodes: 66153
+Total moves across communities: 25286
+Program execution time: 931519042 nanoseconds
+Average path length: 6.716200
+Total moves by nodes: 67162
+Total moves across communities: 25591
+Program execution time: 841170083 nanoseconds
+Average path length: 6.798600
+Total moves by nodes: 67986
+Total moves across communities: 25599
+Program execution time: 800472708 nanoseconds
+Average path length: 6.714800
+Total moves by nodes: 67148
+Total moves across communities: 25508
+Program execution time: 726552042 nanoseconds
+Average path length: 6.619300
+Total moves by nodes: 66193
+Total moves across communities: 24990
+Program execution time: 555512000 nanoseconds
+Average path length: 6.564000
+Total moves by nodes: 65640
+Total moves across communities: 24880
+Program execution time: 549046875 nanoseconds
+Average path length: 6.699100
+Total moves by nodes: 66991
+Total moves across communities: 25454
+Program execution time: 630261958 nanoseconds
+Average path length: 6.742400
+Total moves by nodes: 67424
+Total moves across communities: 25428
+Program execution time: 567004917 nanoseconds
+Average path length: 6.700000
+Total moves by nodes: 67000
+Total moves across communities: 25614
+Program execution time: 596695125 nanoseconds
+Average path length: 6.678800
+Total moves by nodes: 66788
+Total moves across communities: 25361
+Program execution time: 559113167 nanoseconds
+Average path length: 6.624200
+Total moves by nodes: 66242
+Total moves across communities: 25037
+Program execution time: 558534459 nanoseconds
+Average path length: 6.667700
+Total moves by nodes: 66677
+Total moves across communities: 25375
+Program execution time: 558041000 nanoseconds
+Average path length: 6.790500
+Total moves by nodes: 67905
+Total moves across communities: 25354
+Program execution time: 577723541 nanoseconds

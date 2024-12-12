@@ -1,5 +1,65 @@
-Average path length: 6.683100
-Total moves by nodes: 66831
-Total moves across communities: 56831
-Program execution time: 1199308334 nanoseconds
+Average path length: 6.008900
+Total moves by nodes: 60089
+Total moves across communities: 50089
+Program execution time: 1932339125 nanoseconds
+
+Average path length: 6.125800
+Total moves by nodes: 61258
+Total moves across communities: 51258
+Program execution time: 1996687292 nanoseconds
+
+Average path length: 6.168100
+Total moves by nodes: 61681
+Total moves across communities: 51681
+Program execution time: 2031159333 nanoseconds
+
+Average path length: 6.072400
+Total moves by nodes: 60724
+Total moves across communities: 50724
+Program execution time: 1992299375 nanoseconds
+
+Average path length: 6.163800
+Total moves by nodes: 61638
+Total moves across communities: 51638
+Program execution time: 2037542750 nanoseconds
+
+Average path length: 5.997300
+Total moves by nodes: 59973
+Total moves across communities: 49973
+Program execution time: 2044346916 nanoseconds
+
+Average path length: 6.079200
+Total moves by nodes: 60792
+Total moves across communities: 50792
+Program execution time: 1959209959 nanoseconds
+
+Average path length: 6.150800
+Total moves by nodes: 61508
+Total moves across communities: 51508
+Program execution time: 1981010625 nanoseconds
+
+Average path length: 6.039900
+Total moves by nodes: 60399
+Total moves across communities: 50399
+Program execution time: 2007149625 nanoseconds
+
+Average path length: 6.203700
+Total moves by nodes: 62037
+Total moves across communities: 52037
+Program execution time: 2048809875 nanoseconds
+
+Average path length: 6.175100
+Total moves by nodes: 61751
+Total moves across communities: 51751
+Program execution time: 2129767625 nanoseconds
+
+Average path length: 6.116800
+Total moves by nodes: 61168
+Total moves across communities: 51168
+Program execution time: 1999726167 nanoseconds
+
+Average path length: 6.163000
+Total moves by nodes: 61630
+Total moves across communities: 51630
+Program execution time: 2005682625 nanoseconds
 

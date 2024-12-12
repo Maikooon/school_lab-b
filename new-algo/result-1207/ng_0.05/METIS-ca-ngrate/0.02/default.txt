@@ -10,3 +10,55 @@ Average path length: 6.671500
 Total moves by nodes: 66715
 Total moves across communities: 25521
 Program execution time: 917531792 nanoseconds
+Average path length: 6.581800
+Total moves by nodes: 65818
+Total moves across communities: 24824
+Program execution time: 885933000 nanoseconds
+Average path length: 6.641800
+Total moves by nodes: 66418
+Total moves across communities: 25247
+Program execution time: 766819917 nanoseconds
+Average path length: 6.658500
+Total moves by nodes: 66585
+Total moves across communities: 25658
+Program execution time: 1164813958 nanoseconds
+Average path length: 6.605700
+Total moves by nodes: 66057
+Total moves across communities: 24967
+Program execution time: 763074959 nanoseconds
+Average path length: 6.751400
+Total moves by nodes: 67514
+Total moves across communities: 25649
+Program execution time: 564666125 nanoseconds
+Average path length: 6.665300
+Total moves by nodes: 66653
+Total moves across communities: 25681
+Program execution time: 553539792 nanoseconds
+Average path length: 6.766900
+Total moves by nodes: 67669
+Total moves across communities: 25497
+Program execution time: 567193667 nanoseconds
+Average path length: 6.736800
+Total moves by nodes: 67368
+Total moves across communities: 25693
+Program execution time: 560054291 nanoseconds
+Average path length: 6.692900
+Total moves by nodes: 66929
+Total moves across communities: 25522
+Program execution time: 597671625 nanoseconds
+Average path length: 6.637500
+Total moves by nodes: 66375
+Total moves across communities: 24972
+Program execution time: 585845542 nanoseconds
+Average path length: 6.722400
+Total moves by nodes: 67224
+Total moves across communities: 25268
+Program execution time: 560878917 nanoseconds
+Average path length: 6.706400
+Total moves by nodes: 67064
+Total moves across communities: 25292
+Program execution time: 562715916 nanoseconds
+Average path length: 6.685800
+Total moves by nodes: 66858
+Total moves across communities: 25163
+Program execution time: 564941666 nanoseconds

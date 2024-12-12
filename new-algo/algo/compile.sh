@@ -40,8 +40,10 @@
 
 
 # ca
-GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-ca-ngrate/0.02"  "ng_0.05/METIS-ca-ngrate/0.03" "ng_0.05/METIS-ca-ngrate/0.04" "ng_0.05/METIS-ca-ngrate/0.05" "ng_0.05/METIS-ca-ngrate/0.06" "ng_0.05/METIS-ca-ngrate/0.07" "ng_0.05/METIS-ca-ngrate/0.08" "ng_0.05/METIS-ca-ngrate/0.09" "ng_0.05/METIS-ca-ngrate/0.005"
-"ng_0.05/METIS-ca-ngrate/0.1" )
+# GRAPH_VALUES=( "ng_0.05/METIS-ca-ngrate/0.06" "ng_0.05/METIS-ca-ngrate/0.07"  "ng_0.05/METIS-ca-ngrate/0.08" "ng_0.05/METIS-ca-ngrate/0.09" "ng_0.05/METIS-ca-ngrate/0.1" )
+
+
+GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.07" )
 # "ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-cangrate/0.001")
 # "ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
 # "ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
