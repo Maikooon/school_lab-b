@@ -1,15 +1,3 @@
-"""
-
-入力
-サーバごとのグラフの接続情報
-
-出力
-
-
-
-Nホップ目において、その時から自分のサーバに戻ってくる確率を計算
-"""
-
 import os
 import numpy as np
 from collections import defaultdict
@@ -42,20 +30,28 @@ def read_server_files(directory):
     return adjacency_list, server_map
 
 
-def run_random_walk(adjacency_list, server_map, initial_node, alpha, max_hops=1000):
+def run_random_walk_with_influx(
+    adjacency_list, server_map, initial_node, alpha, max_hops=1000
+):
     """
-    ランダムウォークをシミュレートし、各サーバごとの滞在確率を計算する。
+    ランダムウォークをシミュレートし、ホップごとのサーバへの流入確率を計算する。
     """
-    server_probabilities_over_hops = defaultdict(
+    server_influx_over_hops = defaultdict(
         lambda: [0] * max_hops
-    )  # 各サーバの確率をホップごとに記録
+    )  # サーバごとの流入回数を記録
     current_node = initial_node
+    current_server = None
     hop = 0
-    server_visits = defaultdict(int)  # サーバごとの訪問回数
+
+    # サーバ情報の逆マップを作成（ノード -> サーバ）
+    node_to_server = {}
+    for server, nodes in server_map.items():
+        for node in nodes:
+            node_to_server[node] = server
 
     # ランダムウォークを開始
     while hop < max_hops:
-        # 終了確率αで終了するか判定
+        # 終了確率alphaで終了するか判定
         if random.random() < alpha:
             break
 
@@ -64,45 +60,44 @@ def run_random_walk(adjacency_list, server_map, initial_node, alpha, max_hops=10
         if not neighbors:
             break  # 隣接ノードがない場合、遷移を終了
         next_node = random.choice(neighbors)
+
+        # サーバの流入を記録
+        next_server = node_to_server.get(next_node)
+        if next_server and next_server != current_server:
+            server_influx_over_hops[next_server][hop] += 1
+
+        # 状態を更新
         current_node = next_node
+        current_server = next_server
         hop += 1
 
-        # 各サーバごとの訪問確率を計算
-        for server, nodes in server_map.items():
-            if current_node in nodes:
-                server_visits[server] += 1
+    # 流入確率を計算
+    server_influx_probabilities = defaultdict(list)
+    for server, influx_counts in server_influx_over_hops.items():
+        total_influx = sum(influx_counts)
+        if total_influx > 0:
+            server_influx_probabilities[server] = [
+                count / total_influx for count in influx_counts
+            ]
 
-        # サーバごとの訪問確率を更新
-        total_visits = (
-            sum(server_visits.values()) if server_visits else 1
-        )  # 訪問回数がゼロの場合は1で割る
-        for server in server_map:
-            server_probabilities_over_hops[server][hop] = (
-                server_visits[server] / total_visits
-            )
-
-    return server_probabilities_over_hops, hop
+    return server_influx_probabilities, hop
 
 
-def plot_server_probabilities(server_probabilities_over_hops, total_hops, alpha):
+def plot_server_influx_probabilities(server_influx_probabilities, total_hops, alpha):
     """
-    サーバごとの確率をホップ数に対してプロット
+    サーバごとの流入確率をホップ数に対してプロット
     """
     plt.figure(figsize=(10, 6))
     hops = range(total_hops)
 
-    for server, probabilities in server_probabilities_over_hops.items():
-        # 確率リストが max_hops より長い場合、total_hops に合わせる
+    for server, probabilities in server_influx_probabilities.items():
         plt.plot(
             hops, probabilities[:total_hops], marker="o", label=f"Server: {server}"
         )
 
-    # for server, probabilities in server_probabilities_over_hops.items():
-    #     plt.plot(hops, probabilities, marker="o", label=f"Server: {server}")
-
-    plt.title(f"Server Probabilities over Hops (α={alpha})")
+    plt.title(f"Server Influx Probabilities over Hops (\u03b1={alpha})")
     plt.xlabel("Hop Number")
-    plt.ylabel("Probability")
+    plt.ylabel("Influx Probability")
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -125,10 +120,10 @@ if __name__ == "__main__":
     # 初期ノードの設定
     initial_node = 1
 
-    # ランダムウォークを実行し、各サーバごとの確率を計算
-    server_probabilities_over_hops, total_hops = run_random_walk(
+    # ランダムウォークを実行し、各サーバごとの流入確率を計算
+    server_influx_probabilities, total_hops = run_random_walk_with_influx(
         adjacency_list, server_map, initial_node, alpha
     )
 
     # 結果をプロット
-    plot_server_probabilities(server_probabilities_over_hops, total_hops, alpha)
+    plot_server_influx_probabilities(server_influx_probabilities, total_hops, alpha)
