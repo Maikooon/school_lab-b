@@ -14,9 +14,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.1  # 終了確率 (例: 10%)
 RW_COUNT = 100  # ランダムウォークの回数,それぞれの始点サーバからRW _COUNT回だけ繰り返す
 START_SERVER = "10.58.60.03"  # 始点サーバ
-GRAPH_PATH = (
-    "./../server-data/karate/"  # サーバごとに分かれたファイルが格納されたディレクトリ
-)
+GRAPH_PATH = "./../server-data/fb-caltech-connected/"  # サーバごとに分かれたファイルが格納されたディレクトリ
 import os
 from collections import defaultdict
 
