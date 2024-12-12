@@ -13,20 +13,7 @@ import matplotlib.pyplot as plt
 Hop単位の累積の計算方法求める
 具体的には、何ホップ目までに遷移しているのかがわかる
 
-改変する
-スタバで最後にやってたやつ
-"""
-
-"""
-始点ノードからランダムウォークをシミュレートし、外部サーバから指定サーバへの流入確率を累積的に計算する。
-複数回のランダムウォーク結果を累積的に収集し、流入確率を求める。
-
-
-TODO'改変アルゴリズム
-初回に移動したHop数目だけ獲得啜る、具体的には、２つのRwerがあり３Hop目に達したRwerと５Hop目に達したRwerがある場合、それぞれのRwerの３Hop目と５Hop目の数を足し合わせて、それをRwerの数で割る
-この時では、５Hop目では１００％の確確率で自分のサーバに戻ってくるが、３Hop目では５０％の確率で自分のサーバに戻ってくるということがわかる
-内部のノードも含めた場合には、じぶんのサーバに戻ってくる確率が限りなく低く0%ほどになる可能性もある
-
+どのサーバにいるかのみがわかる
 """
 
 
@@ -68,21 +55,24 @@ def read_server_files(directory):
 import random
 import numpy as np
 from collections import defaultdict
-import random
-import numpy as np
-from collections import defaultdict
 
 
 def run_random_walk_with_return(
-    adjacency_list, node_to_server, start_node, alpha, num_walks=100
+    adjacency_list, node_to_server, start_node, alpha, num_walks=10
 ):
     """
     始点ノードからランダムウォークをシミュレートし、外部サーバから指定サーバへの流入確率を累積的に計算する。
+    複数回のランダムウォーク結果を累積的に収集し、流入確率を求める。
 
-    改変アルゴリズムに基づき、初回に到達したホップ数ごとの確率を計算する。
+
+    TODO'改変アルゴリズム
+    初回に移動したHop数目だけ獲得啜る、具体的には、２つのRwerがあり３Hop目に達したRwerと５Hop目に達したRwerがある場合、それぞれのRwerの３Hop目と５Hop目の数を足し合わせて、それをRwerの数で割る
+    この時では、５Hop目では１００％の確確率で自分のサーバに戻ってくるが、３Hop目では５０％の確率で自分のサーバに戻ってくるということがわかる
+    内部のノードも含めた場合には、じぶんのサーバに戻ってくる確率が限りなく低く0%ほどになる可能性もある
+
     """
-    # サーバごとの流入回数を記録
-    first_return_counts = defaultdict(
+    # サーバごとの流入回数を記録（ホップ数を無制限に記録）
+    server_return_counts = defaultdict(
         lambda: defaultdict(int)
     )  # {サーバ: {ホップ数: 回数}}
 
@@ -96,20 +86,14 @@ def run_random_walk_with_return(
             print(f"エラー: 始点ノード {start_node} はサーバに関連付けられていません。")
             return None
 
-        visited_servers = set()  # 訪問済みのサーバを追跡
-
         while True:
             # 現在のノードのサーバを取得
             current_server = node_to_server.get(current_node)
+            print("current_server", current_server)
 
-            # 外部サーバへの初回移動を記録
-            if (
-                current_server is not None
-                and current_server != initial_server
-                and current_server not in visited_servers
-            ):
-                first_return_counts[current_server][hop] += 1
-                visited_servers.add(current_server)  # 初回移動を記録
+            # 外部サーバからの流入を記録（サーバが異なる場合のみカウント）
+            if current_server is not None and current_server != initial_server:
+                server_return_counts[current_server][hop] += 1
 
             # 終了確率 alpha で終了するか判定
             if random.random() < alpha:
@@ -122,18 +106,27 @@ def run_random_walk_with_return(
             current_node = random.choice(neighbors)
             hop += 1
 
-    # 初回到達確率を計算
+    # 流入確率を計算（累積確率）
+
     server_return_probabilities = {}
 
-    for server, counts_per_hop in first_return_counts.items():
+    for server, counts_per_hop in server_return_counts.items():
+        print("それぞれのRWの長", counts_per_hop)
         max_hop = max(counts_per_hop.keys())  # 最大ホップ数
-        probabilities = np.zeros(max_hop + 1)  # 確率の初期化
+        print("max_hop", max_hop)
+        cumulative_counts = np.zeros(max_hop + 1)  # 累積カウントの初期化
 
+        # ホップ数ごとの累積計算
         for hop, count in counts_per_hop.items():
-            probabilities[hop] = count / num_walks  # 各ホップでの確率を計算
+            cumulative_counts[hop] = count
+
+        total_walks = num_walks  # ランダムウォークの回数
+        print("total_walks", total_walks)
+        probabilities = cumulative_counts / total_walks  # 累積確率を計算
 
         server_return_probabilities[server] = probabilities
 
+    # 結果を返す
     return server_return_probabilities
 
 
@@ -143,7 +136,7 @@ import matplotlib.pyplot as plt
 
 def plot_return_probabilities(server_return_probabilities, alpha):
     """
-    各サーバへの初回到達確率をプロット。
+    各サーバへの累積流入確率をプロット。
     """
     plt.figure(figsize=(10, 6))
 
@@ -151,9 +144,9 @@ def plot_return_probabilities(server_return_probabilities, alpha):
         hops = range(len(probabilities))
         plt.plot(hops, probabilities, marker="o", label=f"Server: {server}")
 
-    plt.title(f"Server First Reach Probabilities (\u03b1={alpha})")
+    plt.title(f"Server Cumulative Influx Probabilities (α={alpha})")
     plt.xlabel("Hop Number")
-    plt.ylabel("First Reach Probability")
+    plt.ylabel("Cumulative Probability")
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -166,14 +159,15 @@ if __name__ == "__main__":
     server_directory = "./../server-data/test2/"  # サーバごとに分かれたファイルが格納されたディレクトリ
 
     # 終了確率の設定
-    alpha = 0.1  # 終了確率 (例: 10%)
+    alpha = 0.1  # 終了確率 (例: 1%)
 
+    # 隣接リストとサーバ情報を読み取る
     adjacency_list, node_to_server = read_server_files(server_directory)
 
     # 始点ノードを指定（例：ノード1から開始）
-    start_node = 0
+    start_node = 2
 
-    # ランダムウォークを実行し、各サーバへの初回到達確率を計算
+    # ランダムウォークを実行し、各サーバへの流入確率を計算
     server_return_probabilities = run_random_walk_with_return(
         adjacency_list, node_to_server, start_node, alpha
     )
