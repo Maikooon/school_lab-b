@@ -3,6 +3,7 @@ import numpy as np
 from collections import defaultdict
 import os
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 """
 指定されたサーバに属するすべてのノードからランダムウォークをシミュレートし、
@@ -11,15 +12,10 @@ import matplotlib.pyplot as plt
 """
 
 # ここで変数を設定する
-ALPHA = 0.1  # 終了確率 (例: 10%)
+ALPHA = 0.01  # 終了確率 (例: 10%)
 RW_COUNT = 100  # ランダムウォークの回数,それぞれの始点サーバからRW _COUNT回だけ繰り返す
 START_SERVER = "10.58.60.03"  # 始点サーバ
-GRAPH_PATH = "./../server-data/fb-caltech-connected/"  # サーバごとに分かれたファイルが格納されたディレクトリ
-import os
-from collections import defaultdict
-
-import os
-from collections import defaultdict
+GRAPH_PATH = "./server-data/fb-caltech-connected/"  # サーバごとに分かれたファイルが格納されたディレクトリ
 
 
 def read_server_files(directory):
@@ -120,7 +116,7 @@ def run_random_walk_with_return(
                     break  # 隣接ノードがない場合、遷移を終了
                 current_node = random.choice(neighbors)
                 hop += 1
-
+        print(f"Return counts: {dict(return_counts)}")
         # 各ノードの戻り回数を累積
         for hop, count in return_counts.items():
             total_return_counts[hop] += count
@@ -141,53 +137,66 @@ def run_random_walk_with_return(
     return return_probabilities
 
 
-# 結果のプロット
-import matplotlib.pyplot as plt
-
-
-def plot_return_probabilities(return_probabilities, alpha):
+def plot_multiple_graphs_return_probabilities(graph_results, alpha):
     """
-    始点サーバに再び戻る累積確率をプロット。
+    複数のグラフについて、始点サーバに戻る累積確率をプロット。
     """
     plt.figure(figsize=(10, 6))
 
-    hops = range(len(return_probabilities))
-    plt.plot(
-        hops, return_probabilities, marker="o", label="Cumulative Return Probabilities"
-    )
+    for graph_name, return_probabilities in graph_results.items():
+        hops = range(len(return_probabilities))
+        plt.plot(
+            hops, return_probabilities, marker="o", label=f"{graph_name} (α={alpha})"
+        )
 
     plt.title(f"Cumulative Return Probabilities to Start Server (α={alpha})")
     plt.xlabel("Hop Number")
     plt.ylabel("Cumulative Return Probability")
+    plt.xlim(0, 20)
+
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
+    plt.savefig(f"return-probabilities-{alpha}.png")
     plt.show()
 
 
-# 使用例
 if __name__ == "__main__":
-    # サーバ情報のディレクトリパス
-    server_directory = (
-        GRAPH_PATH  # サーバごとに分かれたファイルが格納されたディレクトリ
-    )
+    # グラフディレクトリ一覧（例として3つのグラフ）
+    graph_directories = {
+        # "test": "./server-data/test/",
+        "karate(34node)": "./server-data/karate/",
+        "fb-caltech-connected(762)": "./server-data/fb-caltech-connected/",
+        "fb-pages-company(14113)": "./server-data/fb-pages-company/",
+        # "ca-grqc-connected": "./server-data/ca-grqc-connected/",
+    }
 
-    # 終了確率の設定
-    alpha = ALPHA  # 終了確率 (例: 10%)
+    # 結果を格納する辞書
+    graph_results = {}
 
-    # 隣接リストとサーバ情報を読み取る
-    adjacency_list, node_to_server = read_server_files(server_directory)
+    # 各グラフで実験
+    for graph_name, server_directory in graph_directories.items():
+        print(f"Processing {graph_name}...")
 
-    # 始点サーバを指定（例：サーバAに属するノード）
-    start_server = START_SERVER
-    start_nodes = [
-        node for node, server in node_to_server.items() if server == start_server
-    ]
+        # 隣接リストとサーバ情報を読み取る
+        adjacency_list, node_to_server = read_server_files(server_directory)
 
-    # ランダムウォークを実行し、始点サーバに戻る累積確率を計算
-    return_probabilities = run_random_walk_with_return(
-        adjacency_list, node_to_server, start_nodes, alpha
-    )
+        # 始点サーバを指定（例：サーバAに属するノード）
+        start_nodes = [
+            node for node, server in node_to_server.items() if server == START_SERVER
+        ]
+
+        if not start_nodes:
+            print(f"Warning: No start nodes found for {START_SERVER} in {graph_name}")
+            continue
+
+        # ランダムウォークを実行し、始点サーバに戻る累積確率を計算
+        return_probabilities = run_random_walk_with_return(
+            adjacency_list, node_to_server, start_nodes, ALPHA
+        )
+
+        # 結果を辞書に格納
+        graph_results[graph_name] = return_probabilities
 
     # 結果をプロット
-    plot_return_probabilities(return_probabilities, alpha)
+    plot_multiple_graphs_return_probabilities(graph_results, ALPHA)
