@@ -12,10 +12,58 @@ import matplotlib.pyplot as plt
 """
 
 # ここで変数を設定する
-ALPHA = 0.1  # 終了確率 (例: 10%)
+ALPHA = 0.01  # 終了確率 (例: 10%)
 RW_COUNT = 10  # ランダムウォークの回数,それぞれの始点サーバからRW _COUNT回だけ繰り返す
 START_SERVER = "10.58.60.03"  # 始点サーバ
 # GRAPH_PATH = "./server-data/fb-caltech-connected-copy-4/"  # サーバごとに分かれたファイルが格納されたディレクトリ
+
+
+# def read_server_files(directory):
+#     """
+#     指定されたディレクトリ内のすべてのサーバファイルを読み取り、
+#     左側のノードが記載されているファイルに対応するサーバに属することを記録する。
+#     """
+#     adjacency_list = defaultdict(list)
+#     node_to_server = {}
+
+#     for filename in os.listdir(directory):
+#         file_path = os.path.join(directory, filename)
+
+#         # ファイル名からサーバのIPを抽出
+#         if os.path.isfile(file_path):
+#             # 例: "Abilene03" → "10.58.60.3"
+#             if "abilene" in filename:
+#                 server_ip = (
+#                     "10.58.60."
+#                     + filename.replace("abilene", "").replace(".txt", "").strip()
+#                 )
+#             else:
+#                 print(f"Unexpected filename format: {filename}")
+#                 continue
+
+#             with open(file_path, "r") as f:
+#                 for line in f:
+#                     try:
+#                         # 行を分割してノードペアを取得
+#                         node_a, node_b, _ = line.strip().split(",")
+#                         node_a, node_b = int(node_a), int(node_b)
+#                     except ValueError:
+#                         print(f"Invalid line format skipped: {line.strip()}")
+#                         continue
+
+#                     # 隣接リストを更新
+#                     adjacency_list[node_a].append(node_b)
+#                     adjacency_list[node_b].append(node_a)
+
+#                     # 左側のノードはファイルのサーバに属するとして記録
+#                     node_to_server[node_a] = server_ip
+
+#     print("Adjacency List:", dict(adjacency_list))
+#     print("Node to Server Map:", node_to_server)
+#     return adjacency_list, node_to_server
+
+from collections import defaultdict
+import os
 
 
 def read_server_files(directory):
@@ -23,7 +71,7 @@ def read_server_files(directory):
     指定されたディレクトリ内のすべてのサーバファイルを読み取り、
     左側のノードが記載されているファイルに対応するサーバに属することを記録する。
     """
-    adjacency_list = defaultdict(list)
+    adjacency_list = defaultdict(set)  # リストではなくセットを使用
     node_to_server = {}
 
     for filename in os.listdir(directory):
@@ -51,14 +99,17 @@ def read_server_files(directory):
                         print(f"Invalid line format skipped: {line.strip()}")
                         continue
 
-                    # 隣接リストを更新
-                    adjacency_list[node_a].append(node_b)
-                    adjacency_list[node_b].append(node_a)
+                    # 隣接リストを更新（重複登録を防止）
+                    adjacency_list[node_a].add(node_b)
+                    adjacency_list[node_b].add(node_a)
 
                     # 左側のノードはファイルのサーバに属するとして記録
                     node_to_server[node_a] = server_ip
 
-    print("Adjacency List:", dict(adjacency_list))
+    # セットをリストに変換して返す（必要なら）
+    adjacency_list = {key: list(value) for key, value in adjacency_list.items()}
+
+    print("Adjacency List:", adjacency_list)
     print("Node to Server Map:", node_to_server)
     return adjacency_list, node_to_server
 
@@ -152,7 +203,7 @@ def plot_multiple_graphs_return_probabilities(graph_results, alpha):
     plt.title(f"Cumulative Return Probabilities to Start Server (α={alpha})")
     plt.xlabel("Hop Number")
     plt.ylabel("Cumulative Return Probability")
-    plt.xlim(0, 200)
+    plt.xlim(0, 20)
 
     plt.legend()
     plt.grid(True)
@@ -164,17 +215,17 @@ def plot_multiple_graphs_return_probabilities(graph_results, alpha):
 if __name__ == "__main__":
     # グラフディレクトリ一覧（例として3つのグラフ）
     graph_directories = {
-        # "test": "./server-data/test/",
-        # "karate(34node)": "./server-data/karate/",
-        # "fb-caltech-connected(762)": "./server-data/fb-caltech-connected/",
-        # "fb-pages-company(14113)": "./server-data/fb-pages-company/",
+        # "test2": "./server-data/test2/",
+        "karate(34node)": "./server-data/karate/",
+        "fb-caltech-connected(762)": "./server-data/fb-caltech-connected/",
+        "fb-pages-company(14113)": "./server-data/fb-pages-company/",
         # "ca-grqc-connected": "./server-data/ca-grqc-connected/",
         # "fb-caltech-connected-copy-3": "./server-data/fb-caltech-connected/",
-        "fb-caltech-connected-copy/3": "./server-data/fb-caltech-connected-copy/3",
-        "fb-caltech-connected-copy/4": "./server-data/fb-caltech-connected-copy/4/",
-        "fb-caltech-connected-copy/6": "./server-data/fb-caltech-connected-copy/6/",
-        "fb-caltech-connected-copy/8": "./server-data/fb-caltech-connected-copy/8/",
-        "fb-caltech-connected-copy/10": "./server-data/fb-caltech-connected-copy/10/",
+        # "fb-caltech-connected-copy/3": "./server-data/fb-caltech-connected-copy/3",
+        # "fb-caltech-connected-copy/4": "./server-data/fb-caltech-connected-copy/4/",
+        # "fb-caltech-connected-copy/6": "./server-data/fb-caltech-connected-copy/6/",
+        # "fb-caltech-connected-copy/8": "./server-data/fb-caltech-connected-copy/8/",
+        # "fb-caltech-connected-copy/10": "./server-data/fb-caltech-connected-copy/10/",
     }
 
     # 結果を格納する辞書
