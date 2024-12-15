@@ -37,9 +37,46 @@ def process_additional_files(default_file, access_file, label_default, label_acc
     return data
 
 
+# def plot_bar_chart(data):
+#     """
+#     実行時間データを棒グラフでプロット (X軸を文字列で表示)
+#     """
+#     if not data:
+#         print("データが見つかりませんでした。")
+#         return
+
+#     # データを分解
+#     x_labels = list(data.keys())  # X軸のラベル (文字列)
+#     mean_times = [np.mean(data[label]) for label in x_labels]  # 平均値
+
+#     x_positions = np.arange(len(x_labels))  # X軸位置
+
+#     # 二つの差分をいかの比率で分割して、色を変えてヒョジして、つまり、右おAccessのグラフは3色になる
+#     # 約37.96%
+
+#     plt.figure(figsize=(10, 6))
+#     plt.bar(
+#         x_positions,
+#         mean_times,
+#         color=["grey", "green"],  # 各カテゴリの色
+#         alpha=0.7,
+#         edgecolor="black",
+#     )
+
+#     # 軸設定
+#     plt.xlabel("Categories")
+#     plt.ylabel("Average Execution Time (nanoseconds)")
+#     plt.title("Average Execution Time by Category")
+#     plt.xticks(x_positions, x_labels)  # X軸に文字列ラベルを割り当て
+#     plt.grid(axis="y", linestyle="--", alpha=0.7)
+#     plt.savefig("1-bar_chart.png")
+#     plt.show()
+
+
+##TODO:ここまでじは普通のグラフ
 def plot_bar_chart(data):
     """
-    実行時間データを棒グラフでプロット (X軸を文字列で表示)
+    実行時間データを棒グラフでプロット (X軸を文字列で表示し、右側は3色で分割)
     """
     if not data:
         print("データが見つかりませんでした。")
@@ -48,16 +85,57 @@ def plot_bar_chart(data):
     # データを分解
     x_labels = list(data.keys())  # X軸のラベル (文字列)
     mean_times = [np.mean(data[label]) for label in x_labels]  # 平均値
-
     x_positions = np.arange(len(x_labels))  # X軸位置
 
+    print(mean_times)
+
+    # 比率に基づく棒グラフの分割 (37.96%)
+    split_ratio = 0.3796
     plt.figure(figsize=(10, 6))
+
+    # for i, mean_time in enumerate(mean_times):
+    #     if i == len(mean_times) - 1:  # 最後の棒だけ3色で分割.ここはそれぞれの色の高さなので全体からみた高さではない
+    top_height = (mean_times[1] - mean_times[0]) * (1 - split_ratio)
+    mid_height = (mean_times[1] - mean_times[0]) * split_ratio
+    bottom_height = mean_times[0]
+
+    # 上部
     plt.bar(
-        x_positions,
-        mean_times,
-        color=["grey", "blue"],  # 各カテゴリの色
-        alpha=0.7,
+        x_positions[1],
+        top_height,
+        bottom=bottom_height + mid_height,
+        color="blue",
         edgecolor="black",
+        # label="Community Moves (37.96%)" if i == 0 else "",
+    )
+
+    # # 中央
+    plt.bar(
+        x_positions[1],
+        mid_height,
+        bottom=bottom_height,
+        color="orange",
+        edgecolor="black",
+        # label="Node Moves (Mid 31.02%)" if i == 0 else "",
+    )
+
+    # 下部
+    plt.bar(
+        x_positions[1],
+        bottom_height,
+        bottom=0,
+        color="green",
+        edgecolor="black",
+        # label="Node Moves (Lower 31.02%)" if i == 0 else "",
+    )
+    # else:
+    plt.bar(
+        x_positions[0],
+        mean_times[0],
+        bottom=0,
+        color="#D3D3D3",
+        edgecolor="black",
+        # label="Other Categories" if i == 0 else "",
     )
 
     # 軸設定
@@ -66,7 +144,8 @@ def plot_bar_chart(data):
     plt.title("Average Execution Time by Category")
     plt.xticks(x_positions, x_labels)  # X軸に文字列ラベルを割り当て
     plt.grid(axis="y", linestyle="--", alpha=0.7)
-    plt.savefig("1-bar_chart.png")
+    plt.legend(loc="upper left")
+    plt.savefig("1-bar_chart_split.png")
     plt.show()
 
 

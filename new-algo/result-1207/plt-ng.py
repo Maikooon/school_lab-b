@@ -182,9 +182,55 @@ def process_folders(base_dir):
     return sorted(data), sorted(data2)
 
 
+##TODO:ここは散布図
+# def plot_execution_times(data, data2):
+#     """
+#     実行時間データを別々の色でプロット
+#     """
+#     if not data and not data2:
+#         print("データが見つかりませんでした。")
+#         return
+
+#     plt.figure(figsize=(10, 6))
+
+#     # group-access.txt のデータを青でプロット
+#     if data:
+#         node_counts = [item[0] for item in data]
+#         execution_times = [item[1] for item in data]
+#         plt.scatter(
+#             node_counts, execution_times, marker="o", color="blue", label="Group Access"
+#         )
+
+#     # access.txt のデータを緑でプロット
+#     if data2:
+#         node_counts2 = [item[0] for item in data2]
+#         execution_times2 = [item[1] for item in data2]
+#         plt.scatter(
+#             node_counts2,
+#             execution_times2,
+#             marker="x",
+#             color="green",
+#             label="Access",
+#         )
+
+#     # plt.ylim(500000000, 5000000000)
+#     plt.xlabel("Number of Nodes")
+#     plt.ylabel("Execution Time (nanoseconds)")
+#     plt.title("Execution Time vs Number of Nodes")
+#     plt.grid(True)
+#     plt.legend()
+#     plt.savefig("execution_time_comparison.png")
+#     plt.show()
+
+
+## ここはグラフ
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 def plot_execution_times(data, data2):
     """
-    実行時間データを別々の色でプロット
+    実行時間データをx軸ごとに平均して、点を線で結んでプロット
     """
     if not data and not data2:
         print("データが見つかりませんでした。")
@@ -192,30 +238,62 @@ def plot_execution_times(data, data2):
 
     plt.figure(figsize=(10, 6))
 
-    # group-access.txt のデータを青でプロット
+    # Group Access のデータを処理
     if data:
         node_counts = [item[0] for item in data]
         execution_times = [item[1] for item in data]
-        plt.scatter(
-            node_counts, execution_times, marker="o", color="blue", label="Group Access"
+
+        # ノード数ごとに実行時間の平均を計算
+        unique_node_counts = sorted(set(node_counts))
+        avg_execution_times = [
+            np.mean(
+                [
+                    execution_times[i]
+                    for i in range(len(node_counts))
+                    if node_counts[i] == node
+                ]
+            )
+            for node in unique_node_counts
+        ]
+
+        plt.plot(
+            unique_node_counts,
+            avg_execution_times,
+            marker="o",
+            color="blue",
+            label="Group Access",
         )
 
-    # access.txt のデータを緑でプロット
+    # Access のデータを処理
     if data2:
         node_counts2 = [item[0] for item in data2]
         execution_times2 = [item[1] for item in data2]
-        plt.scatter(
-            node_counts2,
-            execution_times2,
+
+        # ノード数ごとに実行時間の平均を計算
+        unique_node_counts2 = sorted(set(node_counts2))
+        avg_execution_times2 = [
+            np.mean(
+                [
+                    execution_times2[i]
+                    for i in range(len(node_counts2))
+                    if node_counts2[i] == node
+                ]
+            )
+            for node in unique_node_counts2
+        ]
+
+        plt.plot(
+            unique_node_counts2,
+            avg_execution_times2,
             marker="x",
             color="green",
             label="Access",
         )
 
-    # plt.ylim(500000000, 5000000000)
     plt.xlabel("Number of Nodes")
-    plt.ylabel("Execution Time (nanoseconds)")
-    plt.title("Execution Time vs Number of Nodes")
+    plt.ylabel("Average Execution Time (nanoseconds)")
+    plt.xlim(0, 0.09)
+    plt.title("Average Execution Time vs Number of Nodes")
     plt.grid(True)
     plt.legend()
     plt.savefig("execution_time_comparison.png")

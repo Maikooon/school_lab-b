@@ -315,10 +315,82 @@ def process_folders(base_dir):
 # lines = process_additional_files(default_file, access_file)
 
 
-# plot_execution_times(data, lines)
-def plot_execution_times_multiple(data_sets, line_sets):
+# plot_execution_times(data, lines)import matplotlib.pyplot as plt
+
+
+# TODO:ここから平均点
+# def plot_average_execution_times(data_sets, line_sets):
+#     """
+#     同じx軸の値を平均化してプロット
+#     """
+#     if not any(data_sets):
+#         print("データが見つかりませんでした。")
+#         return
+
+#     plt.figure(figsize=(12, 8))
+
+#     # 散布図データの平均を計算
+#     colors = ["blue", "red"]
+#     labels = ["CA Dataset", "Amazon Dataset"]
+#     for i, data in enumerate(data_sets):
+#         if not data:
+#             continue
+
+#         # x軸（コミュニティグループ数）ごとに値をグループ化
+#         grouped_data = defaultdict(list)
+#         for item in data:
+#             grouped_data[item[0]].append(item[1])
+
+#         # 平均を計算
+#         avg_node_counts = []
+#         avg_execution_times = []
+#         for x, y_values in grouped_data.items():
+#             avg_node_counts.append(x)
+#             avg_execution_times.append(sum(y_values) / len(y_values))
+
+#         # 平均値をプロット
+#         plt.scatter(
+#             avg_node_counts,
+#             avg_execution_times,
+#             marker="o",
+#             color=colors[i],
+#             label=labels[i],
+#         )
+
+#     # 各データセットに対応する水平線をプロット
+#     for i, lines in enumerate(line_sets):
+#         for line in lines:
+#             x_range = line["x_range"]
+#             y = line["y"]
+#             label = f"{labels[i]} - {line['label']}"
+#             plt.hlines(
+#                 y,
+#                 x_range[0],
+#                 x_range[1],
+#                 colors=colors[i],
+#                 linestyles="--",
+#                 linewidth=1,
+#                 label=label,
+#                 alpha=0.6,
+#             )
+
+#     plt.xlim(0, 80)
+#     plt.ylim(500000000, 1300000000)
+#     plt.xlabel("Number of community groups")
+#     plt.ylabel("Average Execution Time (nanoseconds)")
+#     plt.title("Average Execution Time Comparison: CA vs Amazon")
+#     plt.grid(True)
+#     plt.legend()
+#     plt.savefig("average-graph.png")
+#     plt.show()
+
+import matplotlib.pyplot as plt
+from collections import defaultdict
+
+
+def plot_average_execution_times_with_lines(data_sets, line_sets):
     """
-    複数の実行時間データセットとそれぞれの水平線をプロット
+    同じx軸の値を平均化し、点を結ぶ線を描画
     """
     if not any(data_sets):
         print("データが見つかりませんでした。")
@@ -326,20 +398,41 @@ def plot_execution_times_multiple(data_sets, line_sets):
 
     plt.figure(figsize=(12, 8))
 
-    # 散布図データ
-    colors = ["blue", "red"]
+    # 平均データを計算してプロット
+    colors = ["blue", "green"]
     labels = ["CA Dataset", "Amazon Dataset"]
     for i, data in enumerate(data_sets):
         if not data:
             continue
-        node_counts = [item[0] for item in data]
-        execution_times = [item[1] for item in data]
+
+        # x軸（コミュニティグループ数）ごとに値をグループ化
+        grouped_data = defaultdict(list)
+        for item in data:
+            grouped_data[item[0]].append(item[1])
+
+        # 平均を計算
+        avg_node_counts = []
+        avg_execution_times = []
+        for x, y_values in sorted(grouped_data.items()):
+            avg_node_counts.append(x)
+            avg_execution_times.append(sum(y_values) / len(y_values))
+
+        # 平均値をプロット（点）
         plt.scatter(
-            node_counts,
-            execution_times,
+            avg_node_counts,
+            avg_execution_times,
             marker="o",
             color=colors[i],
-            label=labels[i],
+            label=f"{labels[i]} (average)",
+        )
+
+        # 点を結ぶ線をプロット
+        plt.plot(
+            avg_node_counts,
+            avg_execution_times,
+            color=colors[i],
+            linestyle="-",
+            label=f"{labels[i]} (trend)",
         )
 
     # 各データセットに対応する水平線をプロット
@@ -353,18 +446,21 @@ def plot_execution_times_multiple(data_sets, line_sets):
                 x_range[0],
                 x_range[1],
                 colors=colors[i],
-                label=label,
                 linestyles="--",
+                linewidth=1,
+                label=label,
+                alpha=0.6,
             )
 
-    plt.xlim(0, 50)
+    # グラフの装飾
+    plt.xlim(0, 80)
     plt.ylim(500000000, 1300000000)
     plt.xlabel("Number of community groups")
-    plt.ylabel("Execution Time (nanoseconds)")
-    plt.title("Execution Time Comparison: CA vs Amazon")
+    plt.ylabel("Average Execution Time (nanoseconds)")
+    plt.title("Average Execution Time with Trends: CA vs Amazon")
     plt.grid(True)
     plt.legend()
-    plt.savefig("ca_amazon_scatter_plot.png")
+    plt.savefig("average-lines_plot.png")
     plt.show()
 
 
@@ -387,4 +483,6 @@ ca_lines = process_additional_files(ca_default_file, ca_access_file)
 amazon_lines = process_additional_files(amazon_default_file, amazon_access_file)
 
 # プロット
-plot_execution_times_multiple([ca_data, amazon_data], [ca_lines, amazon_lines])
+plot_average_execution_times_with_lines(
+    [ca_data, amazon_data], [ca_lines, amazon_lines]
+)
