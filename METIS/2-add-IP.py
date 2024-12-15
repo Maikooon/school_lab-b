@@ -26,14 +26,36 @@ GRAPH = os.getenv("GRAPH", "fb-caltech-connected")
 
 # そのたのとき
 # community_file = "./by-my-own-division/" + GRAPH + "/node_community.txt"
-community_file = "./new/" + GRAPH + "/node_community.txt"
+community_file = "./" + GRAPH + "/3node_community.txt"
 
 edge_file = "./../Louvain/graph/" + GRAPH + ".gr"
 
 # コミュニティごとのIPアドレスのマッピング
-ip_mapping = {0: "10.58.60.3", 1: "10.58.60.6", 2: "10.58.60.11"}
+ip_mapping = {
+    0: "10.58.60.3",
+    1: "10.58.60.6",
+    2: "10.58.60.11",
+    # 3: "10.58.60.12",
+    # 4: "10.58.60.13",
+    # 5: "10.58.60.14",
+    # 6: "10.58.60.15",
+    # 7: "10.58.60.16",
+    # 8: "10.58.60.17",
+    # 9: "10.58.60.18",
+}
 # server_name = {"abilene03", "abilene06", "abilene11"}
-server_name = {"abilene03", "abilene06", "abilene11"}
+server_name = {
+    "abilene03",
+    "abilene06",
+    "abilene11",
+    # "abilene12",
+    # "abilene13",
+    # "abilene14",
+    # "abilene15",
+    # "abilene16",
+    # "abilene17",
+    # "abilene18",
+}
 
 
 # コミュニティ情報の読み込み
@@ -96,7 +118,7 @@ def generate_and_save_ip_graph(communities, edges):
     # コミュニティごとにファイルを書き込む
     for community_id, edges in ip_graph.items():
         file_name = (
-            "./new/" + GRAPH + f"/community_{community_id}.txt"
+            "./" + GRAPH + f"/community_{community_id}.txt"
         )  # コミュニティごとのファイル名
         with open(file_name, "w") as f:
             for edge in edges:

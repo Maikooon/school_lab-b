@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 """
 
 # ここで変数を設定する
-ALPHA = 0.01  # 終了確率 (例: 10%)
-RW_COUNT = 100  # ランダムウォークの回数,それぞれの始点サーバからRW _COUNT回だけ繰り返す
+ALPHA = 0.1  # 終了確率 (例: 10%)
+RW_COUNT = 10  # ランダムウォークの回数,それぞれの始点サーバからRW _COUNT回だけ繰り返す
 START_SERVER = "10.58.60.03"  # 始点サーバ
-GRAPH_PATH = "./server-data/fb-caltech-connected/"  # サーバごとに分かれたファイルが格納されたディレクトリ
+# GRAPH_PATH = "./server-data/fb-caltech-connected-copy-4/"  # サーバごとに分かれたファイルが格納されたディレクトリ
 
 
 def read_server_files(directory):
@@ -152,7 +152,7 @@ def plot_multiple_graphs_return_probabilities(graph_results, alpha):
     plt.title(f"Cumulative Return Probabilities to Start Server (α={alpha})")
     plt.xlabel("Hop Number")
     plt.ylabel("Cumulative Return Probability")
-    plt.xlim(0, 20)
+    plt.xlim(0, 200)
 
     plt.legend()
     plt.grid(True)
@@ -165,10 +165,16 @@ if __name__ == "__main__":
     # グラフディレクトリ一覧（例として3つのグラフ）
     graph_directories = {
         # "test": "./server-data/test/",
-        "karate(34node)": "./server-data/karate/",
-        "fb-caltech-connected(762)": "./server-data/fb-caltech-connected/",
-        "fb-pages-company(14113)": "./server-data/fb-pages-company/",
+        # "karate(34node)": "./server-data/karate/",
+        # "fb-caltech-connected(762)": "./server-data/fb-caltech-connected/",
+        # "fb-pages-company(14113)": "./server-data/fb-pages-company/",
         # "ca-grqc-connected": "./server-data/ca-grqc-connected/",
+        # "fb-caltech-connected-copy-3": "./server-data/fb-caltech-connected/",
+        "fb-caltech-connected-copy/3": "./server-data/fb-caltech-connected-copy/3",
+        "fb-caltech-connected-copy/4": "./server-data/fb-caltech-connected-copy/4/",
+        "fb-caltech-connected-copy/6": "./server-data/fb-caltech-connected-copy/6/",
+        "fb-caltech-connected-copy/8": "./server-data/fb-caltech-connected-copy/8/",
+        "fb-caltech-connected-copy/10": "./server-data/fb-caltech-connected-copy/10/",
     }
 
     # 結果を格納する辞書
