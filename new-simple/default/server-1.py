@@ -145,7 +145,7 @@ class Server1:
                     # その後、Server2からのメッセージ待受
                     while True:
                         try:
-                            # Server2からのメッセージ受信
+                            # Server2からのメッセージ受信,このメッセージには、終了メッセージも含まれる
                             print("Waiting for messages from Server2...")
                             message = self.receive_message_from_server2()
 
