@@ -260,7 +260,7 @@ def plot_execution_times(data, data2):
             unique_node_counts,
             avg_execution_times,
             marker="o",
-            color="blue",
+            color="orange",
             label="Group Access",
         )
 
@@ -286,7 +286,7 @@ def plot_execution_times(data, data2):
             unique_node_counts2,
             avg_execution_times2,
             marker="x",
-            color="green",
+            color="grey",
             label="Access",
         )
 
