@@ -29,9 +29,6 @@ class CommandServer:
         message = self.receiver.recv_string()
         print(f"Received termination message: {message}")
         self.across_server = message
-        # modify_message = Message.from_string(message)
-        # print("サーバのまたぎ回数", modify_message.across_server)
-        # self.across_server = modify_message.across_server
 
     def run(self):
         start_time = time.perf_counter()

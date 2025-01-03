@@ -128,5 +128,6 @@
     "variant": "cpp",
     "algorithm": "cpp",
     "stack": "cpp"
-  }
+  },
+  "cmake.sourceDirectory": "/Users/maiko/Documents/GitHub/school_lab-b/jwt-cpp"
 }
