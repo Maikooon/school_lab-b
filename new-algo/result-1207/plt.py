@@ -235,14 +235,18 @@ def process_additional_files(default_file, access_file):
         default_times, _ = extract_execution_time(default_file)
         if default_times:
             avg_time = sum(default_times) / len(default_times)
-            lines.append({"x_range": (0, 80), "y": avg_time, "label": "Default"})
+            lines.append(
+                {"x_range": (0, 80), "y": avg_time, "label": "Default(method-a)"}
+            )
 
     # access.txt のデータを x = 100 の範囲で追加
     if os.path.exists(access_file):
         access_times, _ = extract_execution_time(access_file)
         if access_times:
             avg_time = sum(access_times) / len(access_times)
-            lines.append({"x_range": (0, 80), "y": avg_time, "label": "Access"})
+            lines.append(
+                {"x_range": (0, 80), "y": avg_time, "label": "FullAccess(method-b)"}
+            )
 
     return lines
 
@@ -400,7 +404,7 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
 
     # 平均データを計算してプロット
     colors = ["blue", "green"]
-    labels = ["CA Dataset", "Amazon Dataset"]
+    labels = ["ca-gqrc-connected", "com-amazon-connected"]
     for i, data in enumerate(data_sets):
         if not data:
             continue
@@ -416,6 +420,9 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
         for x, y_values in sorted(grouped_data.items()):
             avg_node_counts.append(x)
             avg_execution_times.append(sum(y_values) / len(y_values))
+        # print(avg_execution_times)
+        # 各要素を10^9でわる
+        avg_execution_times = [i / 1000000000 for i in avg_execution_times]
 
         # 平均値をプロット（点）
         plt.scatter(
@@ -432,14 +439,14 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
             avg_execution_times,
             color=colors[i],
             linestyle="-",
-            label=f"{labels[i]} (trend)",
+            # label=f"{labels[i]} (trend)",
         )
 
     # 各データセットに対応する水平線をプロット
     for i, lines in enumerate(line_sets):
         for line in lines:
             x_range = line["x_range"]
-            y = line["y"]
+            y = line["y"] / 1000000000
             label = f"{labels[i]} - {line['label']}"
             plt.hlines(
                 y,
@@ -454,10 +461,10 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
 
     # グラフの装飾
     plt.xlim(0, 80)
-    plt.ylim(500000000, 1300000000)
+    plt.ylim(0.5, 1.3)
     plt.xlabel("Number of community groups")
-    plt.ylabel("Average Execution Time (nanoseconds)")
-    plt.title("Average Execution Time with Trends: CA vs Amazon")
+    plt.ylabel("Average Execution Time(seconds)")
+    # plt.title("Average RW Execution Time")
     plt.grid(True)
     plt.legend()
     plt.savefig("average-lines_plot.png")
