@@ -52,5 +52,6 @@ class CommandServer:
 
 
 if __name__ == "__main__":
-    command_server = CommandServer(ip="10.58.60.11", send_port=3200, receive_port=3203)
+    # command_server = CommandServer(ip="10.58.60.05", send_port=3200, receive_port=3203)
+    command_server = CommandServer(ip="10.58.58.13", send_port=3200, receive_port=3203)
     command_server.run()

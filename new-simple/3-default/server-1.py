@@ -9,6 +9,7 @@ class Server1:
         self,
         ip,
         port,
+        port1,
         server2_ip,
         server2_port,
         server3_ip,
@@ -22,6 +23,7 @@ class Server1:
     ):
         self.ip = ip
         self.port = port
+        self.port1 = port1
         self.server2_ip = server2_ip
         self.server2_port = server2_port
         self.server3_ip = server3_ip
@@ -55,7 +57,7 @@ class Server1:
 
         # サーバ3の受信用ソケット（PULL） サーバ3からの受信
         self.receiver_from_server3 = self.context.socket(zmq.PULL)
-        self.receiver_from_server3.bind(f"tcp://{self.ip}:{self.port}")
+        self.receiver_from_server3.bind(f"tcp://{self.ip}:{self.port1}")
         # サーバ3送信用ソケット（PUSH）サーバ3への送信
         self.sender_to_server3 = self.context.socket(zmq.PUSH)
         self.sender_to_server3.connect(f"tcp://{self.server3_ip}:{self.server3_port}")
@@ -84,8 +86,8 @@ class Server1:
 
     def send_message_to_random_server(self, message):
         # サーバ1またはサーバ3にランダムでメッセージを送信
-        if random.random() < 0.5:
-            print("Sending message to Server1")
+        if random.random() < 0.3305:
+            print("Sending message to Server2")
             self.sender_to_server2.send_string(message.to_string())
         else:
             print("Sending message to Server3")
@@ -102,7 +104,7 @@ class Server1:
             if random.random() > self.alpha:
                 other_server_probability = random.random()
                 # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
-                if other_server_probability < self.beta:
+                if other_server_probability < 0.6676:
                     # 他のサーバにメッセージを送信
                     print(
                         f"Sending message to the other server (across_server {across_server_count + 1})"
@@ -166,20 +168,26 @@ class Server1:
                 else:
                     # その後、Server2,3からのメッセージ待受
                     poller = zmq.Poller()
-                    poller.register(self.receiver_from_server1, zmq.POLLIN)
+                    poller.register(self.receiver_from_server2, zmq.POLLIN)
                     poller.register(self.receiver_from_server3, zmq.POLLIN)
 
                     while True:
                         try:
                             # Server2からのメッセージ受信,このメッセージには、終了メッセージも含まれる
-                            print("Waiting for messages from Server2...")
-                            message = self.receive_message_from_server2()
+                            print("Waiting for messages from Server2&3...")
+                            # message = self.receive_message_from_server2()
                             sockets = dict(poller.poll())
 
-                            if self.receiver_from_server1 in sockets:
-                                message = self.receive_message_from_server1()
+                            if self.receiver_from_server2 in sockets:
+                                message = self.receive_message_from_server2()
+                                print(
+                                    "received message from server2", message.to_string()
+                                )
                             elif self.receiver_from_server3 in sockets:
                                 message = self.receive_message_from_server3()
+                                print(
+                                    "received message from server3", message.to_string()
+                                )
                             else:
                                 print("No message received.")
                                 continue
@@ -222,17 +230,18 @@ class Server1:
 
 if __name__ == "__main__":
     server1 = Server1(
-        ip="10.58.60.3",
+        ip="10.58.60.5",
         port=3200,
+        port1=3201,
         server2_ip="10.58.60.6",
         server2_port=3202,
-        server3_ip="10.58.60.5",
+        server3_ip="10.58.60.11",
         server3_port=3205,
-        command_server_ip="10.58.60.11",
+        command_server_ip="10.58.58.13",
         command_server_port=3203,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,  # RWの終了確立
         beta=0.2,
-        rw_count=100,
+        rw_count=1,
     )
     server1.run()

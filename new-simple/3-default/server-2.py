@@ -9,6 +9,7 @@ class Server2:
         self,
         ip,
         port,
+        port1,
         server1_ip,
         server1_port,
         server3_ip,
@@ -21,13 +22,14 @@ class Server2:
     ):
         self.ip = ip
         self.port = port
+        self.port1 = port1
         self.server1_ip = server1_ip
         self.server1_port = server1_port
         self.server3_ip = server3_ip
         self.server3_port = server3_port
         self.command_server_ip = command_server_ip
         self.command_server_port = command_server_port
-        self.public_key = public_key  # 公開鍵
+        self.public_key = public_key
         self.alpha = alpha
         self.beta = beta
         self.context = zmq.Context()
@@ -40,10 +42,10 @@ class Server2:
         self.sender_to_server1.connect(f"tcp://{self.server1_ip}:{self.server1_port}")
 
         # 　サーバ３とのやり取り
-        # サーバ１からのの受信用ソケット（PULL）
+        # サーバ３からのの受信用ソケット（PULL）
         self.receiver_from_server3 = self.context.socket(zmq.PULL)
-        self.receiver_from_server3.bind(f"tcp://{self.ip}:{self.port}")
-        # サーバ1への送信用ソケット（PUSH）
+        self.receiver_from_server3.bind(f"tcp://{self.ip}:{self.port1}")
+        # サーバ３への送信用ソケット（PUSH）
         self.sender_to_server3 = self.context.socket(zmq.PUSH)
         self.sender_to_server3.connect(f"tcp://{self.server3_ip}:{self.server3_port}")
 
@@ -73,7 +75,7 @@ class Server2:
 
     def send_message_to_random_server(self, message):
         # サーバ1またはサーバ3にランダムでメッセージを送信
-        if random.random() < 0.5:
+        if random.random() < 0.3329:
             print("Sending message to Server1")
             self.sender_to_server1.send_string(message.to_string())
         else:
@@ -89,7 +91,7 @@ class Server2:
         while True:
             # 終了確率をチェック
             if random.random() > self.alpha:
-                if random.random() < self.beta:
+                if random.random() < 0.6504:
                     # 他のサーバにメッセージを送信
                     # パスに現在のIDを追加し、次のサーバに送信
                     target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
@@ -106,7 +108,7 @@ class Server2:
                 else:
                     print("Message not sent to the other server (retry).")
             else:
-                print(f"Sending termination message 1 -> 2")
+                print(f"Sending termination message 2 -> 1")
                 target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
                 new_message = Message(
                     ip=self.ip,
@@ -160,11 +162,12 @@ if __name__ == "__main__":
     server2 = Server2(
         ip="10.58.60.6",
         port=3202,
-        server1_ip="10.58.60.3",
-        server1_port=3200,
-        server3_ip="10.58.60.5",
-        server3_port=3205,
-        command_server_ip="10.58.60.11",
+        port1=3203,
+        server1_ip="10.58.60.5",
+        server1_port=3202,
+        server3_ip="10.58.60.11",
+        server3_port=3203,
+        command_server_ip="10.58.58.13",
         command_server_port=3203,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,

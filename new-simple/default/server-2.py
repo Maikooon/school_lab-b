@@ -91,6 +91,7 @@ class Server2:
                     jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
                     end_flag=True,
                 )
+                # ここで終了メッセージをっサーバ１に送信する
                 self.sender_to_server1.send_string(new_message.to_string())
                 break  # 送信せず終了
 

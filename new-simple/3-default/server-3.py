@@ -3,12 +3,15 @@ import random
 import time
 from message import Message
 
+# -*- coding: utf-8 -*-
+
 
 class Server3:
     def __init__(
         self,
         ip,
         port,
+        port1,
         server1_ip,
         server1_port,
         server2_ip,
@@ -21,13 +24,14 @@ class Server3:
     ):
         self.ip = ip
         self.port = port
+        self.port1 = port1
         self.server1_ip = server1_ip
         self.server1_port = server1_port
         self.server2_ip = server2_ip
         self.server2_port = server2_port
         self.command_server_ip = command_server_ip
         self.command_server_port = command_server_port
-        self.public_key = public_key  # 公開鍵
+        self.public_key = public_key
         self.alpha = alpha
         self.beta = beta
         self.context = zmq.Context()
@@ -42,7 +46,7 @@ class Server3:
         # 　サーバ３とのやり取り
         # サーバ１からのの受信用ソケット（PULL）
         self.receiver_from_server2 = self.context.socket(zmq.PULL)
-        self.receiver_from_server2.bind(f"tcp://{self.ip}:{self.port}")
+        self.receiver_from_server2.bind(f"tcp://{self.ip}:{self.port1}")
         # サーバ1への送信用ソケット（PUSH）
         self.sender_to_server2 = self.context.socket(zmq.PUSH)
         self.sender_to_server2.connect(f"tcp://{self.server2_ip}:{self.server2_port}")
@@ -66,14 +70,14 @@ class Server3:
     def receive_message_from_server2(self):
         # サーバ3からメッセージを受信
         message = self.receiver_from_server2.recv_string()
-        print(f"2->")
+        print(f"3->")
         # 受信した文字列をMessageオブジェクトに変換
         message = Message.from_string(message)
         return message
 
     def send_message_to_random_server(self, message):
         # サーバ1またはサーバ3にランダムでメッセージを送信
-        if random.random() < 0.5:
+        if random.random() < 0.3162:
             print("Sending message to Server1")
             self.sender_to_server1.send_string(message.to_string())
         else:
@@ -89,7 +93,7 @@ class Server3:
         while True:
             # 終了確率をチェック
             if random.random() > self.alpha:
-                if random.random() < self.beta:
+                if random.random() < 0.6518:
                     # 他のサーバにメッセージを送信
                     # パスに現在のIDを追加し、次のサーバに送信
                     target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
@@ -104,7 +108,9 @@ class Server3:
                     self.send_message_to_random_server(new_message)
                     break  # メッセージを送信したら終了
                 else:
-                    print("Message not sent to the other server (retry).")
+                    print(
+                        "同一サーバ内で遷移を続けるMessage not sent to the other server (retry)."
+                    )
             else:
                 print(f"Sending termination message 3 -> 1")
                 target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
@@ -130,10 +136,11 @@ class Server3:
         # その後、Server1からのメッセージ待受
         while True:
             try:
-                print("Waiting for messages from Server1 or Server3...")
+                print("Waiting for messages from Server1 or Server2...")
 
                 # サーバ1またはサーバ2からメッセージを受信
                 sockets = dict(poller.poll())
+                print(f"sockets: {sockets}")
 
                 if self.receiver_from_server1 in sockets:
                     message = self.receive_message_from_server1()
@@ -158,13 +165,14 @@ class Server3:
 
 if __name__ == "__main__":
     server3 = Server3(
-        ip="10.58.60.6",
-        port=3202,
-        server1_ip="10.58.60.3",
+        ip="10.58.60.11",
+        port=3205,
+        port1=3203,
+        server1_ip="10.58.60.5",
         server1_port=3200,
         server2_ip="10.58.60.6",
-        server2_port=3202,
-        command_server_ip="10.58.60.11",
+        server2_port=3203,
+        command_server_ip="10.58.58.13",
         command_server_port=3203,
         public_key="Server1_Public_Key",  # 公開鍵
         alpha=0.15,
