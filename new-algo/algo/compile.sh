@@ -45,16 +45,16 @@
 
 GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.1" )
 # "ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-cangrate/0.001")
-# "ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
-# "ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
+GRAPH_VALUES=("ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
+"ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
 # list  = (2 3 4)
 # GRAPH_VALUES=("ng_0.05/METIS-com-amazon-connected/{list}")/
 
 # コンパイル対象の C++ ソースファイルを選択
 # cpp_files=("nogroup:./nogroup-main.cpp" )
-# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
+cpp_files=("main:./main.cpp")
 # cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
-cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
+# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
 # cpp_files= ("nogroup:./nogroup-main.cpp" )
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do

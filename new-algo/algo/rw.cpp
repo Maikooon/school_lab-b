@@ -44,16 +44,6 @@ void load_graph(const std::string& file_path) {
         graph[node2].insert(node1);
     }
     edges_file.close();
-
-    // load_graph 関数内でのデバッグ
-    // for (const auto& node : graph) {
-    //     std::cout << "Node " << node.first << " has neighbors: ";
-    //     for (const auto& neighbor : node.second) {
-    //         std::cout << neighbor << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
-
 }
 
 // コミュニティファイルを読み込んでノードのコミュニティを登録
@@ -159,12 +149,6 @@ int main() {
     auto start_time = chrono::high_resolution_clock::now();
 
 
-    // vector<int> start_nodes(ALLNODE);  // 1〜32までのノードをスタートノードとして設定
-
-    // 1〜32までのノードを start_nodes 配列に代入
-    // for (int i = 0; i < ALLNODE; ++i) {
-    //     start_nodes[i] = i + 1;  // ノード番号を1からスタートさせる
-    // }
     vector<int> start_nodes(1);  // 1つのスタートノードを設定
     start_nodes[0] = START_NODE;
 
@@ -209,7 +193,7 @@ int main() {
     // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
 
     // ファイルパス
-    std::string filePath = "./../result-1207/" + GRAPH + "/default.txt";
+    std::string filePath = "./../result-0105/100%/default.txt";
 
     // 結果をファイルに保存
     saveResultsToFile(filePath, results);

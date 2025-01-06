@@ -163,21 +163,30 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // TODO:ここから確率的に評価を行う.確率を100から引いた値を記載
         double random_number = dist(gen);
         std::cout << "ランダムな数値: " << random_number << std::endl;
-        if (random_number > 1) {
+        if (random_number > 0.3) {
             total_check_count++;
             std::string a;
             auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
             // printf("ここには全部到達l");
 
             //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+            // if (it != ng_table.end()) {
+            //     std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+            //     for (int num : it->second) {
+            //         std::cout << num << " ";
+            //         a += std::to_string(num) + " "; // ノードを文字列に追加
+            //     }
+            //     std::cout << std::endl;
+            // }
+
+            // 処理のみ行い、出力は削除
             if (it != ng_table.end()) {
-                std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+                // 処理のみ行う（出力は削除）
                 for (int num : it->second) {
-                    std::cout << num << " ";
                     a += std::to_string(num) + " "; // ノードを文字列に追加
                 }
-                std::cout << std::endl;
             }
+
             // START_NODEが文字列a(２列目以降)に含まれているか確認
             if (a.find(std::to_string(START_NODE)) != std::string::npos) {
                 // std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
