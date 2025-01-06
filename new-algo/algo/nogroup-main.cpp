@@ -27,6 +27,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <random>
 
 
 // グローバル変数の初期
@@ -37,6 +38,11 @@ using namespace std;
 
 unordered_map<int, unordered_set<int>> graph;
 unordered_map<int, int> node_communities;
+int total_check_count = 0;
+
+std::random_device rd;              // シード用の乱数生成
+std::mt19937 gen(rd());             // メルセンヌ・ツイスタ乱数エンジン
+std::uniform_real_distribution<> dist(0.0, 1.0); // 0.0～1.0の範囲で乱数生成
 
 // ファイルを読み込んでグラフを構築
 void load_graph(const std::string& file_path) {
@@ -142,6 +148,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
     path.push_back(current_node);
     start_community = node_communities[START_NODE];
 
+
     while ((double)rand() / RAND_MAX > ALPHA) {
         auto neighbors = graph[current_node];
         if (neighbors.empty()) {
@@ -152,40 +159,33 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         next_node = *next(neighbors.begin(), rand() % neighbors.size());
         std::cout << "start_node; next_node" << START_NODE << next_node << std::endl;
 
-        std::string a;
-        auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
-        // printf("ここには全部到達l");
 
-        //次にHopするノードがNGノードの候補として上がっているのか(左一列)
-        if (it != ng_table.end()) {
-            std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
-            for (int num : it->second) {
+        // TODO:ここから確率的に評価を行う.確率を100から引いた値を記載
+        double random_number = dist(gen);
+        std::cout << "ランダムな数値: " << random_number << std::endl;
+        if (random_number > 0.5) {
+            total_check_count++;
+            std::string a;
+            auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す
+            // printf("ここには全部到達l");
 
-
-
-                std::cout << num << " ";
-                a += std::to_string(num) + " "; // ノードを文字列に追加
+            //次にHopするノードがNGノードの候補として上がっているのか(左一列)
+            if (it != ng_table.end()) {
+                std::cout << "次のノードに到達できない始点は以下 " << next_node << ": ";
+                for (int num : it->second) {
+                    std::cout << num << " ";
+                    a += std::to_string(num) + " "; // ノードを文字列に追加
+                }
+                std::cout << std::endl;
             }
-            std::cout << std::endl;
+            // START_NODEが文字列a(２列目以降)に含まれているか確認
+            if (a.find(std::to_string(START_NODE)) != std::string::npos) {
+                // std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
+                next_node = current_node;  // 現在のノードに戻す
+                continue;
+            }
         }
-        // if (it != ng_table.end()) {
-        //     bool first = true;
-        //     for (int num : it->second) {
-        //         a += std::to_string(num) + ", ";
-        //         first = false;
-        //     }
-        // }
-
-        // START_NODEが文字列a(２列目以降)に含まれているか確認
-        if (a.find(std::to_string(START_NODE)) != std::string::npos) {
-            // std::cout << "Node " << START_NODE << " is in the NG nodes for community " << current_node << std::endl;
-            next_node = current_node;  // 現在のノードに戻す
-            continue;
-        }
-        else {
-            // std::cout << "Node " << START_NODE << " is not in the NG nodes for community " << current_node << std::endl;
-        }
-        // }
+        //TODO:ここまで
         move_count++;
 
         path.push_back(next_node);
@@ -248,13 +248,6 @@ int main() {
             //RWの実行
             vector<int> path = random_walk(total_move, start_node, start_community);
             total_length += path.size();
-
-            // パスを出力
-            // cout << "Random walk " << i + 1 << " path:";
-            // for (int node : path) {
-            //     cout << " " << node;
-            // }
-            // cout << endl;
         }
     }
 
@@ -278,11 +271,12 @@ int main() {
     results += "Total moves by nodes: " + std::to_string(total_length) + "\n";
     results += "Total moves across communities: " + std::to_string(total_move) + "\n";
     results += "Program execution time: " + std::to_string(duration) + " nanoseconds\n";
+    results += "total_check_count: " + std::to_string(total_check_count) + "\n";
     // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
     // ファイルパス
-    std::string filePath = "./../result-1207/" + GRAPH + "/access.txt";
+    std::string filePath = "./../result-0105/100%/access.txt";
 
     // 結果をファイルに保存
     saveResultsToFile(filePath, results);

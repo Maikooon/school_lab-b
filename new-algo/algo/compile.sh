@@ -43,7 +43,7 @@
 # GRAPH_VALUES=( "ng_0.05/METIS-ca-ngrate/0.06" "ng_0.05/METIS-ca-ngrate/0.07"  "ng_0.05/METIS-ca-ngrate/0.08" "ng_0.05/METIS-ca-ngrate/0.09" "ng_0.05/METIS-ca-ngrate/0.1" )
 
 
-GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.07" )
+GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.1" )
 # "ng_0.05/METIS-ca-ngrate/0.01" "ng_0.05/METIS-cangrate/0.001")
 # "ng_0.05/METIS-ca/20" "ng_0.05/METIS-ca/25" "ng_0.05/METIS-ca/30" "ng_0.05/METIS-ca/35" "ng_0.05/METIS-ca/40" "ng_0.05/METIS-ca/45" "ng_0.05/METIS-ca/50" "ng_0.05/METIS-ca/55"
 # "ng_0.05/METIS-ca/60" "ng_0.05/METIS-ca/65" "ng_0.05/METIS-ca/70" )
@@ -53,13 +53,14 @@ GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.07" )
 # コンパイル対象の C++ ソースファイルを選択
 # cpp_files=("nogroup:./nogroup-main.cpp" )
 # cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp" "rw:./rw.cpp")
+# cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
 cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
 # cpp_files= ("nogroup:./nogroup-main.cpp" )
 
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do
+
     export GRAPH="$GRAPH"  # GRAPHを環境変数として設定
-    
     echo "Processing with GRAPH=${GRAPH}..."
     
     # コンパイル処理
@@ -72,9 +73,12 @@ for GRAPH in "${GRAPH_VALUES[@]}"; do
         
         # 出力フォルダが存在しない場合は作成
         mkdir -p "$output_dir"
+        echo "output_dir: $output_dir"
+        echo "key": $key
         
         # 出力ファイルのフルパス
         output_file="$output_dir/$key"
+
         
         echo "Compiling $source_file to $output_file..."
         
@@ -100,7 +104,11 @@ for GRAPH in "${GRAPH_VALUES[@]}"; do
         else
             echo "Execution with GRAPH=${GRAPH} failed."
         fi
+        echo "output_dir: $output_dir"
+        echo "key": $key
+        echo "output_file: $output_file"
     done
+    echo "GRAPH: $GRAPH"
 done
 
 echo "All processes complete."

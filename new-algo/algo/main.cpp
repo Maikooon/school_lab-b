@@ -289,7 +289,7 @@ int main() {
     // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
-    std::string filePath = "./../result-1207/" + GRAPH + "/group-access.txt";
+    std::string filePath = "./../result-0105/test/group-access.txt";
 
     // フォルダを作成する
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);  // appはファイルがなければ作成される

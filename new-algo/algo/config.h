@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 // ca
-const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-cae/0.1";  // 環境変数から取得
+const std::string GRAPH = std::getenv("GRAPH") ? std::getenv("GRAPH") : "ng_0.05/METIS-ca-ngrate/0.1";  // 環境変数から取得
 const std::string GRAPH_NAME = std::getenv("GRAPH_NAME") ? std::getenv("GRAPH_NAME") : "ca-grqc-connected";
 const int ALLNODE = std::getenv("ALLNODE") ? std::stoi(std::getenv("ALLNODE")) : 4158;
 
