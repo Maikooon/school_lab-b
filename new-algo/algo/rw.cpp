@@ -110,23 +110,6 @@ vector<int> random_walk(int& total_move, int START_NODE) {
     return path;
 }
 
-
-// void saveResultsToFile(const std::string& filePath, const std::string& results) {
-//     // std::ofstreamを使用してファイルを開く。ios::truncを指定して上書き。
-//     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);
-
-//     // ファイルが正常に開けたかを確認
-//     if (!outputFile) {
-//         std::cerr << "ファイルを開くことができませんでした: " << filePath << std::endl;
-//         return;
-//     }
-
-//     // 結果をファイルに書き込む
-//     outputFile << results;
-
-//     // ファイルを閉じる
-//     outputFile.close();
-// }
 void saveResultsToFile(const std::string& filePath, const std::string& results) {
     std::__fs::filesystem::path dirPath = std::__fs::filesystem::path(filePath).parent_path();
 

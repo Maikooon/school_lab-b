@@ -85,13 +85,15 @@ def plot_bar_chart(data):
     # データを分解
     x_labels = list(data.keys())  # X軸のラベル (文字列)
     mean_times = [np.mean(data[label]) for label in x_labels]  # 平均値
+    # 配列の各要素を1000000000で割る
+    mean_times = [x / 1000000000 for x in mean_times]
     x_positions = np.arange(len(x_labels))  # X軸位置
 
     print(mean_times)
 
     # 比率に基づく棒グラフの分割 (37.96%)
     split_ratio = 0.3796
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(5, 6))
 
     # for i, mean_time in enumerate(mean_times):
     #     if i == len(mean_times) - 1:  # 最後の棒だけ3色で分割.ここはそれぞれの色の高さなので全体からみた高さではない
