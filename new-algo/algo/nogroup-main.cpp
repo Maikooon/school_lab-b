@@ -163,7 +163,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         // TODO:ここから確率的に評価を行う.確率を100から引いた値を記載
         double random_number = dist(gen);
         std::cout << "ランダムな数値: " << random_number << std::endl;
-        if (random_number > 0.5) {
+        if (random_number > 1) {
             total_check_count++;
             std::string a;
             auto it = ng_table.find(next_node);  //すべてのノードに対して、NGノードの候補を探す

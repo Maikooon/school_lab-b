@@ -56,7 +56,6 @@ GRAPH_VALUES=("ng_0.05/METIS-ca-ngrate/0.1" )
 # cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
 cpp_files=("main:./main.cpp" "nogroup:./nogroup-main.cpp")
 # cpp_files= ("nogroup:./nogroup-main.cpp" )
-
 # GRAPH配列ごとにコンパイルと実行
 for GRAPH in "${GRAPH_VALUES[@]}"; do
 
@@ -92,21 +91,23 @@ for GRAPH in "${GRAPH_VALUES[@]}"; do
         fi
         echo "$source_file compiled successfully to $output_file."
         
-        # 実行処理
-        echo "Running $output_file with GRAPH=${GRAPH}..."
+        # 実行処理を5回繰り返し
+        # for i in {1..3}; do
+        echo "Running $output_file with GRAPH=${GRAPH}, iteration $i..."
         
         # 実行
         "$output_file"
         
         # 実行結果の確認
         if [[ $? -eq 0 ]]; then
-            echo "Execution with GRAPH=${GRAPH} completed successfully."
+            echo "Execution $i with GRAPH=${GRAPH} completed successfully."
         else
-            echo "Execution with GRAPH=${GRAPH} failed."
+            echo "Execution $i with GRAPH=${GRAPH} failed."
+            break # 実行に失敗したら次のプログラムに進む
         fi
-        echo "output_dir: $output_dir"
-        echo "key": $key
-        echo "output_file: $output_file"
+        # done
+        
+        echo "Completed all iterations for $output_file with GRAPH=${GRAPH}."
     done
     echo "GRAPH: $GRAPH"
 done

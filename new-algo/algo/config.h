@@ -32,5 +32,6 @@ const std::string NGFILE = "./../create-tables/result/" + GRAPH + "/non-group-ng
 const double ALPHA = 0.15;
 const int RW_COUNT = 10000;
 const int START_NODE = 22;
+const int RANDOM_PROBABILITY = 0.4;
 
 #endif // CONFIG_H
