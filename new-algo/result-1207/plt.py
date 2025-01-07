@@ -403,8 +403,12 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
     plt.figure(figsize=(12, 8))
 
     # 平均データを計算してプロット
-    colors = ["blue", "green"]
-    labels = ["ca-gqrc-connected", "com-amazon-connected"]
+    # colors = ["blue", "green"]
+    # /zonnected", "com-amazon-connected"]
+
+    colors = ["blue"]
+    labels = ["ca-gqrc-connected"]
+
     for i, data in enumerate(data_sets):
         if not data:
             continue
@@ -454,14 +458,14 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
                 x_range[1],
                 colors=colors[i],
                 linestyles="--",
-                linewidth=1,
+                linewidth=2.5,
                 label=label,
                 alpha=0.6,
             )
 
     # グラフの装飾
     plt.xlim(0, 80)
-    plt.ylim(0.5, 1.3)
+    plt.ylim(0.5, 1.2)
     plt.xlabel("Number of community groups")
     plt.ylabel("Average Execution Time(seconds)")
     # plt.title("Average RW Execution Time")
@@ -476,20 +480,21 @@ ca_base_dir = "./ng_0.05/METIS-ca"
 ca_default_file = "./ng_0.05/METIS-ca/default.txt"
 ca_access_file = "./ng_0.05/METIS-ca/access.txt"
 
-amazon_base_dir = "./ng_0.05/METIS-com-amazon-connected"
-amazon_default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"
-amazon_access_file = "./ng_0.05/METIS-com-amazon-connected/access.txt"
+# amazon_base_dir = "./ng_0.05/METIS-com-amazon-connected"
+# amazon_default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"
+# amazon_access_file = "./ng_0.05/METIS-com-amazon-connected/access.txt"
 
 
 # CAとAmazonのデータをそれぞれ取得
 ca_data, _ = process_folders(ca_base_dir)
-amazon_data, _ = process_folders(amazon_base_dir)
+# amazon_data, _ = process_folders(amazon_base_dir)
 
 # DefaultとAccessの水平線をそれぞれ取得
 ca_lines = process_additional_files(ca_default_file, ca_access_file)
-amazon_lines = process_additional_files(amazon_default_file, amazon_access_file)
+# amazon_lines = process_additional_files(amazon_default_file, amazon_access_file)
 
 # プロット
-plot_average_execution_times_with_lines(
-    [ca_data, amazon_data], [ca_lines, amazon_lines]
-)
+# plot_average_execution_times_with_lines(
+#     [ca_data, amazon_data], [ca_lines, amazon_lines]
+# )
+plot_average_execution_times_with_lines([ca_data], [ca_lines])

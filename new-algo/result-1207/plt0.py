@@ -137,11 +137,15 @@ for i in range(3, 6):
 
 # x 軸のラベルを設定
 plt.xticks(
-    [1, 5], ["ca-grqc-connected", "com-amazon-connected"], rotation=0, ha="right"
+    [1, 5],
+    ["ca-grqc-connected", "com-amazon-connected"],
+    rotation=0,
+    ha="right",
+    fontsize=12,
 )  # 前半と後半に「A」と「B」
 
 # ラベルとタイトル
-plt.ylabel("Average Value", fontsize=12)
+plt.ylabel("Average Execution time(seconds)", fontsize=12)
 plt.grid(axis="y", linestyle="--", alpha=0.7)
 
 # 凡例を右上に追加

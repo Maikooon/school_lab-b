@@ -168,9 +168,9 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
                     //次に移動するコミュニティ固有のNGリストを取得
                     ng_list = community_ng_nodes[next_community][group.first];
                     std::cout << "NG nodes for Group " << group.first << ": ";  //ここまでもOK
-                    for (const int node : ng_list) {
-                        std::cout << node << " ";
-                    }
+                    // for (const int node : ng_list) {
+                    //     std::cout << node << " ";
+                    // }
                     std::cout << std::endl;
                     printf("検査の結果大丈夫だと判断\n");
 
@@ -289,7 +289,7 @@ int main() {
     // results += "Program execution time: " + addThousandSeparator(duration) + " nanoseconds\n";
     results += "\n";
 
-    std::string filePath = "./../result-0105/test/group-access.txt";
+    std::string filePath = "./../result-0105/" + GRAPH + "/group-access.txt";
 
     // フォルダを作成する
     std::ofstream outputFile(filePath, std::ios::out | std::ios::app);  // appはファイルがなければ作成される
