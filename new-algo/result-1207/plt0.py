@@ -117,6 +117,9 @@ plt.figure(figsize=(8, 5))
 
 # 前半の棒グラフ
 for i in range(3):
+    print(i)
+    print(x_front[i])
+    print(means[i])
     plt.bar(
         x_front[i],
         means[i],
@@ -127,6 +130,9 @@ for i in range(3):
 
 # 後半の棒グラフ
 for i in range(3, 6):
+    print(i)
+    print(x_back[i - 3])
+    print(means[i])
     plt.bar(
         x_back[i - 3],
         means[i],

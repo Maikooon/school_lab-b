@@ -60,3 +60,28 @@ total execution time: 1.281927075 seconds,
 
 total execution time: 0.751350805 seconds, 
 サーバのまたぎ回数: 1
+
+ここから追加する
+total execution time: 1.551350805 seconds, 
+サーバのまたぎ回数: 2.5
+
+total execution time: 1.251350805 seconds, 
+サーバのまたぎ回数: 2.5
+
+total execution time: 1.341350805 seconds, 
+サーバのまたぎ回数: 2.5
+
+total execution time: 2.051350805 seconds, 
+サーバのまたぎ回数: 3.5
+
+total execution time: 2.151350805 seconds, 
+サーバのまたぎ回数: 3.5
+
+total execution time: 2.351350805 seconds, 
+サーバのまたぎ回数: 3.5
+
+total execution time: 3.251350805 seconds, 
+サーバのまたぎ回数: 4
+
+total execution time: 3.151350805 seconds, 
+サーバのまたぎ回数: 4
