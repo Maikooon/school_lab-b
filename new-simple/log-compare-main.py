@@ -26,8 +26,8 @@ def calculate_speedup(baseline_y_list, comparison_y_list):
 
 # 各データセットの読み込み
 data_files = {
-    "every time authentication(method-d)": "./every-time/1-log.txt",
-    "no authentication(method-c)": "./default/100-log.txt",
+    "no authentication(method-a)": "./default/100-log.txt",
+    "every time authentication(method-b)": "./every-time/1-log.txt",
     "proposal-α": "./first-time/100-log.txt",
     "proposal-β": "./parent-token/100-log.txt",
 }
@@ -38,7 +38,7 @@ plt.figure(figsize=(8, 6))
 
 # 「every time authentication(method-d)」のデータを基準にして、他の手法の高速化を計算
 baseline_x_list, baseline_y_list = read_data(
-    data_files["every time authentication(method-d)"]
+    data_files["every time authentication(method-b)"]
 )
 
 # 各データセットをプロット
@@ -48,7 +48,7 @@ for label, (color, file_path) in zip(
     x_list, y_list = read_data(file_path)
 
     # 100回分の平均
-    if label != "every time authentication(method-d)":
+    if label != "every time authentication(method-b)":
         x_list = [x / 100 for x in x_list]
         y_list = [y / 100 for y in y_list]
     # 全てのデータにおいて、10000回にするために以下の数字を足す。少し長いかもだが手法の有用性はわかる
@@ -56,7 +56,7 @@ for label, (color, file_path) in zip(
     y_list = [y + 0.6101654625555555 for y in y_list]
 
     # 高速化を計算
-    if label != "every time authentication(method-d)":
+    if label != "every time authentication(method-b)":
         speedups = calculate_speedup(baseline_y_list, y_list)
         print(f"{label} の高速化率（％）: {speedups[-1]:.2f}%")  # 最後の値を表示
 
@@ -74,5 +74,5 @@ plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 
 # グラフを保存および表示
-plt.savefig("[100-time]comparison_plot_loglog.png")
+plt.savefig("[100-time]comparison_plot_loglog.pdf")
 plt.show()

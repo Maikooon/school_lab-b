@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 files = {
-    "no authentication(method-c)": "./default/100-log.txt",
+    "no authentication(method-a)": "./default/100-log.txt",
     "proposal-α": "./first-time/100-log.txt",
     "proposal-β": "./parent-token/100-log.txt",
 }
@@ -202,7 +202,7 @@ def plt_picture(move_array):
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig("[1RW]comparison_valid_plot.pdf")
+    plt.savefig("0110-valid.pdf")
     plt.show()
 
 

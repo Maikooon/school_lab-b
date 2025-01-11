@@ -180,6 +180,7 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
             // }
 
             // 処理のみ行い、出力は削除
+            //次にHopするノードがNGノードの候補として上がっているのか(左一列)
             if (it != ng_table.end()) {
                 // 処理のみ行う（出力は削除）
                 for (int num : it->second) {
