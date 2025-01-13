@@ -137,12 +137,12 @@ vector<int> random_walk(int& total_move, int START_NODE, int start_community) {
         if (neighbors.empty()) {
             break;
         }
-
+        //TODO: ここからNGノードの確認を行う
         // 隣接ノードからランダムに次のノードを選択
         int next_node = *next(neighbors.begin(), rand() % neighbors.size());
+        //子コミュにて情報を取得
         int current_community = node_communities[current_node];
         int next_community = node_communities[next_node];
-        //TODO: ここから
         //コミュニテイが同じ場合は、すでに読み込んであるリストを参照することで認可を行う
         // printf("current_community: %d, next_community: %d\n", current_community, next_community);
         if (current_community == next_community) {
