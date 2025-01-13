@@ -476,9 +476,14 @@ def plot_average_execution_times_with_lines(data_sets, line_sets):
 
 
 # 実行
-ca_base_dir = "./ng_0.05/METIS-ca"
-ca_default_file = "./ng_0.05/METIS-ca/default.txt"
-ca_access_file = "./ng_0.05/METIS-ca/access.txt"
+ca_base_dir = "./ng_0.05/METIS-com-amazon-connected"
+ca_default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"  # 指定された default.txt ファイル
+ca_access_file = (
+    "./ng_0.05/METIS-com-amazon-connected/access.txt"  # 指定された access.txt ファイル
+)
+# ca_base_dir = "./ng_0.05/METIS-ca"
+# ca_default_file = "./ng_0.05/METIS-ca/default.txt"
+# ca_access_file = "./ng_0.05/METIS-ca/access.txt"
 
 # amazon_base_dir = "./ng_0.05/METIS-com-amazon-connected"
 # amazon_default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"
@@ -497,4 +502,116 @@ ca_lines = process_additional_files(ca_default_file, ca_access_file)
 # plot_average_execution_times_with_lines(
 #     [ca_data, amazon_data], [ca_lines, amazon_lines]
 # )
-plot_average_execution_times_with_lines([ca_data], [ca_lines])
+# plot_average_execution_times_with_lines([ca_data], [ca_lines])
+
+
+import os
+import re
+
+
+def extract_execution_time(file_path):
+    """
+    group-access.txt から実行時間データを抽出
+    """
+    execution_times = []
+    total_moves = []
+    with open(file_path, "r") as file:
+        for line in file:
+            match = re.search(r"Program execution time: (\d+)", line)
+            if match:
+                if int(match.group(1)) < 1400000000:
+                    execution_times.append(
+                        int(match.group(1))
+                    )  # 実行時間をナノ秒で取得
+            match2 = re.search(r"Total moves across communities: (\d+)", line)
+            if match2:
+                half_moves = (
+                    float(match2.group(1)) / 2
+                    if int(match2.group(1)) > 50000
+                    else float(match2.group(1))
+                )
+                total_moves.append(half_moves)
+    return execution_times, total_moves
+
+
+def process_folders(base_dir):
+    """
+    METIS-ca以下のフォルダを順番に見ていき、データを収集
+    """
+    data = []  # ノード数と実行時間を格納
+    move_data = []  # ノード数とまたぎ回数を格納
+    for root, dirs, files in os.walk(base_dir):
+        for directory in dirs:
+            dir_path = os.path.join(root, directory)
+            group_access_path = os.path.join(dir_path, "group-access.txt")
+            if os.path.exists(group_access_path):
+                try:
+                    node_count = int(directory)  # フォルダ名がノード数と仮定
+                except ValueError:
+                    continue
+                times, counts = extract_execution_time(group_access_path)
+                data.extend([(node_count, time) for time in times])
+                move_data.extend([(node_count, count) for count in counts])
+
+    # ノード数が20, 40, 60の場合の平均実行時間を計算
+    selected_node_counts = [20, 40, 50, 60]
+    for node_count in selected_node_counts:
+        node_times = [time for count, time in data if count == node_count]
+        if node_times:
+            avg_time = sum(node_times) / len(node_times)  # 平均を計算
+            print(f"ノード数 {node_count} の平均実行時間: {avg_time} nanoseconds")
+
+    return sorted(data), sorted(move_data)
+
+
+def plot_execution_times(data):
+    """
+    実行時間データをプロット
+    """
+    if not data:
+        print("データが見つかりませんでした。")
+        return
+
+    # 散布図データ
+    node_counts = [item[0] for item in data]
+    execution_times = [item[1] for item in data]
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(
+        node_counts, execution_times, marker="o", color="blue", label="Execution Time"
+    )
+
+    plt.xlim(0, 80)
+    plt.ylim(500000000, 1500000000)
+    plt.xlabel("Number of community groups")
+    plt.ylabel("Execution Time (nanoseconds)")
+    plt.title("Execution Time vs Number of Nodes")
+    plt.grid(True)
+    plt.legend()
+    plt.savefig("ca-scatter_plot.png")
+    plt.show()
+
+
+# 実行
+# base_dir = "./ng_0.05/METIS-ca"
+base_dir = "./ng_0.05/METIS-com-amazon-connected"
+# # default_file = "./ng_0.05/METIS-com-amazon-connected/default.txt"  # 指定された default.txt ファイル
+# # access_file = (
+# #     "./ng_0.05/METIS-com-amazon-connected/access.txt"  # 指定された access.txt ファイル
+# # )
+
+data, _ = process_folders(base_dir)
+
+# 実行時間のプロット
+plot_execution_times(data)
+
+
+# ノード数 20 の平均実行時間: 859724462.8333334 nanoseconds
+# ノード数 40 の平均実行時間: 933158188.6470588 nanoseconds
+# ノード数 50 の平均実行時間: 968878900.5 nanoseconds
+# ノード数 60 の平均実行時間: 963906113.9473684 nanoseconds
+
+# ノード数 20 の平均実行時間: 838942190.1428572 nanoseconds
+# ノード数 40 の平均実行時間: 1104129288.8 nanoseconds
+# ノード数 50 の平均実行時間: 1111938382.0 nanoseconds
+# ノード数 60 の平均実行時間: 1156564020.75 nanoseconds

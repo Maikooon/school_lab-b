@@ -22,17 +22,10 @@ values1 = [
     838156708,
     873852667,
 ]
-min_values1 = [
-    612537708,
-    591374083,
-    656790791,
-    590908833,
-    586232333,
-    570855208,
-    631842583,
-    653573291,
-    597374333,
-]
+min_values_ca_1 = [15475040331]
+min_values_ca_2 = [15863689207]
+min_values_ca_3 = [18314216165]
+
 max_values1 = [
     1189109542,
     1208507333,
@@ -65,21 +58,10 @@ values2 = [
     895643666,
     880643375,
 ]
-min_values2 = [
-    567503458,
-    543264459,
-    521129208,
-    553947500,
-    607836875,
-    531642042,
-    505665333,
-    571678459,
-    647961459,
-    536885875,
-    596682333,
-    634221500,
-    537015833,
-]
+min_values_com_1 = [5872595331]
+min_values_com_2 = [6671630292]
+min_values_com_3 = [9252512166]
+
 max_values2 = [
     1075634292,
     944715708,
@@ -99,7 +81,9 @@ data = [[x / 1000000000 for x in dataset] for dataset in data]
 labels = [
     "default",
     "full access",
-    "group access",
+    "group access-1",
+    "group access-2",
+    "group access-3",
 ]
 # colormap = ["grey", "blue", "red", "grey", "blue", "red"]
 # colormap = ["#A9A9A9", "#5D8AA8", "#C72C48", "#A9A9A9", "#5D8AA8", "#C72C48"]
@@ -109,14 +93,14 @@ colormap = ["#D3D3D3", "#1E3A8A", "#DC2626", "#D3D3D3", "#1E3A8A", "#DC2626"]
 means = [np.mean(dataset) for dataset in data]
 
 # x 軸の位置を調整
-x_front = np.arange(0, 3)  # 前半の3本
+x_front = np.arange(0, 6)  # 前半の3本
 x_back = np.arange(4, 7)  # 後半の3本
 
 # 棒グラフをプロット
 plt.figure(figsize=(8, 5))
 
 # 前半の棒グラフ
-for i in range(3):
+for i in range(6):
     print(i)
     print(x_front[i])
     print(means[i])
