@@ -100,13 +100,20 @@ def plot_bar_chart(data):
     top_height = (mean_times[1] - mean_times[0]) * (1 - split_ratio)
     mid_height = (mean_times[1] - mean_times[0]) * split_ratio
     bottom_height = mean_times[0]
+    # ここから追加する
+    print("top_height", top_height)
+    print("mid_height", mid_height)
+    mid_height = 0.27297544
+    top_height = 0.67582696
+    # bottom_height 0.6101654625555556
+    print("bottom_height", bottom_height)
 
     # 上部
     plt.bar(
         x_positions[1],
         top_height,
         bottom=bottom_height + mid_height,
-        color="blue",
+        color="#F87171",
         edgecolor="black",
         # label="Community Moves (37.96%)" if i == 0 else "",
     )
@@ -116,7 +123,7 @@ def plot_bar_chart(data):
         x_positions[1],
         mid_height,
         bottom=bottom_height,
-        color="orange",
+        color="#1E3A8A",
         edgecolor="black",
         # label="Node Moves (Mid 31.02%)" if i == 0 else "",
     )
@@ -126,7 +133,7 @@ def plot_bar_chart(data):
         x_positions[1],
         bottom_height,
         bottom=0,
-        color="green",
+        color="#D3D3D3",
         edgecolor="black",
         # label="Node Moves (Lower 31.02%)" if i == 0 else "",
     )
@@ -143,11 +150,12 @@ def plot_bar_chart(data):
     # 軸設定
     plt.xlabel("Categories")
     plt.ylabel("Average Execution Time (nanoseconds)")
-    plt.title("Average Execution Time by Category")
+    # plt.title("Average Execution Time by Category")
     plt.xticks(x_positions, x_labels)  # X軸に文字列ラベルを割り当て
     plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.legend(loc="upper left")
-    plt.savefig("1-bar_chart_split.png")
+    # plt.savefig("1-bar_chart_split.png")
+    plt.savefig("1-bar_chart_split.pdf")
     plt.show()
 
 
@@ -156,8 +164,8 @@ default_file = "./ng_0.05/METIS-ca/default.txt"  # 指定された default.txt �
 access_file = "./ng_0.05/METIS-ca/access.txt"  # 指定された access.txt ファイル
 
 # ユーザーが指定する X 軸のラベル
-label_default = "Default"
-label_access = "Access"
+label_default = "no authentication"
+label_access = "add authentication"
 
 # データ収集
 data = process_additional_files(default_file, access_file, label_default, label_access)

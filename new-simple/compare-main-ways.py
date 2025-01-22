@@ -58,7 +58,7 @@ for label, (color, file_path) in zip(
     ##TODO: ここまで100回分の平均であるので、すべてを/100して考える
     # x_list = [x / 100 for x in x_list]
     # y_list = [y / 100 for y in y_list]
-    y_list = [y + 0.6101654625555555 for y in y_list]
+    y_list = [y + 0.8101654625555555 for y in y_list]
     plt.scatter(x_list, y_list, label=label, color=color)
 
 # 軸ラベルと凡例を設定

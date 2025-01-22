@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 files = {
-    "no authentication(method-a)": "./default/100-log.txt",
+    # "no authentication(method-a)": "./default/100-log.txt",
     "proposal-α": "./first-time/100-log.txt",
     "proposal-β": "./parent-token/100-log.txt",
 }
@@ -154,7 +154,7 @@ def plt_picture(move_array):
     for xi, yi in zip(x, y):
         grouped_y[xi].append(yi)
     data = [grouped_y[ux] for ux in unique_x]
-    data = [[j + 0.6101654625555555 for j in i] for i in data]
+    data = [[j + 0.8101654625555555 for j in i] for i in data]
 
     # 箱ひげ図
     plt.boxplot(
@@ -170,7 +170,8 @@ def plt_picture(move_array):
     for i, (label, move_time_results) in enumerate(move_array):
         x_values = [0] * len(move_time_results)
         y_values = [y / 100 for y in move_time_results]  # スケーリング
-        y_values = [y + 0.6101654625555555 for y in y_values]
+        y_values = [y + 0.8101654625555555 for y in y_values]
+
         plt.scatter(
             x_values,
             y_values,
@@ -183,6 +184,7 @@ def plt_picture(move_array):
 
         # 平均値を計算
         avg_y = np.mean(y_values)
+        print("ave-g", avg_y)
 
         # 平均値の線を描画
         plt.hlines(

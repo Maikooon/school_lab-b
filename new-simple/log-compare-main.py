@@ -53,7 +53,7 @@ for label, (color, file_path) in zip(
         y_list = [y / 100 for y in y_list]
     # 全てのデータにおいて、10000回にするために以下の数字を足す。少し長いかもだが手法の有用性はわかる
     # x_list = [x + 0.6101654625555555 for x in x_list]
-    y_list = [y + 0.6101654625555555 for y in y_list]
+    y_list = [y + 0.8101654625555555 for y in y_list]
 
     # 高速化を計算
     if label != "every time authentication(method-b)":
