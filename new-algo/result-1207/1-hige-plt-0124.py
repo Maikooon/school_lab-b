@@ -99,12 +99,13 @@ def plot_bar_chart(data):
     #     if i == len(mean_times) - 1:  # 最後の棒だけ3色で分割.ここはそれぞれの色の高さなので全体からみた高さではない
     top_height = (mean_times[1] - mean_times[0]) * (1 - split_ratio)
     mid_height = (mean_times[1] - mean_times[0]) * split_ratio
-    bottom_height = mean_times[0]
+    bottom_height = 0.67582696
     # ここから追加する
     print("top_height", top_height)
     print("mid_height", mid_height)
-    mid_height = 0.27297544
-    top_height = 0.67582696
+    bottom_height_2 = 0.67582696 * 0.841
+    mid_height = 0.67582696 * 0.076
+    top_height = 0.67582696 * 0.063
     # bottom_height 0.6101654625555556
     print("bottom_height", bottom_height)
 
@@ -112,41 +113,41 @@ def plot_bar_chart(data):
     plt.bar(
         x_positions[1],
         top_height,
-        bottom=bottom_height + mid_height,
-        color="#F87171",
+        bottom=bottom_height_2 + mid_height,
+        color="#F9A8D4",
         edgecolor="black",
-        label="certification time (43.5%)",
+        label="token creation (6.3%)",
     )
 
     # # 中央
     plt.bar(
         x_positions[1],
         mid_height,
-        bottom=bottom_height,
-        color="#1E3A8A",
+        bottom=bottom_height_2,
+        color="#F8D0D0",
         edgecolor="black",
-        label="authorization time (17.5%)",
+        label="token verification (7.6%)",
     )
 
     # 下部
     plt.bar(
         x_positions[1],
-        bottom_height,
+        bottom_height_2,
         bottom=0,
-        color="#D3D3D3",
+        color="#FBB6B6",
         edgecolor="black",
-        label="no access control (38.9%)",
+        label="communication time (84.1%)",
     )
     #  カスタム判例を追加
     # else:
-    # plt.bar(
-    #     x_positions[0],
-    #     mean_times[0],
-    #     bottom=0,
-    #     color="#D3D3D3",
-    #     edgecolor="black",
-    #     # label="Other Categories" if i == 0 else "",
-    # )
+    plt.bar(
+        x_positions[0],
+        0.67582696,
+        bottom=0,
+        color="#F87171",
+        edgecolor="black",
+        # label="Other Categories" if i == 0 else "",
+    )
 
     # 軸設定
     plt.xlabel("Categories")
@@ -156,7 +157,7 @@ def plot_bar_chart(data):
     plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.legend(loc="upper left")
     # plt.savefig("1-bar_chart_split.png")
-    plt.savefig("1-bar_chart_split.pdf")
+    plt.savefig("1-bar_chart_split-0124.pdf")
     plt.show()
 
 
