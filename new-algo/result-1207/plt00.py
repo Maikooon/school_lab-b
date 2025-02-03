@@ -102,7 +102,7 @@ for i in range(5, 10):
 # x 軸のラベルを設定
 plt.xticks(
     [3, 9],
-    ["ca-grqc-connected", "com-amazon-connected"],
+    ["fb-caltech-connected", "ca-grqc-connected"],
     rotation=0,
     ha="right",
     fontsize=12,

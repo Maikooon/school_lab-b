@@ -65,6 +65,7 @@ plt.plot(
 )
 
 # 軸ラベルの設定
+plt.ylim(0, 1.2)
 plt.xlabel("hop count", fontsize=14)
 plt.ylabel("verification time", fontsize=14)
 

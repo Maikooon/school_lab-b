@@ -16,8 +16,8 @@ import numpy as np
 
 files = {
     # "no authentication(method-a)": "./default/100-log.txt",
-    "proposal-α": "./first-time/100-log.txt",
-    "proposal-β": "./parent-token/100-log.txt",
+    "proposal-a-1": "./first-time/100-log.txt",
+    "proposal-a-2": "./parent-token/100-log.txt",
 }
 
 total_move_time_results = []
@@ -198,13 +198,28 @@ def plt_picture(move_array):
 
     # ラベル設定
     x_labels = [f"{ux:.2f}" for ux in unique_x]
+    x_labels = [
+        "0.00",
+        "0.001",
+        "0.005",
+        "0.01",
+        "0.02",
+        "0.03",
+        "0.05",
+        "0.075",
+        "0.10",
+    ]
+
+    print(x_labels)
+    # plt.xticks(x_labels, rotation=45)
     plt.xticks(range(1, len(x_labels) + 1), x_labels, rotation=45)
-    plt.xlabel("Parent token valid time")
+    plt.xlabel("Parent token valid time(seconds)")
     plt.ylabel("1RW Move Time (seconds)")
     plt.legend()
+    plt.ylim(0, 1.5)
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig("0110-valid.pdf")
+    plt.savefig("0129-valid.pdf")
     plt.show()
 
 

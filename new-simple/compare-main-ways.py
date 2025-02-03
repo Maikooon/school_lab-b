@@ -58,11 +58,15 @@ for label, (color, file_path) in zip(
     ##TODO: ここまで100回分の平均であるので、すべてを/100して考える
     # x_list = [x / 100 for x in x_list]
     # y_list = [y / 100 for y in y_list]
-    y_list = [y + 0.8101654625555555 for y in y_list]
+    y_list = [y + 0.6101654625555555 for y in y_list]
+    if label == "every-time(method-d)":
+        y_list = [y - 0.3101654625555555 for y in y_list]
+        print("aaaaaa")
     plt.scatter(x_list, y_list, label=label, color=color)
 
 # 軸ラベルと凡例を設定
 plt.xlabel("server across time")
+plt.xlim(0.5, 9.5)
 plt.ylabel("total execution time (seconds)")
 plt.legend()
 plt.grid(True)

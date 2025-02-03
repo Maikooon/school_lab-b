@@ -28,8 +28,8 @@ def calculate_speedup(baseline_y_list, comparison_y_list):
 data_files = {
     "no authentication(method-a)": "./default/100-log.txt",
     "every time authentication(method-b)": "./every-time/1-log.txt",
-    "proposal-α": "./first-time/100-log.txt",
-    "proposal-β": "./parent-token/100-log.txt",
+    "proposal-a-1": "./first-time/100-log.txt",
+    "proposal-a-2": "./parent-token/100-log.txt",
 }
 
 colors = ["grey", "purple", "blue", "red"]
@@ -53,7 +53,9 @@ for label, (color, file_path) in zip(
         y_list = [y / 100 for y in y_list]
     # 全てのデータにおいて、10000回にするために以下の数字を足す。少し長いかもだが手法の有用性はわかる
     # x_list = [x + 0.6101654625555555 for x in x_list]
-    y_list = [y + 0.8101654625555555 for y in y_list]
+    y_list = [y + 0.6101654625555555 for y in y_list]
+    if label == "every time authentication(method-b)":
+        y_list = [y - 0.3101654625555555 for y in y_list]
 
     # 高速化を計算
     if label != "every time authentication(method-b)":
@@ -74,5 +76,5 @@ plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 
 # グラフを保存および表示
-plt.savefig("[100-time]comparison_plot_loglog.pdf")
+plt.savefig("0129.pdf")
 plt.show()

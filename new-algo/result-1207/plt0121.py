@@ -62,11 +62,11 @@ for i, (min_val, mid_val, max_val, x_pos) in enumerate(
 plt.xticks(
     x_positions,
     [
-        "ca-gqrc-connected [general method]",
+        "fb-caltech-connected [general method]",
         "[add 'a1' method]",
         "[add 'a1 + a2' method]",
         "[add 'a1 + a2 + b' method]",
-        "com amazon connected [general method]",
+        "ca-gqrc-connected [general method]",
         "[add 'a1' method]",
         "[add 'a1 + a2' method]",
         "[add 'a1 + a2 + b' method]",
