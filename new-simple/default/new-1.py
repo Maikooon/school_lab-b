@@ -49,6 +49,11 @@ class Server1:
             f"tcp://{self.command_server_ip}:{self.command_server_port}"
         )
 
+        # TODO:ここを追加
+        self.graph = self.load_graph("graph_server1.txt")
+        self.server_node_map = self.load_node_to_server_map("node_to_server.txt")
+        self.local_nodes = set(self.graph.keys())  # 自分が持っているノード
+
     def receive_initial_command(self):
         # 命令サーバから初期命令を受信
         message = self.receiver_from_command.recv_string()
@@ -69,41 +74,56 @@ class Server1:
         # Message オブジェクトを文字列化して送信
         self.sender_to_server2.send_string(message.to_string())
 
+    def find_server_by_node(self, node_id):
+        if node_id in self.server_node_map:
+            return self.server_node_map[node_id]
+        else:
+            raise ValueError(f"ノード {node_id} の担当サーバが見つかりません。")
+
     def process_message(self, message):
-        across_server_count = 0
         end_flag = False
-        total_across_servers = message.across_server
-        print(f"Total across_servers: {total_across_servers}")
+        current_node = message.next_id  # 現在のノードID
+
+        print(
+            f"Start RW from Node {current_node}, total across: {message.across_server}"
+        )
 
         while True:
-            # 終了確立よりも大きいときには、継続
-            if random.random() > self.alpha:
-                other_server_probability = random.random()
-                # 他のサーバに遷移する確立を計算、ここでまたぎ回数をコントロールする
-                if other_server_probability < self.beta:
-                    # 他のサーバにメッセージを送信
-                    print(
-                        f"Sending message to the other server (across_server {across_server_count + 1})"
-                    )
-                    target_server_ip = "10.58.60.7"  # 次のサーバIP（例）
+            # α の確率で遷移、1-α で終了
+            if random.random() < self.alpha:
+                neighbors = self.graph.get(current_node, [])
+                if not neighbors:
+                    print(f"ノード {current_node} に隣接ノードがありません。終了。")
+                    end_flag = True
+                    break
+
+                next_node = random.choice(neighbors)
+                print(f"選ばれた次ノード: {next_node}")
+
+                if next_node in self.local_nodes:
+                    # 同一サーバ内
+                    print(f"ノード {next_node} はローカル。遷移継続。")
+                    current_node = next_node
+                else:
+                    # 他サーバへ移動
+                    target_server_ip = self.find_server_by_node(next_node)
+                    print(f"ノード {next_node} は他サーバ。{target_server_ip} に送信。")
+
                     new_message = Message(
                         ip=self.ip,
-                        next_id=target_server_ip,
+                        next_id=next_node,
                         across_server=message.across_server + 1,
                         public_key=self.public_key,
-                        jwt="JWT_TOKEN_PLACEHOLDER",  # 実際には有効なJWTを生成する
+                        jwt="JWT_TOKEN_PLACEHOLDER",  # JWT生成関数に置き換え可能
                         end_flag=False,
                     )
-                    self.send_message_to_random_server(new_message)
-                    print(new_message.jwt)
-                    break  # メッセージを送信したら終了
-                else:
-                    print("Message not sent to the other server (retry).")
-            # 終了確立に達したので終了する
+                    self.send_message_to(target_server_ip, new_message)
+                    break  # サーバ間通信が発生したら処理終了
             else:
-                print("Message not sent to the other server. Ending process.")
+                print("確率で終了処理に到達。ランダムウォーク終了。")
                 end_flag = True
-                break  # 送信せず終了
+                break
+
         return end_flag
 
     def run(self):
@@ -184,6 +204,27 @@ class Server1:
             # print("次のメッセージを命令サーバに送信", message.to_string())
             self.sender_to_command.send_string(message.to_string())
 
+    def load_graph(self, filename):
+        graph = {}
+        with open(filename, "r") as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) < 2:
+                    continue
+                src = int(parts[0])
+                dst = int(parts[1])
+                graph.setdefault(src, []).append(dst)
+                graph.setdefault(dst, []).append(src)  # 無向グラフ想定
+        return graph
+
+    def load_node_to_server_map(self, filename):
+        mapping = {}
+        with open(filename, "r") as f:
+            for line in f:
+                node_id, ip = line.strip().split()
+                mapping[int(node_id)] = ip
+        return mapping
+
 
 if __name__ == "__main__":
     server1 = Server1(
@@ -198,4 +239,5 @@ if __name__ == "__main__":
         beta=0.001,
         rw_count=10000,
     )
+
     server1.run()
